@@ -3,6 +3,7 @@ package com.jer.banyumastourismapp.presentation.home
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -63,6 +64,10 @@ import coil.compose.AsyncImage
 import com.jer.banyumastourismapp.R
 import com.jer.banyumastourismapp.common.smallText
 import com.jer.banyumastourismapp.common.verySmallIcon
+import com.jer.banyumastourismapp.presentation.component.Category
+import com.jer.banyumastourismapp.presentation.component.CategoryRow
+import com.jer.banyumastourismapp.presentation.component.Destination
+import com.jer.banyumastourismapp.presentation.component.DestinationCardRow
 import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
 import kotlinx.coroutines.delay
 
@@ -71,7 +76,7 @@ import kotlinx.coroutines.delay
 fun HomeScreen(
     modifier: Modifier = Modifier,
     userDummy: UserDummy,
-    categories: List<Category>
+    destination: List<Destination>,
 ) {
 
     val scrollState = rememberScrollState()
@@ -88,13 +93,21 @@ fun HomeScreen(
         ) {
 
             val (
-                userAndNotif,
-                itinerary,
-                category1,
-                category2,
-                subTitle,
-                list,
+                bg, userAndNotif, itinerary, category1, category2,
+                subTitle, list, subTitle2, list2,
             ) = createRefs()
+            
+            Box(
+                modifier = Modifier
+                    .height(215.dp)
+                    .background(MaterialTheme.colorScheme.primaryContainer)
+                    .constrainAs(bg) {
+                        top.linkTo(parent.top)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                        width = Dimension.fillToConstraints
+                    }
+            )
 
             Row (
 
@@ -141,9 +154,10 @@ fun HomeScreen(
             )
 
             CategoryRow(
-                modifier = Modifier.constrainAs(category2) {
-                    top.linkTo(category1.bottom)
-                }
+                modifier = Modifier
+                    .constrainAs(category2) {
+                        top.linkTo(category1.bottom)
+                    }
                     .padding(vertical = 5.dp)
                 ,
                 categories = listOf(
@@ -158,132 +172,68 @@ fun HomeScreen(
 //                    Category("Bali")
                 )
             )
-
-
-        }
-    }
-
-}
-
-data class Category(
-    val text: String,
-    val icon: Painter? = null
-)
-
-
-
-@Composable
-fun CategoryCard(
-    modifier: Modifier = Modifier,
-    text: String,
-    icon: Painter? = null,
-    isSelected: Boolean,
-    onClick: () -> Unit
-) {
-
-    Card (
-        modifier = Modifier
-            .height(37.dp)
-            .clickable { onClick() },
-        shape = CircleShape,
-
-        colors = CardDefaults.cardColors(
-            containerColor = if (isSelected)  MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.outlineVariant ,
-            contentColor = if (isSelected) Color.White else MaterialTheme.colorScheme.onBackground
-        ),
-
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp,)
-
-    ) {
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center,
-            modifier = Modifier.padding(all = 5.dp)
-        ) {
-
-            if ( icon != null) {
-
-                Surface (
-                    shape = CircleShape,
-                    color = Color.White,
-                ) {
-
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier.size(29.dp),
-                    ) {
-                        Image(
-                            painter = icon,
-                            contentDescription = null,
-                            contentScale = ContentScale.Fit,
-                            modifier = Modifier
-                                .size(verySmallIcon)
-                        )
+            
+            Text(
+                text = "Popular Destination",
+                fontSize = TextUnit(16f, TextUnitType.Sp),
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier
+                    .constrainAs(subTitle) {
+                        top.linkTo(category2.bottom)
+                        start.linkTo(parent.start)
                     }
-                }
-
-            }
-
-            Spacer(modifier = Modifier.width(5.dp))
-
-            Text (
-                text = text,
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.bodySmall,
-                )
-
-            Spacer(modifier = Modifier.width(5.dp))
-        }
-
-    }
-}
-
-@Composable
-fun CategoryRow(
-    modifier: Modifier = Modifier,
-    categories: List<Category>
-) {
-
-    val listState = rememberLazyListState()
-    val selectedIndex = remember { mutableStateOf(-1) }
-
-    LaunchedEffect(key1 = Unit) {
-        while (true) {
-            listState.animateScrollToItem(index = (listState.firstVisibleItemIndex + 1) % categories.size)
-            delay(2000)
-        }
-        
-    }
-
-    LazyRow(
-        state = listState,
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
-            .fillMaxWidth()
-    ) {
-        itemsIndexed(categories) { index, category ->
-            CategoryCard(
-                text = category.text,
-                icon = category.icon,
-                isSelected = selectedIndex.value == index,
-                onClick = {selectedIndex.value = index}
+                    .padding(start = 30.dp, top = 10.dp, bottom = 15.dp)
             )
+
+            DestinationCardRow(
+                destination = destination,
+                modifier = Modifier
+                    .constrainAs(list) {
+                        top.linkTo(subTitle.bottom)
+                    },
+                onClick = {}
+            )
+
+            Text(
+                text = "Nearby Destination",
+                fontSize = TextUnit(16f, TextUnitType.Sp),
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier
+                    .constrainAs(subTitle2) {
+                        top.linkTo(list.bottom)
+                        start.linkTo(parent.start)
+                    }
+                    .padding(start = 30.dp, top = 15.dp, bottom = 15.dp)
+            )
+
+            DestinationCardRow(
+                destination = destination,
+                modifier = Modifier
+                    .constrainAs(list2) {
+                        top.linkTo(subTitle2.bottom)
+                    }
+                    .padding(bottom = 15.dp),
+                onClick = {}
+            )
+
+
         }
     }
+
 }
+
+
 
 @Composable
 fun ItineraryCard(modifier: Modifier = Modifier, userDummy: UserDummy) {
     Card(
 
         shape = MaterialTheme.shapes.large,
-        colors = CardColors(
-            containerColor = MaterialTheme.colorScheme.onSecondary,
-            contentColor = Color.Black,
-            disabledContainerColor = Color.Black,
-            disabledContentColor = Color.Black
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.onPrimary,
+            contentColor = MaterialTheme.colorScheme.onBackground,
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
         modifier = modifier
@@ -298,11 +248,11 @@ fun ItineraryCard(modifier: Modifier = Modifier, userDummy: UserDummy) {
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 15.dp, top = 5.dp)
+                    .padding(start = 15.dp,)
             ) {
                 Text(
                     text = "Your Itinerary",
-                    style = MaterialTheme.typography.displaySmall,
+                    fontSize = TextUnit(12f, TextUnitType.Sp),
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 IconButton(
@@ -355,7 +305,8 @@ fun ItineraryCard(modifier: Modifier = Modifier, userDummy: UserDummy) {
                 ){
                     Text(
                         text = "Seru-seruan di Jawa Tengah",
-                        style = MaterialTheme.typography.displayMedium.copy(fontWeight = FontWeight.Bold),
+                        fontSize = TextUnit(14f, TextUnitType.Sp),
+                        fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onBackground,
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 2
@@ -417,7 +368,7 @@ fun IconAndText(modifier: Modifier = Modifier, painter: Painter, text: String) {
 fun UserTopSection(modifier: Modifier = Modifier, userDummy: UserDummy) {
     Card (
         modifier = Modifier
-            .size(width = 270.dp, height = 50.dp)
+            .size(width = 260.dp, height = 50.dp)
             .clickable {
 
             },
@@ -468,13 +419,14 @@ fun UserTopSection(modifier: Modifier = Modifier, userDummy: UserDummy) {
             ) {
                 Text(
                     text = "Hi, " + userDummy.text + "!",
-                    style = MaterialTheme.typography.bodySmall,
-                )
+                    fontSize = TextUnit(12f, TextUnitType.Sp),
+                    )
                 Spacer(modifier = Modifier.height(5.dp))
 
                 Text(
                     text = "Ready For Your Next Adventure?",
-                    style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.SemiBold),
+                    fontSize = TextUnit(12f, TextUnitType.Sp),
+                    fontWeight = FontWeight.SemiBold,
                 )
             }
 
@@ -532,9 +484,23 @@ data class UserDummy(
 @Composable
 private fun PreviewFirst() {
     BanyumasTourismAppTheme {
-        HomeScreen(userDummy = UserDummy("Fajar" ), categories =
-        listOf()
-        )
+        HomeScreen(userDummy = UserDummy("Fajar" ), destination = listOf(
+            Destination(
+                "Raja Ampat",
+                "Raja Ampat, Papua Barat",
+                cost = 3500000,
+            ),
+            Destination(
+                "Raja Ampat",
+                "Raja Ampat, Papua Barat",
+                cost = 3500000,
+            ),
+            Destination(
+                "Raja Ampat",
+                "Raja Ampat, Papua Barat",
+                cost = 3500000,
+            ),
+        ) )
     }
 }
 
