@@ -31,12 +31,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.TextUnitType.Companion.Sp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.jer.banyumastourismapp.R
-import com.jer.banyumastourismapp.common.smallText
 import com.jer.banyumastourismapp.common.verySmallIcon
 import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
 
@@ -49,7 +47,7 @@ fun DestinationCardStand(
 
     Card(
         modifier = Modifier
-            .height(230.dp)
+//            .height(230.dp)
             .width(174.dp),
         onClick = onClick,
         shape = ShapeDefaults.Large,
@@ -150,7 +148,7 @@ fun DestinationCardStand(
 }
 
 @Composable
-fun DestinationCardRow(
+fun DestinationCardStandRow(
     modifier: Modifier = Modifier,
     destination: List<Destination>,
     onClick: () -> Unit
@@ -158,7 +156,7 @@ fun DestinationCardRow(
 
     LazyRow (
         horizontalArrangement = Arrangement.spacedBy(15.dp),
-        contentPadding = PaddingValues(start = 30.dp),
+        contentPadding = PaddingValues(start = 30.dp, end = 30.dp),
         modifier = modifier.fillMaxWidth(),
 
     ) {
@@ -181,7 +179,7 @@ data class Destination(
 @Composable
 private fun PreviewDestinationCardRow() {
     BanyumasTourismAppTheme {
-        DestinationCardRow(destination = listOf(
+        DestinationCardStandRow(destination = listOf(
             Destination(
                 "Raja Ampat",
                 "Raja Ampat, Papua Barat",

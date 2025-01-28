@@ -4,12 +4,10 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,10 +15,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -28,31 +22,23 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
@@ -62,14 +48,12 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import coil.compose.AsyncImage
 import com.jer.banyumastourismapp.R
-import com.jer.banyumastourismapp.common.smallText
 import com.jer.banyumastourismapp.common.verySmallIcon
 import com.jer.banyumastourismapp.presentation.component.Category
 import com.jer.banyumastourismapp.presentation.component.CategoryRow
 import com.jer.banyumastourismapp.presentation.component.Destination
-import com.jer.banyumastourismapp.presentation.component.DestinationCardRow
+import com.jer.banyumastourismapp.presentation.component.DestinationCardStandRow
 import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
-import kotlinx.coroutines.delay
 
 
 @Composable
@@ -99,7 +83,7 @@ fun HomeScreen(
             
             Box(
                 modifier = Modifier
-                    .height(215.dp)
+                    .height(220.dp)
                     .background(MaterialTheme.colorScheme.primaryContainer)
                     .constrainAs(bg) {
                         top.linkTo(parent.top)
@@ -127,6 +111,7 @@ fun HomeScreen(
                 
             }
             ItineraryCard(
+                onClick = {},
                 userDummy = userDummy,
                 modifier = Modifier
                     .constrainAs(itinerary) {
@@ -135,7 +120,7 @@ fun HomeScreen(
                         end.linkTo(parent.end)
                         width = Dimension.fillToConstraints
                     }
-                    .padding(start = 30.dp, end = 30.dp, bottom = 30.dp)
+                    .padding(start = 30.dp, end = 30.dp, bottom = 15.dp)
 
             )
 
@@ -149,6 +134,9 @@ fun HomeScreen(
                     Category("Mountain", painterResource(id = R.drawable.mountainicon)),
                     Category("Beach", painterResource(id = R.drawable.beachicon)),
                     Category("Waterfall", painterResource(id = R.drawable.waterfallicon)),
+                    Category("Temple", painterResource(id = R.drawable.tampleiconsvg)),
+                    Category("Temple", painterResource(id = R.drawable.tampleiconsvg)),
+                    Category("Temple", painterResource(id = R.drawable.tampleiconsvg)),
                     Category("Temple", painterResource(id = R.drawable.tampleiconsvg)),
                     )
             )
@@ -165,6 +153,8 @@ fun HomeScreen(
                     Category("Temple", painterResource(id = R.drawable.tampleiconsvg)),
                     Category("Mountain", painterResource(id = R.drawable.mountainicon)),
                     Category("Waterfall", painterResource(id = R.drawable.waterfallicon)),
+                    Category("Waterfall", painterResource(id = R.drawable.waterfallicon)),
+                    Category("Waterfall", painterResource(id = R.drawable.waterfallicon)),
 //                    Category("Bandung"),
 //                    Category("Banyumas"),
 //                    Category("Wonosobo"),
@@ -176,7 +166,7 @@ fun HomeScreen(
             Text(
                 text = "Popular Destination",
                 fontSize = TextUnit(16f, TextUnitType.Sp),
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.ExtraBold,
                 color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier
                     .constrainAs(subTitle) {
@@ -186,7 +176,7 @@ fun HomeScreen(
                     .padding(start = 30.dp, top = 10.dp, bottom = 15.dp)
             )
 
-            DestinationCardRow(
+            DestinationCardStandRow(
                 destination = destination,
                 modifier = Modifier
                     .constrainAs(list) {
@@ -198,7 +188,7 @@ fun HomeScreen(
             Text(
                 text = "Nearby Destination",
                 fontSize = TextUnit(16f, TextUnitType.Sp),
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.ExtraBold,
                 color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier
                     .constrainAs(subTitle2) {
@@ -208,7 +198,7 @@ fun HomeScreen(
                     .padding(start = 30.dp, top = 15.dp, bottom = 15.dp)
             )
 
-            DestinationCardRow(
+            DestinationCardStandRow(
                 destination = destination,
                 modifier = Modifier
                     .constrainAs(list2) {
@@ -227,9 +217,13 @@ fun HomeScreen(
 
 
 @Composable
-fun ItineraryCard(modifier: Modifier = Modifier, userDummy: UserDummy) {
+fun ItineraryCard(
+    modifier: Modifier = Modifier,
+    userDummy: UserDummy,
+    onClick: () -> Unit
+) {
     Card(
-
+        onClick = onClick,
         shape = MaterialTheme.shapes.large,
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.onPrimary,
@@ -301,7 +295,8 @@ fun ItineraryCard(modifier: Modifier = Modifier, userDummy: UserDummy) {
 
                 Column (
                     verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.Start
+                    horizontalAlignment = Alignment.Start,
+                    modifier = Modifier.height(102.dp)
                 ){
                     Text(
                         text = "Seru-seruan di Jawa Tengah",
@@ -368,7 +363,7 @@ fun IconAndText(modifier: Modifier = Modifier, painter: Painter, text: String) {
 fun UserTopSection(modifier: Modifier = Modifier, userDummy: UserDummy) {
     Card (
         modifier = Modifier
-            .size(width = 260.dp, height = 50.dp)
+            .height(50.dp)
             .clickable {
 
             },
@@ -385,7 +380,7 @@ fun UserTopSection(modifier: Modifier = Modifier, userDummy: UserDummy) {
         Row (
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start,
-            modifier = Modifier.padding(all = 5.dp)
+            modifier = Modifier.padding(start = 10.dp, end = 15.dp,top = 5.dp, bottom = 5.dp)
         ) {
 
             if (userDummy.photoUrl == null) {
@@ -508,7 +503,7 @@ private fun PreviewFirst() {
 @Composable
 private fun PreviewItinerary() {
     BanyumasTourismAppTheme {
-        ItineraryCard(userDummy = UserDummy("Fajar"))
+        ItineraryCard(userDummy = UserDummy("Fajar"), onClick = {})
     }
 
 

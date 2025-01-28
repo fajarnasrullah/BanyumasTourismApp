@@ -11,19 +11,42 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.jer.banyumastourismapp.presentation.component.Destination
+import com.jer.banyumastourismapp.presentation.home.HomeScreen
+import com.jer.banyumastourismapp.presentation.home.UserDummy
 import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+//        enableEdgeToEdge()
         setContent {
             BanyumasTourismAppTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
+                    HomeScreen(userDummy = UserDummy("Fajar","https://t4.ftcdn.net/jpg/02/14/74/61/360_F_214746128_31JkeaP6rU0NzzzdFC4khGkmqc8noe6h.jpg"), destination = listOf(
+                        Destination(
+                            "Raja Ampat",
+                            "Raja Ampat, Papua Barat",
+                            cost = 3500000,
+                        ),
+                        Destination(
+                            "Raja Ampat",
+                            "Raja Ampat, Papua Barat",
+                            cost = 3500000,
+                        ),
+                        Destination(
+                            "Raja Ampat",
+                            "Raja Ampat, Papua Barat",
+                            cost = 3500000,
+                        ),
+
+                        ),
                         modifier = Modifier.padding(innerPadding)
                     )
+//                    Greeting(
+//                        name = "Android",
+//                        modifier = Modifier.padding(innerPadding)
+//                    )
                 }
             }
         }
