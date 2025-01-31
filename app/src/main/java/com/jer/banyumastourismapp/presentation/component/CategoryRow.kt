@@ -30,10 +30,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import com.jer.banyumastourismapp.R
 import com.jer.banyumastourismapp.common.verySmallIcon
 import kotlinx.coroutines.delay
 
@@ -114,9 +116,17 @@ fun CategoryCard(
 @Composable
 fun CategoryRow(
     modifier: Modifier = Modifier,
-    categories: List<Category>
 ) {
 
+    val categories = listOf(
+        Category("Mountain", painterResource(id = R.drawable.mountainicon)),
+        Category("Beach", painterResource(id = R.drawable.beachicon)),
+        Category("Waterfall", painterResource(id = R.drawable.waterfallicon)),
+        Category("Temple", painterResource(id = R.drawable.tampleiconsvg)),
+        Category("Temple", painterResource(id = R.drawable.tampleiconsvg)),
+        Category("Temple", painterResource(id = R.drawable.tampleiconsvg)),
+        Category("Temple", painterResource(id = R.drawable.tampleiconsvg)),
+    )
     val listState = rememberLazyListState()
     val selectedIndex = remember { mutableStateOf(-1) }
 

@@ -88,15 +88,7 @@ fun DestinationListScreen(
 
                     }
                     .padding(top = 30.dp, bottom = 15.dp),
-                categories = listOf(
-                    Category("Mountain", painterResource(id = R.drawable.mountainicon)),
-                    Category("Beach", painterResource(id = R.drawable.beachicon)),
-                    Category("Waterfall", painterResource(id = R.drawable.waterfallicon)),
-                    Category("Temple", painterResource(id = R.drawable.tampleiconsvg)),
-                    Category("Temple", painterResource(id = R.drawable.tampleiconsvg)),
-                    Category("Temple", painterResource(id = R.drawable.tampleiconsvg)),
-                    Category("Temple", painterResource(id = R.drawable.tampleiconsvg)),
-                )
+
             )
 
             DestinationCardLandscapeColumn(

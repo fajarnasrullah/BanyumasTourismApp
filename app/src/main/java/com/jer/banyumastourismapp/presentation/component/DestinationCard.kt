@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -40,6 +41,7 @@ import coil.compose.AsyncImage
 import com.jer.banyumastourismapp.R
 import com.jer.banyumastourismapp.common.verySmallIcon
 import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
+import com.jer.banyumastourismapp.ui.theme.OrangeNice
 
 
 @Composable
@@ -269,7 +271,7 @@ fun DestinationCardPotrait(
                     Icon(
                         imageVector = Icons.Default.Star,
                         contentDescription = null,
-                        tint = Color.Yellow,
+                        tint = OrangeNice,
                         modifier = Modifier.size(verySmallIcon)
                     )
 

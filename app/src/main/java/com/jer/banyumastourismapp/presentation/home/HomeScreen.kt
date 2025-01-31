@@ -130,15 +130,7 @@ fun HomeScreen(
                         top.linkTo(itinerary.bottom)
                     }
                     .padding(bottom = 5.dp),
-                categories = listOf(
-                    Category("Mountain", painterResource(id = R.drawable.mountainicon)),
-                    Category("Beach", painterResource(id = R.drawable.beachicon)),
-                    Category("Waterfall", painterResource(id = R.drawable.waterfallicon)),
-                    Category("Temple", painterResource(id = R.drawable.tampleiconsvg)),
-                    Category("Temple", painterResource(id = R.drawable.tampleiconsvg)),
-                    Category("Temple", painterResource(id = R.drawable.tampleiconsvg)),
-                    Category("Temple", painterResource(id = R.drawable.tampleiconsvg)),
-                    )
+
             )
 
             CategoryRow(
@@ -148,19 +140,7 @@ fun HomeScreen(
                     }
                     .padding(vertical = 5.dp)
                 ,
-                categories = listOf(
-                    Category("Beach", painterResource(id = R.drawable.beachicon)),
-                    Category("Temple", painterResource(id = R.drawable.tampleiconsvg)),
-                    Category("Mountain", painterResource(id = R.drawable.mountainicon)),
-                    Category("Waterfall", painterResource(id = R.drawable.waterfallicon)),
-                    Category("Waterfall", painterResource(id = R.drawable.waterfallicon)),
-                    Category("Waterfall", painterResource(id = R.drawable.waterfallicon)),
-//                    Category("Bandung"),
-//                    Category("Banyumas"),
-//                    Category("Wonosobo"),
-//                    Category("Lombok"),
-//                    Category("Bali")
-                )
+
             )
             
             Text(

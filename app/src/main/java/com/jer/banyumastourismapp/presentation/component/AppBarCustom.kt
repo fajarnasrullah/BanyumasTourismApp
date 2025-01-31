@@ -1,5 +1,6 @@
 package com.jer.banyumastourismapp.presentation.component
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,9 +18,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.jer.banyumastourismapp.R
 import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
 
 @Composable
@@ -27,7 +31,7 @@ fun AppBarCustom(
     modifier: Modifier = Modifier,
     title: String? = null,
     backgroundColor: Color? = null,
-    actionVector: ImageVector? = null,
+    actionIcon: Painter? = null,
     navigateBack: () -> Unit,
     action: (() -> Unit)? = null
 ) {
@@ -35,12 +39,12 @@ fun AppBarCustom(
     Row (
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .background(color = backgroundColor ?: Color.Transparent)
+        modifier = modifier
             .fillMaxWidth()
+            .background(color = backgroundColor ?: Color.Transparent)
     ) {
         IconButtonAppBar(
-            imageVector = Icons.Default.ArrowBack,
+            icon = painterResource(id = R.drawable.backicon),
             onClick = navigateBack
         ) 
         
@@ -52,9 +56,9 @@ fun AppBarCustom(
             )
         }
 
-        if (actionVector != null && action != null) {
+        if (actionIcon != null && action != null) {
             IconButtonAppBar(
-                imageVector = actionVector,
+                icon = actionIcon,
                 onClick = action
             )
         }
@@ -66,7 +70,7 @@ fun AppBarCustom(
 
 @Composable
 fun IconButtonAppBar(
-    imageVector: ImageVector,
+    icon: Painter,
     onClick: () -> Unit,
     ) {
     Surface(
@@ -79,9 +83,9 @@ fun IconButtonAppBar(
             modifier = Modifier.size(45.dp),
         ) {
             Icon(
-                imageVector = imageVector,
+                painter = icon,
                 contentDescription = null,
-                tint = Color.Black,
+                tint = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.size(25.dp)
             )
         }
@@ -90,11 +94,12 @@ fun IconButtonAppBar(
 }
 
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewAppBarCustom() {
     BanyumasTourismAppTheme {
         AppBarCustom(
-            actionVector = Icons.Default.Favorite,
+            actionIcon = painterResource(id = R.drawable.bookmarkbordericon),
             action = {},
             navigateBack = {},
 
