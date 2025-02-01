@@ -7,6 +7,7 @@ import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,6 +27,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
@@ -60,6 +63,7 @@ import coil.compose.AsyncImage
 import com.jer.banyumastourismapp.R
 import com.jer.banyumastourismapp.common.verySmallIcon
 import com.jer.banyumastourismapp.presentation.component.AppBarCustom
+import com.jer.banyumastourismapp.presentation.component.BottomBarDetail
 import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
 import kotlin.math.exp
 
@@ -72,6 +76,12 @@ fun DetailDestinationScreen(
     val scrollState = rememberScrollState()
 
     Scaffold (
+        bottomBar = {
+            BottomBarDetail(
+                detailDestination = detailDestination,
+                textButton = "Book",
+                onClick = {} )
+                    },
         modifier = Modifier
     ) { innerPadding ->
 
@@ -83,8 +93,6 @@ fun DetailDestinationScreen(
         ) {
 
             val (appBar, image, placeCard, content,) = createRefs()
-
-
 
 
             if (detailDestination.imageUrl == null) {
@@ -130,6 +138,7 @@ fun DetailDestinationScreen(
 
             PlaceCard(
                 detailDestination = detailDestination,
+                onClickLocation = {},
                 modifier = Modifier
                     .constrainAs(placeCard) {
                         centerAround(content.top)
@@ -146,7 +155,7 @@ fun DetailDestinationScreen(
                 action = {},
                 modifier = Modifier
                     .constrainAs(appBar) {
-                        top.linkTo(parent.top )
+                        top.linkTo(parent.top)
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                         width = Dimension.fillToConstraints
@@ -159,6 +168,8 @@ fun DetailDestinationScreen(
         }
     }
 }
+
+
 
 
 @Composable
@@ -425,11 +436,11 @@ fun ItemFacility2(modifier: Modifier = Modifier, detailDestination: DetailDestin
 @Composable
 fun PlaceCard(
     modifier: Modifier = Modifier,
-    detailDestination: DetailDestination
+    detailDestination: DetailDestination,
+    onClickLocation: () -> Unit
 ) {
     
     Card(
-        onClick = { },
         shape = MaterialTheme.shapes.medium,
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.onPrimary,
@@ -462,7 +473,7 @@ fun PlaceCard(
                     horizontalArrangement = Arrangement.End,
                     modifier = Modifier
                         .width(100.dp)
-                        .clickable { }
+                        .clickable { onClickLocation() }
                 ){
                    Icon(
                        imageVector = Icons.Default.LocationOn,
