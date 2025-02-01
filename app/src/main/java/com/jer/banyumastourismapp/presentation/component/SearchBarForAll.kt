@@ -42,7 +42,7 @@ import com.jer.banyumastourismapp.common.verySmallIcon
 import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
 
 @Composable
-fun SearchBarForAll(modifier: Modifier = Modifier) {
+fun SearchBarForAll(modifier: Modifier = Modifier, hint: String) {
 
     var query by remember {
         mutableStateOf("")
@@ -73,7 +73,7 @@ fun SearchBarForAll(modifier: Modifier = Modifier) {
                 Icon(imageVector = Icons.Default.Search, contentDescription = null )
             },
             colors = SearchBarDefaults.colors(containerColor =  MaterialTheme.colorScheme.onPrimary),
-            placeholder = { Text(text = "Search Destination", color = MaterialTheme.colorScheme.outline) },
+            placeholder = { Text(text = hint, color = MaterialTheme.colorScheme.outline) },
             trailingIcon = {
                 Row (
                     horizontalArrangement = Arrangement.SpaceBetween
@@ -94,7 +94,7 @@ fun SearchBarForAll(modifier: Modifier = Modifier) {
                         Surface(
                             onClick = { },
                             shape = CircleShape,
-                            color = Color.White,
+                            color = MaterialTheme.colorScheme.onPrimary,
                             border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.outline)
                         ) {
                             Box(
@@ -167,7 +167,7 @@ fun SearchBarForAll(modifier: Modifier = Modifier) {
 @Composable
 private fun PrevSearchBar() {
     BanyumasTourismAppTheme {
-        SearchBarForAll()
+        SearchBarForAll(hint = "Search Destination")
     }
 
 }

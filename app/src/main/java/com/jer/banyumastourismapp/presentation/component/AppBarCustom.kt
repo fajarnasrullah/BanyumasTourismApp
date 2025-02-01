@@ -76,7 +76,7 @@ fun IconButtonAppBar(
     Surface(
         onClick = onClick,
         shape = MaterialTheme.shapes.medium,
-        color = MaterialTheme.colorScheme.onPrimary,
+        color = MaterialTheme.colorScheme.onPrimary, shadowElevation = 8.dp
     ) {
         Box (
             contentAlignment = Alignment.Center,

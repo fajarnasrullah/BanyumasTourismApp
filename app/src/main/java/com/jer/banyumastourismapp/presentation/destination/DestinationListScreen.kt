@@ -71,6 +71,7 @@ fun DestinationListScreen(
             )
 
             SearchBarForAll(
+                hint = "Search Destination",
                 modifier = Modifier
                     .constrainAs(searchbar) {
                         top.linkTo(parent.top)
