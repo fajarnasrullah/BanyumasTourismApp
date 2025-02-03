@@ -49,7 +49,6 @@ import androidx.constraintlayout.compose.Dimension
 import coil.compose.AsyncImage
 import com.jer.banyumastourismapp.R
 import com.jer.banyumastourismapp.common.verySmallIcon
-import com.jer.banyumastourismapp.presentation.component.Category
 import com.jer.banyumastourismapp.presentation.component.CategoryRow
 import com.jer.banyumastourismapp.presentation.component.Destination
 import com.jer.banyumastourismapp.presentation.component.DestinationCardStandRow
@@ -59,7 +58,7 @@ import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    userDummy: UserDummy,
+    user: User,
     destination: List<Destination>,
 ) {
 
@@ -105,14 +104,14 @@ fun HomeScreen(
                     .padding(all = 30.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                UserTopSection( userDummy = userDummy)
+                UserTopSection( user = user)
 
                 NotifTopButton()
                 
             }
             ItineraryCard(
                 onClick = {},
-                userDummy = userDummy,
+                user = user,
                 modifier = Modifier
                     .constrainAs(itinerary) {
                         top.linkTo(userAndNotif.bottom)
@@ -199,7 +198,7 @@ fun HomeScreen(
 @Composable
 fun ItineraryCard(
     modifier: Modifier = Modifier,
-    userDummy: UserDummy,
+    user: User,
     onClick: () -> Unit
 ) {
     Card(
@@ -251,7 +250,7 @@ fun ItineraryCard(
                     .padding(15.dp)
             ) {
 
-                if (userDummy.photoUrl == null) {
+                if (user.photoUrl == null) {
                     Image(
                         painter = painterResource(id = R.drawable.picturedummy),
                         contentDescription = null,
@@ -262,7 +261,7 @@ fun ItineraryCard(
                     )
                 } else {
                     AsyncImage(
-                        model = userDummy.photoUrl,
+                        model = user.photoUrl,
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
@@ -340,7 +339,7 @@ fun IconAndText(modifier: Modifier = Modifier, painter: Painter, text: String) {
 }
 
 @Composable
-fun UserTopSection(modifier: Modifier = Modifier, userDummy: UserDummy) {
+fun UserTopSection(modifier: Modifier = Modifier, user: User) {
     Card (
         modifier = Modifier
             .height(50.dp)
@@ -363,7 +362,7 @@ fun UserTopSection(modifier: Modifier = Modifier, userDummy: UserDummy) {
             modifier = Modifier.padding(start = 10.dp, end = 15.dp,top = 5.dp, bottom = 5.dp)
         ) {
 
-            if (userDummy.photoUrl == null) {
+            if (user.photoUrl == null) {
 
                 Image(
                     painter = painterResource(id = R.drawable.userimage),
@@ -375,7 +374,7 @@ fun UserTopSection(modifier: Modifier = Modifier, userDummy: UserDummy) {
                 )
             } else {
                 AsyncImage(
-                    model = userDummy.photoUrl,
+                    model = user.photoUrl,
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -393,7 +392,7 @@ fun UserTopSection(modifier: Modifier = Modifier, userDummy: UserDummy) {
                 horizontalAlignment = Alignment.Start
             ) {
                 Text(
-                    text = "Hi, " + userDummy.text + "!",
+                    text = "Hi, " + user.name + "!",
                     fontSize = TextUnit(12f, TextUnitType.Sp),
                     )
                 Spacer(modifier = Modifier.height(5.dp))
@@ -446,10 +445,9 @@ fun NotifTopButton(modifier: Modifier = Modifier, ) {
 }
 
 
-data class UserDummy(
-    val text: String,
+data class User(
+    val name: String,
     val photoUrl: String? = null,
-
 
     )
 
@@ -459,7 +457,7 @@ data class UserDummy(
 @Composable
 private fun PreviewFirst() {
     BanyumasTourismAppTheme {
-        HomeScreen(userDummy = UserDummy("Fajar" ), destination = listOf(
+        HomeScreen(user = User("Fajar" ), destination = listOf(
             Destination(
                 "Raja Ampat",
                 "Raja Ampat, Papua Barat",
@@ -483,7 +481,7 @@ private fun PreviewFirst() {
 @Composable
 private fun PreviewItinerary() {
     BanyumasTourismAppTheme {
-        ItineraryCard(userDummy = UserDummy("Fajar"), onClick = {})
+        ItineraryCard(user = User("Fajar"), onClick = {})
     }
 
 

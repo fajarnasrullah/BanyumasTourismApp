@@ -3,7 +3,6 @@ package com.jer.banyumastourismapp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -11,13 +10,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.jer.banyumastourismapp.presentation.component.Destination
-import com.jer.banyumastourismapp.presentation.destination.DestinationListScreen
 import com.jer.banyumastourismapp.presentation.detaildestination.DetailDestination
 import com.jer.banyumastourismapp.presentation.detaildestination.DetailDestinationScreen
 import com.jer.banyumastourismapp.presentation.detaildestination.Facility
-import com.jer.banyumastourismapp.presentation.home.HomeScreen
-import com.jer.banyumastourismapp.presentation.home.UserDummy
 import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
 
 class MainActivity : ComponentActivity() {
