@@ -1,7 +1,10 @@
 package com.jer.banyumastourismapp.presentation.itinerary
 
-import android.widget.TimePicker
+import androidx.annotation.DrawableRes
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
+import com.jer.banyumastourismapp.R
 
 data class Itinerary(
     val daysCount: Int,
@@ -23,16 +26,27 @@ data class ListPlan(
 )
 
 data class Plan(
-    val category: List<PlanCategory>? = null,
+    val category: PlanCategory? = null,
+//    List<PlanCategory>? = null,
+//    List<List<PlanCategory>>,
     val title: String? = null,
     val city: List<City>? = null,
     val time: String? = null,
     val cost: Int? = null,
 )
+//object ListCategoryPlan {
+    val categoryPlan = listOf(
+        PlanCategory("On The Way", R.drawable.caricon),
+        PlanCategory("Hotel", R.drawable.bedicon),
+        PlanCategory("Resto", R.drawable.foodicon),
+        PlanCategory("Destination", R.drawable.placeicon),
+    )
+//}
+
 
 data class PlanCategory(
     val name: String,
-    val icon: Painter,
+    val icon:  Int,
 )
 
 object allAboutList {

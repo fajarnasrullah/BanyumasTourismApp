@@ -1,6 +1,7 @@
 package com.jer.banyumastourismapp.presentation.itinerary
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
@@ -143,6 +144,8 @@ fun ItineraryScreen(
                 notes = itinerary.notes,
                 onClick = {},
                 isNotes = true,
+                listCategoryPlan = categoryPlan,
+//                plan.category ?: emptyList(),
                 modifier = Modifier
                     .constrainAs(notes) {
                         top.linkTo(description.bottom)
@@ -156,6 +159,8 @@ fun ItineraryScreen(
                 itinerary = itinerary,
                 onClick = { },
                 listCardPlan = itinerary.listCardPlan ,
+                listCategoryPlan = categoryPlan,
+//                plan.category ?: emptyList(),
                 modifier = Modifier
                     .fillMaxWidth()
                     .constrainAs(planSection) {
@@ -174,6 +179,8 @@ fun PlanSection(
     modifier: Modifier = Modifier,
     plan: Plan,
     listCardPlan: List<List<Plan>>? = null,
+    listCategoryPlan: List<PlanCategory>,
+//    listCategoryPlan: List<List<PlanCategory>>,
     itinerary: Itinerary,
     onClick: () -> Unit
 ) {
@@ -181,6 +188,7 @@ fun PlanSection(
 
     val daysArray = IntArray(itinerary.daysCount)
     val finalListPlan = MutableList(itinerary.daysCount) { plan }
+//    val finalListPlan = listCardPlan?.takeIf { it.isNotEmpty() }?.flatten() ?: listOf(plan)
 
     Column (
         modifier = modifier
@@ -199,19 +207,24 @@ fun PlanSection(
             contentPadding = PaddingValues(bottom = 30.dp),
             modifier = Modifier.height(2000.dp)
         ) {
-                itemsIndexed(finalListPlan) {index, plan ->
+
+                itemsIndexed(finalListPlan) { index, plan ->
                     CardExpand(
                         isNotes = false,
                         plan = plan,
-                        listPlan = listCardPlan?.get(index) ,
+                        listPlan = listCardPlan?.get(index),
+                        listCategoryPlan = listCategoryPlan,
                         itinerary = itinerary,
                         dayNumber = index,
-                        onClick = { onClick()
+                        onClick = {
+                            onClick()
                         }
                     )
 
                 }
+
         }
+//        Log.d("PlanSection", "listCardPlan size: ${listCategoryPlan.size ?: 0}")
 
     }
 }
@@ -220,6 +233,8 @@ fun PlanSection(
 fun PlanColumn(
     modifier: Modifier = Modifier,
     listPlan: List<Plan>,
+    listCategoryPlan: List<PlanCategory>
+//    listCategoryPlan: List<List<PlanCategory>>
 ) {
     LazyColumn (
         verticalArrangement = Arrangement.spacedBy(5.dp),
@@ -227,18 +242,34 @@ fun PlanColumn(
         modifier = Modifier.heightIn(max = 200.dp)
     ) {
 
-            itemsIndexed(listPlan
+
+        if (listPlan.isNotEmpty()) {
+            itemsIndexed(
+                listPlan
 //                ?: emptyList()
             ) { index, plan ->
                 PlanItem(
                     plan = plan,
                     indexItem = index,
+                    listCategoryPlanItem = listCategoryPlan,
                     onClick = { }
                 )
             }
-
+        } else {
+            item {
+                Text(
+                    text = "Plan is Empty",
+                    fontSize = 10.sp,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier.padding(vertical = 15.dp)
+                )
+            }
+        }
 
     }
+
+//    Log.d("PlanColumn", "listCardPlan size: ${listCategoryPlan.size }")
+
 }
 
 
@@ -246,16 +277,12 @@ fun PlanColumn(
 fun PlanItem(
     modifier: Modifier = Modifier,
     plan: Plan? = null,
+    listCategoryPlanItem: List<PlanCategory>? = null ,
     indexItem: Int,
     onClick: () -> Unit
 ) {
 
-    val categoryPlan = listOf(
-        PlanCategory("On The Way", painterResource(id = R.drawable.caricon)),
-        PlanCategory("Hotel", painterResource(id = R.drawable.bedicon)),
-        PlanCategory("Resto", painterResource(id = R.drawable.foodicon)),
-        PlanCategory("Destination", painterResource(id = R.drawable.placeicon)),
-    )
+//    Log.d("PlanItem", "listCardPlan size: ${listCategoryPlanItem.size }")
 
     Row (
         horizontalArrangement = Arrangement.SpaceEvenly,
@@ -269,12 +296,23 @@ fun PlanItem(
             modifier = Modifier.weight(1f)
             
         )  {
-            Icon(
-                painter = categoryPlan[indexItem].icon,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primaryContainer,
-                modifier = Modifier.size(verySmallIcon)
-            )
+            if (listCategoryPlanItem?.get(indexItem) != null) {
+                Icon(
+                    painter = painterResource(id =
+                    plan?.category!!.icon
+//                listCategoryPlanItem[indexItem].icon
+                    ),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primaryContainer,
+                    modifier = Modifier.size(verySmallIcon)
+                )
+            } else {
+                Text(
+                    text =  "",
+                    fontSize = 10.sp,
+                )
+            }
+
 
             Text(
                 text = plan?.time ?: "",
@@ -303,6 +341,8 @@ fun CardExpand(
     plan: Plan? = null,
     itinerary: Itinerary? = null,
     listPlan: List<Plan>? = null,
+//    listCategoryPlan: List<List<PlanCategory>>,
+    listCategoryPlan: List<PlanCategory>,
     onClick: () -> Unit,
     notes: String? = null,
     isNotes: Boolean = false,
@@ -311,6 +351,7 @@ fun CardExpand(
     var expandedState by remember { mutableStateOf(false) }
     val rotationState by animateFloatAsState(targetValue = if (expandedState) 180f else 0f)
 
+//    Log.d("CardExpand", "listCategoryPlan size: ${listCategoryPlan?.size ?: 0}")
 
     Card(
         modifier = modifier
@@ -442,7 +483,9 @@ fun CardExpand(
                     if (listPlan != null) {
                         PlanColumn(
                             listPlan = listPlan ?: emptyList(),
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth(),
+                            listCategoryPlan = listCategoryPlan
+//                            plan?.category ?: emptyList()
                         )
                     }
                     else {
@@ -592,12 +635,21 @@ fun DatePeriodSection(modifier: Modifier = Modifier, onClick: () -> Unit, date: 
 @Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
 @Composable
 private fun PrevItineraryScreen() {
-    val categoryPlan = listOf(
-        PlanCategory("On The Way", painterResource(id = R.drawable.caricon)),
-        PlanCategory("Hotel", painterResource(id = R.drawable.bedicon)),
-        PlanCategory("Resto", painterResource(id = R.drawable.foodicon)),
-        PlanCategory("Destination", painterResource(id = R.drawable.placeicon)),
-    )
+//    val categoryPlan = listOf(
+//        PlanCategory("On The Way", { painterResource(id = R.drawable.caricon) }),
+//        PlanCategory("Hotel", { painterResource(id = R.drawable.bedicon) }),
+//        PlanCategory("Resto", { painterResource(id = R.drawable.foodicon) }),
+//        PlanCategory("Destination", { painterResource(id = R.drawable.placeicon) }),
+//    )
+
+    val categoryPlanList =
+        listOf (
+            categoryPlan,
+            categoryPlan,
+            categoryPlan,
+            categoryPlan,
+            categoryPlan
+        )
 
     val listCity = listOf(
         City("Yogyakarta", ""),
@@ -606,166 +658,167 @@ private fun PrevItineraryScreen() {
         City("Surabaya", ""),
         City("Semarang", ""),
     )
+
     val listPlan1 = listOf(
         Plan(
-            category = emptyList(),
+            category = PlanCategory("On The Way", R.drawable.caricon),
             title = "Berangkat",
             city = listCity,
             time = "13.00",
             cost = 0
         ),
+
         Plan(
-            category = emptyList(),
-            title = "Menginap di Hotel",
-            city = listCity,
-            time = "18.00",
-            cost = 0
-        ),
-        Plan(
-            category = emptyList(),
+            category = PlanCategory("Resto", R.drawable.foodicon),
             title = "Makan Heula",
             city = listCity,
             time = "20.00",
             cost = 0
         ),
         Plan(
-            category = emptyList(),
+            category = PlanCategory("Destination", R.drawable.placeicon),
             title = "Sampai cuy",
             city = listCity,
             time = "21.00",
             cost = 0
         ),
+        Plan(
+            category = PlanCategory("Hotel", R.drawable.bedicon),
+            title = "Menginap di Hotel",
+            city = listCity,
+            time = "18.00",
+            cost = 0
+        ),
 
-    )
+        )
     val listPlan2 = listOf(
         Plan(
-            category = emptyList(),
+            category = PlanCategory("On The Way", R.drawable.caricon),
             title = "Mangkat",
             city = listCity,
             time = "13.00",
             cost = 0
         ),
+
+
         Plan(
-            category = emptyList(),
-            title = "Rehat sejenak",
-            city = listCity,
-            time = "18.00",
-            cost = 0
-        ),
-        Plan(
-            category = emptyList(),
-            title = "Madang lurr",
-            city = listCity,
-            time = "20.00",
-            cost = 0
-        ),
-        Plan(
-            category = emptyList(),
+            category = PlanCategory("Destination", R.drawable.placeicon),
             title = "sokin",
             city = listCity,
             time = "21.00",
             cost = 0
         ),
 
+        Plan(
+            category = PlanCategory("Hotel", R.drawable.bedicon),
+            title = "Rehat sejenak",
+            city = listCity,
+            time = "18.00",
+            cost = 0
+        ),
 
-    )
+        Plan(
+            category = PlanCategory("Resto", R.drawable.foodicon),
+            title = "Madang lurr",
+            city = listCity,
+            time = "20.00",
+            cost = 0
+        ),
+
+
+        )
     val listPlan3 = listOf(
         Plan(
-            category = emptyList(),
+            category = PlanCategory("On The Way", R.drawable.caricon),
             title = "otw",
             city = listCity,
             time = "13.00",
             cost = 0
         ),
         Plan(
-            category = emptyList(),
+            category = PlanCategory("Hotel", R.drawable.bedicon),
             title = "turu",
             city = listCity,
             time = "18.00",
             cost = 0
         ),
         Plan(
-            category = emptyList(),
+            category = PlanCategory("Resto", R.drawable.foodicon),
             title = "mangan",
             city = listCity,
             time = "20.00",
             cost = 0
         ),
         Plan(
-            category = emptyList(),
+            category = PlanCategory("Destination", R.drawable.placeicon),
             title = "sampai lokasi",
             city = listCity,
             time = "21.00",
             cost = 0
-        ),
-
-
+        )
     )
+
     val listPlan4 = listOf(
         Plan(
-            category = emptyList(),
+            category = PlanCategory("On The Way", R.drawable.caricon),
             title = "otw",
             city = listCity,
             time = "13.00",
             cost = 0
         ),
         Plan(
-            category = emptyList(),
+            category = PlanCategory("Hotel", R.drawable.bedicon),
             title = "turu",
             city = listCity,
             time = "18.00",
             cost = 0
         ),
         Plan(
-            category = emptyList(),
+            category = PlanCategory("Resto", R.drawable.foodicon),
             title = "mangan",
             city = listCity,
             time = "20.00",
             cost = 0
         ),
         Plan(
-            category = emptyList(),
+            category = PlanCategory("Destination", R.drawable.placeicon),
             title = "sampai lokasi",
             city = listCity,
             time = "21.00",
             cost = 0
-        ),
-
-
+        )
     )
+
     val listPlan5 = listOf(
         Plan(
-            category = emptyList(),
+            category = PlanCategory("On The Way", R.drawable.caricon),
             title = "otw",
             city = listCity,
             time = "13.00",
             cost = 0
         ),
         Plan(
-            category = emptyList(),
+            category = PlanCategory("Hotel", R.drawable.bedicon),
             title = "turu",
             city = listCity,
             time = "18.00",
             cost = 0
         ),
         Plan(
-            category = emptyList(),
+            category = PlanCategory("Resto", R.drawable.foodicon),
             title = "mangan",
             city = listCity,
             time = "20.00",
             cost = 0
         ),
         Plan(
-            category = emptyList(),
+            category = PlanCategory("Destination", R.drawable.placeicon),
             title = "sampai lokasi",
             city = listCity,
             time = "21.00",
             cost = 0
-        ),
-
-
+        )
     )
-
     val listCardPlan = listOf(listPlan1, listPlan2, listPlan3, listPlan4, listPlan5)
 
     BanyumasTourismAppTheme {
@@ -782,7 +835,8 @@ private fun PrevItineraryScreen() {
 
             ),
             plan = Plan(
-                category = emptyList(),
+                category =  PlanCategory("On The Way", R.drawable.caricon),
+//                categoryPlanList,
                 title = "Kumpul Sejenak",
                 city = listCity,
                 time = "12.00",
@@ -796,76 +850,77 @@ private fun PrevItineraryScreen() {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun PrevPlanSection() {
-
-    val listCity = listOf(
-        City("Yogyakarta", ""),
-        City("Bandung", ""),
-        City("Jakarta", ""),
-        City("Surabaya", ""),
-        City("Semarang", ""),
-    )
-    val listPlan = listOf(
-        Plan(
-            category = emptyList(),
-            title = "Kumpul Sejenak",
-            city = listCity,
-            time = "12.00",
-            cost = 0
-        ),
-        Plan(
-            category = emptyList(),
-            title = "Kumpul Sejenak",
-            city = listCity,
-            time = "12.00",
-            cost = 0
-        ),
-        Plan(
-            category = emptyList(),
-            title = "Kumpul Sejenak",
-            city = listCity,
-            time = "12.00",
-            cost = 0
-        ),Plan(
-            category = emptyList(),
-            title = "Kumpul Sejenak",
-            city = listCity,
-            time = "12.00",
-            cost = 0
-        ),Plan(
-            category = emptyList(),
-            title = "Kumpul Sejenak",
-            city = listCity,
-            time = "12.00",
-            cost = 0
-        )
-
-    )
-
-    BanyumasTourismAppTheme {
-        PlanSection(
-            plan = Plan(
-                category = emptyList(),
-                title = "Kumpul Sejenak",
-                city = listCity,
-                time = "12.00",
-                cost = 0
-            ),
-
-
-            itinerary = Itinerary (
-                daysCount = 5,
-                title = "Seru-seruan di Jawa Tengah",
-                description = "Libur semesteran 7 hari full di jawa tengah bareng sobat jawir sekontrakan. Bakal berkunjung ke 4 kota dengan 10 destinasi.",
-                membersCount = 5,
-                cityGoals = listCity,
-//                notes = "Libur semesteran 7 hari full di jawa tengah bareng sobat jawir sekontrakan. Bakal berkunjung ke 4 kota dengan 10 destinasi."
-
-            ),
-            onClick = {},
-//            listPlan = listPlan
-        )
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//private fun PrevPlanSection() {
+//
+//    val listCity = listOf(
+//        City("Yogyakarta", ""),
+//        City("Bandung", ""),
+//        City("Jakarta", ""),
+//        City("Surabaya", ""),
+//        City("Semarang", ""),
+//    )
+//    val listPlan = listOf(
+//        Plan(
+//            category = emptyList(),
+//            title = "Kumpul Sejenak",
+//            city = listCity,
+//            time = "12.00",
+//            cost = 0
+//        ),
+//        Plan(
+//            category = emptyList(),
+//            title = "Kumpul Sejenak",
+//            city = listCity,
+//            time = "12.00",
+//            cost = 0
+//        ),
+//        Plan(
+//            category = emptyList(),
+//            title = "Kumpul Sejenak",
+//            city = listCity,
+//            time = "12.00",
+//            cost = 0
+//        ),Plan(
+//            category = emptyList(),
+//            title = "Kumpul Sejenak",
+//            city = listCity,
+//            time = "12.00",
+//            cost = 0
+//        ),Plan(
+//            category = emptyList(),
+//            title = "Kumpul Sejenak",
+//            city = listCity,
+//            time = "12.00",
+//            cost = 0
+//        )
+//
+//    )
+//
+//    BanyumasTourismAppTheme {
+//        PlanSection(
+//            plan = Plan(
+//                category = emptyList(),
+//                title = "Kumpul Sejenak",
+//                city = listCity,
+//                time = "12.00",
+//                cost = 0
+//            ),
+//
+//
+//            itinerary = Itinerary (
+//                daysCount = 5,
+//                title = "Seru-seruan di Jawa Tengah",
+//                description = "Libur semesteran 7 hari full di jawa tengah bareng sobat jawir sekontrakan. Bakal berkunjung ke 4 kota dengan 10 destinasi.",
+//                membersCount = 5,
+//                cityGoals = listCity,
+////                notes = "Libur semesteran 7 hari full di jawa tengah bareng sobat jawir sekontrakan. Bakal berkunjung ke 4 kota dengan 10 destinasi."
+//
+//            ),
+//            onClick = {},
+//
+////            listPlan = listPlan
+//        )
+//    }
+//}

@@ -13,6 +13,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.jer.banyumastourismapp.presentation.detaildestination.DetailDestination
 import com.jer.banyumastourismapp.presentation.detaildestination.DetailDestinationScreen
 import com.jer.banyumastourismapp.presentation.detaildestination.Facility
+import com.jer.banyumastourismapp.presentation.home.User
+import com.jer.banyumastourismapp.presentation.itinerary.City
+import com.jer.banyumastourismapp.presentation.itinerary.Itinerary
+import com.jer.banyumastourismapp.presentation.itinerary.ItineraryScreen
+import com.jer.banyumastourismapp.presentation.itinerary.Plan
+import com.jer.banyumastourismapp.presentation.itinerary.PlanCategory
+import com.jer.banyumastourismapp.presentation.itinerary.categoryPlan
 import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -21,47 +28,261 @@ class MainActivity : ComponentActivity() {
 //        enableEdgeToEdge()
         setContent {
 
-            val listFacilityDummy: List<Facility> = listOf(
-                Facility("Waterfall"),
-                Facility("Restaurant"),
-                Facility("Villa"),
-                Facility("Waterfall"),
-                Facility("Waterfall"),
-                Facility("Waterfall"),
+//            val listFacilityDummy: List<Facility> = listOf(
+//                Facility("Waterfall"),
+//                Facility("Restaurant"),
+//                Facility("Villa"),
+//                Facility("Waterfall"),
+//                Facility("Waterfall"),
+//                Facility("Waterfall"),
+//            )
+
+            val categoryPlanList =
+                listOf (
+                    listOf(
+                        PlanCategory("Resto", R.drawable.foodicon),
+                        PlanCategory("Resto", R.drawable.foodicon),
+                        PlanCategory("Destination", R.drawable.placeicon),
+                        PlanCategory("On The Way", R.drawable.caricon),
+//                        PlanCategory("Hotel", R.drawable.bedicon),
+                    ),
+//                    categoryPlan,
+                    categoryPlan,
+                    categoryPlan,
+                    categoryPlan,
+                    categoryPlan,
+//                    categoryPlan
+                )
+            val listCity = listOf(
+                City("Yogyakarta", ""),
+                City("Bandung", ""),
+                City("Jakarta", ""),
+                City("Surabaya", ""),
+                City("Semarang", ""),
             )
+            val listPlan1 = listOf(
+                Plan(
+                    category = PlanCategory("On The Way", R.drawable.caricon),
+                    title = "Berangkat",
+                    city = listCity,
+                    time = "13.00",
+                    cost = 0
+                ),
+
+                Plan(
+                    category = PlanCategory("Resto", R.drawable.foodicon),
+                    title = "Makan Heula",
+                    city = listCity,
+                    time = "20.00",
+                    cost = 0
+                ),
+                Plan(
+                    category = PlanCategory("Destination", R.drawable.placeicon),
+                    title = "Sampai cuy",
+                    city = listCity,
+                    time = "21.00",
+                    cost = 0
+                ),
+                Plan(
+                    category = PlanCategory("Hotel", R.drawable.bedicon),
+                    title = "Menginap di Hotel",
+                    city = listCity,
+                    time = "18.00",
+                    cost = 0
+                ),
+
+                )
+            val listPlan2 = listOf(
+                Plan(
+                    category = PlanCategory("On The Way", R.drawable.caricon),
+                    title = "Mangkat",
+                    city = listCity,
+                    time = "13.00",
+                    cost = 0
+                ),
+
+
+                Plan(
+                    category = PlanCategory("Destination", R.drawable.placeicon),
+                    title = "sokin",
+                    city = listCity,
+                    time = "21.00",
+                    cost = 0
+                ),
+
+                Plan(
+                    category = PlanCategory("Hotel", R.drawable.bedicon),
+                    title = "Rehat sejenak",
+                    city = listCity,
+                    time = "18.00",
+                    cost = 0
+                ),
+
+                Plan(
+                    category = PlanCategory("Resto", R.drawable.foodicon),
+                    title = "Madang lurr",
+                    city = listCity,
+                    time = "20.00",
+                    cost = 0
+                ),
+
+
+                )
+            val listPlan3 = listOf(
+                Plan(
+                    category = PlanCategory("On The Way", R.drawable.caricon),
+                    title = "otw",
+                    city = listCity,
+                    time = "13.00",
+                    cost = 0
+                ),
+                Plan(
+                    category = PlanCategory("Hotel", R.drawable.bedicon),
+                    title = "turu",
+                    city = listCity,
+                    time = "18.00",
+                    cost = 0
+                ),
+                Plan(
+                    category = PlanCategory("Resto", R.drawable.foodicon),
+                    title = "mangan",
+                    city = listCity,
+                    time = "20.00",
+                    cost = 0
+                ),
+                Plan(
+                    category = PlanCategory("Destination", R.drawable.placeicon),
+                    title = "sampai lokasi",
+                    city = listCity,
+                    time = "21.00",
+                    cost = 0
+                )
+            )
+
+            val listPlan4 = listOf(
+                Plan(
+                    category = PlanCategory("On The Way", R.drawable.caricon),
+                    title = "otw",
+                    city = listCity,
+                    time = "13.00",
+                    cost = 0
+                ),
+                Plan(
+                    category = PlanCategory("Hotel", R.drawable.bedicon),
+                    title = "turu",
+                    city = listCity,
+                    time = "18.00",
+                    cost = 0
+                ),
+                Plan(
+                    category = PlanCategory("Resto", R.drawable.foodicon),
+                    title = "mangan",
+                    city = listCity,
+                    time = "20.00",
+                    cost = 0
+                ),
+                Plan(
+                    category = PlanCategory("Destination", R.drawable.placeicon),
+                    title = "sampai lokasi",
+                    city = listCity,
+                    time = "21.00",
+                    cost = 0
+                )
+            )
+
+            val listPlan5 = listOf(
+                Plan(
+                    category = PlanCategory("On The Way", R.drawable.caricon),
+                    title = "otw",
+                    city = listCity,
+                    time = "13.00",
+                    cost = 0
+                ),
+                Plan(
+                    category = PlanCategory("Hotel", R.drawable.bedicon),
+                    title = "turu",
+                    city = listCity,
+                    time = "18.00",
+                    cost = 0
+                ),
+                Plan(
+                    category = PlanCategory("Resto", R.drawable.foodicon),
+                    title = "mangan",
+                    city = listCity,
+                    time = "20.00",
+                    cost = 0
+                ),
+                Plan(
+                    category = PlanCategory("Destination", R.drawable.placeicon),
+                    title = "sampai lokasi",
+                    city = listCity,
+                    time = "21.00",
+                    cost = 0
+                )
+            )
+
+
+            val listCardPlan = listOf(listPlan1, listPlan2, listPlan3, listPlan4, listPlan5)
+
 
             BanyumasTourismAppTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
 
-                    DetailDestinationScreen(
+                    ItineraryScreen(
                         modifier = Modifier.padding(innerPadding),
-                        detailDestination =
-                    DetailDestination(
-                        title = "Curug Bayan",
-                        location = "Desa Ketengger, Baturraden, Banyumas",
-                        description = "Curug Bayan merupakan salah satu objek wisata yang berada di desa Ketengger, kecamatan Baturaden, kabupaten Banyumas. Curug Bayan memiliki keunikan tersendiri karena terletak dibawah lereng gunung slamet dan memiliki suasana yang sejuk dan dingin",
-                        cost = 150000,
-                        timeOpen = "08.00 - 17.00",
-                        rating = 5f,
-                        ig = "curug_bayan",
-                        facility = listFacilityDummy,
-                        route = "Curug Bayan merupakan salah satu objek wisata yang berada di desa Ketengger, kecamatan Baturaden, kabupaten Banyumas. Curug Bayan memiliki keunikan tersendiri karena terletak dibawah lereng gunung slamet dan memiliki suasana yang sejuk dan dingin",
-                        accessibility = listOf(
-                            "Jalan sempit",
-                            "Jalan naik turun",
-                            "Bisa naik motor dan mobil",
-                            "Banyak kulineran",
-                            "Rute mudah ditempuh"
+                        user = User(name = "Fajar Nasrullah"),
+                        itinerary = Itinerary (
+                            daysCount = 5,
+                            title = "Seru-seruan di Jawa Tengah",
+                            description = "Libur semesteran 7 hari full di jawa tengah bareng sobat jawir sekontrakan. Bakal berkunjung ke 4 kota dengan 10 destinasi.",
+                            membersCount = 5,
+                            cityGoals = listCity,
+                            notes = "Libur semesteran 7 hari full di jawa tengah bareng sobat jawir sekontrakan. Bakal berkunjung ke 4 kota dengan 10 destinasi.",
+                            listCardPlan = listCardPlan
+
                         ),
-                        tips = listOf(
-                            "Pakai baju ternyaman",
-                            "Bawa Jas hujan",
-                            "Bawa Tenda",
-                            "Bawa Kamera"
-                        )
+                        plan = Plan(
+                            category = PlanCategory("On The Way", R.drawable.caricon),
+                            title = "Kumpul Sejenak",
+                            city = listCity,
+                            time = "12.00",
+                            cost = 0
+                        ),
+//            listPlan = listPlan1,
+                        onClick = {}
+
 
                     )
-                    )
+
+//                    DetailDestinationScreen(
+//                        modifier = Modifier.padding(innerPadding),
+//                        detailDestination =
+//                    DetailDestination(
+//                        title = "Curug Bayan",
+//                        location = "Desa Ketengger, Baturraden, Banyumas",
+//                        description = "Curug Bayan merupakan salah satu objek wisata yang berada di desa Ketengger, kecamatan Baturaden, kabupaten Banyumas. Curug Bayan memiliki keunikan tersendiri karena terletak dibawah lereng gunung slamet dan memiliki suasana yang sejuk dan dingin",
+//                        cost = 150000,
+//                        timeOpen = "08.00 - 17.00",
+//                        rating = 5f,
+//                        ig = "curug_bayan",
+//                        facility = listFacilityDummy,
+//                        route = "Curug Bayan merupakan salah satu objek wisata yang berada di desa Ketengger, kecamatan Baturaden, kabupaten Banyumas. Curug Bayan memiliki keunikan tersendiri karena terletak dibawah lereng gunung slamet dan memiliki suasana yang sejuk dan dingin",
+//                        accessibility = listOf(
+//                            "Jalan sempit",
+//                            "Jalan naik turun",
+//                            "Bisa naik motor dan mobil",
+//                            "Banyak kulineran",
+//                            "Rute mudah ditempuh"
+//                        ),
+//                        tips = listOf(
+//                            "Pakai baju ternyaman",
+//                            "Bawa Jas hujan",
+//                            "Bawa Tenda",
+//                            "Bawa Kamera"
+//                        )
+//
+//                    )
+//                    )
 
 //                    DestinationListScreen(
 //                        modifier = Modifier.padding(innerPadding),
