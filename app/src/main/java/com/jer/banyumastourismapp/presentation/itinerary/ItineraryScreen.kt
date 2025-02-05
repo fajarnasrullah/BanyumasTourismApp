@@ -1,7 +1,9 @@
 package com.jer.banyumastourismapp.presentation.itinerary
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
@@ -31,6 +33,8 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -55,11 +59,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.AsyncImage
+import com.gmail.orlandroyd.composecalendar.DateRangePickerDlg
 import com.jer.banyumastourismapp.R
 import com.jer.banyumastourismapp.common.verySmallIcon
 import com.jer.banyumastourismapp.presentation.component.AppBarCustom
 import com.jer.banyumastourismapp.presentation.home.User
 import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
+import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
+import com.maxkeppeler.sheets.calendar.CalendarDialog
+import com.maxkeppeler.sheets.calendar.models.CalendarConfig
+import com.maxkeppeler.sheets.calendar.models.CalendarSelection
+import com.maxkeppeler.sheets.calendar.models.CalendarStyle
+import java.awt.font.NumericShaper.Range
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
+import java.util.Locale
+import kotlin.math.max
 
 @Composable
 fun ItineraryScreen(
@@ -188,6 +204,7 @@ fun PlanSection(
 
     val daysArray = IntArray(itinerary.daysCount)
     val finalListPlan = MutableList(itinerary.daysCount) { plan }
+
 //    val finalListPlan = listCardPlan?.takeIf { it.isNotEmpty() }?.flatten() ?: listOf(plan)
 
     Column (
@@ -205,7 +222,7 @@ fun PlanSection(
         LazyColumn (
             verticalArrangement = Arrangement.spacedBy(15.dp),
             contentPadding = PaddingValues(bottom = 30.dp),
-            modifier = Modifier.height(2000.dp)
+            modifier = Modifier.heightIn(max = 2000.dp)
         ) {
 
                 itemsIndexed(finalListPlan) { index, plan ->
@@ -248,9 +265,11 @@ fun PlanColumn(
                 listPlan
 //                ?: emptyList()
             ) { index, plan ->
+
                 PlanItem(
                     plan = plan,
-                    indexItem = index,
+                    indexItem = plan.category ,
+//                    index,
                     listCategoryPlanItem = listCategoryPlan,
                     onClick = { }
                 )
@@ -284,54 +303,71 @@ fun PlanItem(
 
 //    Log.d("PlanItem", "listCardPlan size: ${listCategoryPlanItem.size }")
 
-    Row (
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.CenterVertically,
+    Column (
+        verticalArrangement = Arrangement.Center,
         modifier = Modifier.fillMaxWidth()
     ) {
+        Row (
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
 
-        Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.weight(1f)
-            
-        )  {
-            if (listCategoryPlanItem?.get(indexItem) != null) {
-                Icon(
-                    painter = painterResource(id =
-                    plan?.category!!.icon
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.weight(1f)
+
+            )  {
+                if (listCategoryPlanItem?.get(indexItem) != null) {
+                    Icon(
+                        painter = painterResource(id =
+                        listCategoryPlanItem[indexItem].icon
+//                    plan?.category!!.icon
 //                listCategoryPlanItem[indexItem].icon
-                    ),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primaryContainer,
-                    modifier = Modifier.size(verySmallIcon)
-                )
-            } else {
+                        ),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primaryContainer,
+                        modifier = Modifier.size(verySmallIcon)
+                    )
+                } else {
+                    Text(
+                        text =  "",
+                        fontSize = 10.sp,
+                    )
+                }
+
+
                 Text(
-                    text =  "",
+                    text = plan?.time ?: "",
                     fontSize = 10.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
-
             Text(
-                text = plan?.time ?: "",
-                fontSize = 10.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                text = plan?.title ?: "Plan is Empty",
+                fontSize = 14.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.weight(1f)
             )
+
+            Box(modifier = Modifier.weight(1f))
+
         }
 
-        Text(
-            text = plan?.title ?: "Plan is Empty",
-            fontSize = 14.sp,
-            fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier.weight(1f)
-        )
-        
-        Box(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.height(2.dp))
 
+        HorizontalDivider(
+            thickness = 1.dp,
+            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 15.dp)
+        )
     }
+
 
 }
 
@@ -587,18 +623,69 @@ fun UserSection(modifier: Modifier = Modifier, user: User) {
     }
 }
 
+
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DatePeriodSection(modifier: Modifier = Modifier, onClick: () -> Unit, date: String ) {
+
+
+    val calendarState = rememberUseCaseState()
+    var totalDaysRange by remember { mutableStateOf(0) }
+    var start by remember { mutableStateOf("") }
+    var end by remember { mutableStateOf("") }
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val selectedDateRange = remember {
+            val value = android.util.Range(LocalDate.now(), LocalDate.now().plusDays(1))
+            mutableStateOf(value)
+        }
+
+
+        CalendarDialog(
+            state = calendarState,
+
+            config = CalendarConfig(
+                style = CalendarStyle.MONTH,
+                monthSelection = true,
+                yearSelection = true,
+
+            ),
+            selection = CalendarSelection.Period(
+                selectedRange = selectedDateRange.value
+            ) {startDate, endDate ->
+                selectedDateRange.value = android.util.Range(startDate, endDate)
+
+                totalDaysRange = ChronoUnit.DAYS.between(startDate, endDate).toInt() + 1
+                val startDateString = startDate.format(DateTimeFormatter.ofPattern("dd/MM", Locale.getDefault()))
+                val endDateString = endDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault()))
+                start = startDateString
+                end = endDateString
+            },
+
+        )
+
+        Log.d("DatePeriodSection", "totalDaysRange: $totalDaysRange")
+
+    }
+
+
+
+
     Row (
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically,
     ) {
 
+
         Surface (
             color = MaterialTheme.colorScheme.primaryContainer,
             border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.outline),
             shape = CircleShape,
-            onClick = { onClick()}
+            onClick = {
+                calendarState.show()
+//                onClick()
+            }
         ) {
             Box(modifier = Modifier.size(40.dp), contentAlignment = Alignment.Center) {
                 Icon(
@@ -622,7 +709,8 @@ fun DatePeriodSection(modifier: Modifier = Modifier, onClick: () -> Unit, date: 
             )
 
             Text(
-                text = date,
+                text =  "${start} - \n${end}",
+//                date,
                 fontSize = 14.sp,
                 color = MaterialTheme.colorScheme.onBackground
             )
@@ -642,212 +730,212 @@ private fun PrevItineraryScreen() {
 //        PlanCategory("Destination", { painterResource(id = R.drawable.placeicon) }),
 //    )
 
-    val categoryPlanList =
-        listOf (
-            categoryPlan,
-            categoryPlan,
-            categoryPlan,
-            categoryPlan,
-            categoryPlan
-        )
+//    val categoryPlanList =
+//        listOf (
+//            categoryPlan,
+//            categoryPlan,
+//            categoryPlan,
+//            categoryPlan,
+//            categoryPlan
+//        )
+//
+//    val listCity = listOf(
+//        City("Yogyakarta", ""),
+//        City("Bandung", ""),
+//        City("Jakarta", ""),
+//        City("Surabaya", ""),
+//        City("Semarang", ""),
+//    )
+//
+//    val listPlan1 = listOf(
+//        Plan(
+//            category = PlanCategory("On The Way", R.drawable.caricon),
+//            title = "Berangkat",
+//            city = listCity,
+//            time = "13.00",
+//            cost = 0
+//        ),
+//
+//        Plan(
+//            category = PlanCategory("Resto", R.drawable.foodicon),
+//            title = "Makan Heula",
+//            city = listCity,
+//            time = "20.00",
+//            cost = 0
+//        ),
+//        Plan(
+//            category = PlanCategory("Destination", R.drawable.placeicon),
+//            title = "Sampai cuy",
+//            city = listCity,
+//            time = "21.00",
+//            cost = 0
+//        ),
+//        Plan(
+//            category = PlanCategory("Hotel", R.drawable.bedicon),
+//            title = "Menginap di Hotel",
+//            city = listCity,
+//            time = "18.00",
+//            cost = 0
+//        ),
+//
+//        )
+//    val listPlan2 = listOf(
+//        Plan(
+//            category = PlanCategory("On The Way", R.drawable.caricon),
+//            title = "Mangkat",
+//            city = listCity,
+//            time = "13.00",
+//            cost = 0
+//        ),
+//
+//
+//        Plan(
+//            category = PlanCategory("Destination", R.drawable.placeicon),
+//            title = "sokin",
+//            city = listCity,
+//            time = "21.00",
+//            cost = 0
+//        ),
+//
+//        Plan(
+//            category = PlanCategory("Hotel", R.drawable.bedicon),
+//            title = "Rehat sejenak",
+//            city = listCity,
+//            time = "18.00",
+//            cost = 0
+//        ),
+//
+//        Plan(
+//            category = PlanCategory("Resto", R.drawable.foodicon),
+//            title = "Madang lurr",
+//            city = listCity,
+//            time = "20.00",
+//            cost = 0
+//        ),
+//
+//
+//        )
+//    val listPlan3 = listOf(
+//        Plan(
+//            category = PlanCategory("On The Way", R.drawable.caricon),
+//            title = "otw",
+//            city = listCity,
+//            time = "13.00",
+//            cost = 0
+//        ),
+//        Plan(
+//            category = PlanCategory("Hotel", R.drawable.bedicon),
+//            title = "turu",
+//            city = listCity,
+//            time = "18.00",
+//            cost = 0
+//        ),
+//        Plan(
+//            category = PlanCategory("Resto", R.drawable.foodicon),
+//            title = "mangan",
+//            city = listCity,
+//            time = "20.00",
+//            cost = 0
+//        ),
+//        Plan(
+//            category = PlanCategory("Destination", R.drawable.placeicon),
+//            title = "sampai lokasi",
+//            city = listCity,
+//            time = "21.00",
+//            cost = 0
+//        )
+//    )
+//
+//    val listPlan4 = listOf(
+//        Plan(
+//            category = PlanCategory("On The Way", R.drawable.caricon),
+//            title = "otw",
+//            city = listCity,
+//            time = "13.00",
+//            cost = 0
+//        ),
+//        Plan(
+//            category = PlanCategory("Hotel", R.drawable.bedicon),
+//            title = "turu",
+//            city = listCity,
+//            time = "18.00",
+//            cost = 0
+//        ),
+//        Plan(
+//            category = PlanCategory("Resto", R.drawable.foodicon),
+//            title = "mangan",
+//            city = listCity,
+//            time = "20.00",
+//            cost = 0
+//        ),
+//        Plan(
+//            category = PlanCategory("Destination", R.drawable.placeicon),
+//            title = "sampai lokasi",
+//            city = listCity,
+//            time = "21.00",
+//            cost = 0
+//        )
+//    )
+//
+//    val listPlan5 = listOf(
+//        Plan(
+//            category = PlanCategory("On The Way", R.drawable.caricon),
+//            title = "otw",
+//            city = listCity,
+//            time = "13.00",
+//            cost = 0
+//        ),
+//        Plan(
+//            category = PlanCategory("Hotel", R.drawable.bedicon),
+//            title = "turu",
+//            city = listCity,
+//            time = "18.00",
+//            cost = 0
+//        ),
+//        Plan(
+//            category = PlanCategory("Resto", R.drawable.foodicon),
+//            title = "mangan",
+//            city = listCity,
+//            time = "20.00",
+//            cost = 0
+//        ),
+//        Plan(
+//            category = PlanCategory("Destination", R.drawable.placeicon),
+//            title = "sampai lokasi",
+//            city = listCity,
+//            time = "21.00",
+//            cost = 0
+//        )
+//    )
+//    val listCardPlan = listOf(listPlan1, listPlan2, listPlan3, listPlan4, listPlan5)
 
-    val listCity = listOf(
-        City("Yogyakarta", ""),
-        City("Bandung", ""),
-        City("Jakarta", ""),
-        City("Surabaya", ""),
-        City("Semarang", ""),
-    )
-
-    val listPlan1 = listOf(
-        Plan(
-            category = PlanCategory("On The Way", R.drawable.caricon),
-            title = "Berangkat",
-            city = listCity,
-            time = "13.00",
-            cost = 0
-        ),
-
-        Plan(
-            category = PlanCategory("Resto", R.drawable.foodicon),
-            title = "Makan Heula",
-            city = listCity,
-            time = "20.00",
-            cost = 0
-        ),
-        Plan(
-            category = PlanCategory("Destination", R.drawable.placeicon),
-            title = "Sampai cuy",
-            city = listCity,
-            time = "21.00",
-            cost = 0
-        ),
-        Plan(
-            category = PlanCategory("Hotel", R.drawable.bedicon),
-            title = "Menginap di Hotel",
-            city = listCity,
-            time = "18.00",
-            cost = 0
-        ),
-
-        )
-    val listPlan2 = listOf(
-        Plan(
-            category = PlanCategory("On The Way", R.drawable.caricon),
-            title = "Mangkat",
-            city = listCity,
-            time = "13.00",
-            cost = 0
-        ),
+//    BanyumasTourismAppTheme {
+//        ItineraryScreen(
+//            user = User(name = "Fajar Nasrullah"),
+//            itinerary = Itinerary (
+//                daysCount = 5,
+//                title = "Seru-seruan di Jawa Tengah",
+//                description = "Libur semesteran 7 hari full di jawa tengah bareng sobat jawir sekontrakan. Bakal berkunjung ke 4 kota dengan 10 destinasi.",
+//                membersCount = 5,
+//                cityGoals = listCity,
+//                notes = "Libur semesteran 7 hari full di jawa tengah bareng sobat jawir sekontrakan. Bakal berkunjung ke 4 kota dengan 10 destinasi.",
+//                listCardPlan = listCardPlan
+//
+//            ),
+//            plan = Plan(
+//                category =  PlanCategory("On The Way", R.drawable.caricon),
+////                categoryPlanList,
+//                title = "Kumpul Sejenak",
+//                city = listCity,
+//                time = "12.00",
+//                cost = 0
+//            ),
+////            listPlan = listPlan1,
+//            onClick = {}
 
 
-        Plan(
-            category = PlanCategory("Destination", R.drawable.placeicon),
-            title = "sokin",
-            city = listCity,
-            time = "21.00",
-            cost = 0
-        ),
-
-        Plan(
-            category = PlanCategory("Hotel", R.drawable.bedicon),
-            title = "Rehat sejenak",
-            city = listCity,
-            time = "18.00",
-            cost = 0
-        ),
-
-        Plan(
-            category = PlanCategory("Resto", R.drawable.foodicon),
-            title = "Madang lurr",
-            city = listCity,
-            time = "20.00",
-            cost = 0
-        ),
-
-
-        )
-    val listPlan3 = listOf(
-        Plan(
-            category = PlanCategory("On The Way", R.drawable.caricon),
-            title = "otw",
-            city = listCity,
-            time = "13.00",
-            cost = 0
-        ),
-        Plan(
-            category = PlanCategory("Hotel", R.drawable.bedicon),
-            title = "turu",
-            city = listCity,
-            time = "18.00",
-            cost = 0
-        ),
-        Plan(
-            category = PlanCategory("Resto", R.drawable.foodicon),
-            title = "mangan",
-            city = listCity,
-            time = "20.00",
-            cost = 0
-        ),
-        Plan(
-            category = PlanCategory("Destination", R.drawable.placeicon),
-            title = "sampai lokasi",
-            city = listCity,
-            time = "21.00",
-            cost = 0
-        )
-    )
-
-    val listPlan4 = listOf(
-        Plan(
-            category = PlanCategory("On The Way", R.drawable.caricon),
-            title = "otw",
-            city = listCity,
-            time = "13.00",
-            cost = 0
-        ),
-        Plan(
-            category = PlanCategory("Hotel", R.drawable.bedicon),
-            title = "turu",
-            city = listCity,
-            time = "18.00",
-            cost = 0
-        ),
-        Plan(
-            category = PlanCategory("Resto", R.drawable.foodicon),
-            title = "mangan",
-            city = listCity,
-            time = "20.00",
-            cost = 0
-        ),
-        Plan(
-            category = PlanCategory("Destination", R.drawable.placeicon),
-            title = "sampai lokasi",
-            city = listCity,
-            time = "21.00",
-            cost = 0
-        )
-    )
-
-    val listPlan5 = listOf(
-        Plan(
-            category = PlanCategory("On The Way", R.drawable.caricon),
-            title = "otw",
-            city = listCity,
-            time = "13.00",
-            cost = 0
-        ),
-        Plan(
-            category = PlanCategory("Hotel", R.drawable.bedicon),
-            title = "turu",
-            city = listCity,
-            time = "18.00",
-            cost = 0
-        ),
-        Plan(
-            category = PlanCategory("Resto", R.drawable.foodicon),
-            title = "mangan",
-            city = listCity,
-            time = "20.00",
-            cost = 0
-        ),
-        Plan(
-            category = PlanCategory("Destination", R.drawable.placeicon),
-            title = "sampai lokasi",
-            city = listCity,
-            time = "21.00",
-            cost = 0
-        )
-    )
-    val listCardPlan = listOf(listPlan1, listPlan2, listPlan3, listPlan4, listPlan5)
-
-    BanyumasTourismAppTheme {
-        ItineraryScreen(
-            user = User(name = "Fajar Nasrullah"),
-            itinerary = Itinerary (
-                daysCount = 5,
-                title = "Seru-seruan di Jawa Tengah",
-                description = "Libur semesteran 7 hari full di jawa tengah bareng sobat jawir sekontrakan. Bakal berkunjung ke 4 kota dengan 10 destinasi.",
-                membersCount = 5,
-                cityGoals = listCity,
-                notes = "Libur semesteran 7 hari full di jawa tengah bareng sobat jawir sekontrakan. Bakal berkunjung ke 4 kota dengan 10 destinasi.",
-                listCardPlan = listCardPlan
-
-            ),
-            plan = Plan(
-                category =  PlanCategory("On The Way", R.drawable.caricon),
-//                categoryPlanList,
-                title = "Kumpul Sejenak",
-                city = listCity,
-                time = "12.00",
-                cost = 0
-            ),
-//            listPlan = listPlan1,
-            onClick = {}
-
-
-        )
-    }
+//        )
+//    }
 }
 
 //@Preview(showBackground = true)

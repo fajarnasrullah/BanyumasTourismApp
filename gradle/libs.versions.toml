@@ -1,6 +1,7 @@
 [versions]
 agp = "8.5.2"
 coilCompose = "2.4.0"
+composecalendar = "1.1.0"
 constraintlayoutCompose = "1.1.0"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
@@ -16,6 +17,7 @@ uiTextGoogleFonts = "1.7.6"
 androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayoutCompose" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
+composecalendar = { module = "com.github.orlandroyd:ComposeCalendar", version.ref = "composecalendar" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

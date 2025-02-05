@@ -26,7 +26,8 @@ data class ListPlan(
 )
 
 data class Plan(
-    val category: PlanCategory? = null,
+    val category: Int ,
+//    PlanCategory? = null,
 //    List<PlanCategory>? = null,
 //    List<List<PlanCategory>>,
     val title: String? = null,

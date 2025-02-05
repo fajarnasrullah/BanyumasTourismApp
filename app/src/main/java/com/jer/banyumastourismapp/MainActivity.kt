@@ -62,7 +62,8 @@ class MainActivity : ComponentActivity() {
             )
             val listPlan1 = listOf(
                 Plan(
-                    category = PlanCategory("On The Way", R.drawable.caricon),
+                    category = 0 ,
+//                    PlanCategory("On The Way", R.drawable.caricon),
                     title = "Berangkat",
                     city = listCity,
                     time = "13.00",
@@ -70,21 +71,24 @@ class MainActivity : ComponentActivity() {
                 ),
 
                 Plan(
-                    category = PlanCategory("Resto", R.drawable.foodicon),
+                    category = 1,
+//                    PlanCategory("Resto", R.drawable.foodicon),
                     title = "Makan Heula",
                     city = listCity,
                     time = "20.00",
                     cost = 0
                 ),
                 Plan(
-                    category = PlanCategory("Destination", R.drawable.placeicon),
+                    category = 3,
+//                    PlanCategory("Destination", R.drawable.placeicon),
                     title = "Sampai cuy",
                     city = listCity,
                     time = "21.00",
                     cost = 0
                 ),
                 Plan(
-                    category = PlanCategory("Hotel", R.drawable.bedicon),
+                    category = 1,
+//                    PlanCategory("Hotel", R.drawable.bedicon),
                     title = "Menginap di Hotel",
                     city = listCity,
                     time = "18.00",
@@ -94,7 +98,8 @@ class MainActivity : ComponentActivity() {
                 )
             val listPlan2 = listOf(
                 Plan(
-                    category = PlanCategory("On The Way", R.drawable.caricon),
+                    category = 0,
+//                    PlanCategory("On The Way", R.drawable.caricon),
                     title = "Mangkat",
                     city = listCity,
                     time = "13.00",
@@ -103,7 +108,8 @@ class MainActivity : ComponentActivity() {
 
 
                 Plan(
-                    category = PlanCategory("Destination", R.drawable.placeicon),
+                    category = 3,
+//                    PlanCategory("Destination", R.drawable.placeicon),
                     title = "sokin",
                     city = listCity,
                     time = "21.00",
@@ -111,7 +117,8 @@ class MainActivity : ComponentActivity() {
                 ),
 
                 Plan(
-                    category = PlanCategory("Hotel", R.drawable.bedicon),
+                    category = 1,
+//                    PlanCategory("Hotel", R.drawable.bedicon),
                     title = "Rehat sejenak",
                     city = listCity,
                     time = "18.00",
@@ -119,7 +126,8 @@ class MainActivity : ComponentActivity() {
                 ),
 
                 Plan(
-                    category = PlanCategory("Resto", R.drawable.foodicon),
+                    category = 2,
+//                    PlanCategory("Resto", R.drawable.foodicon),
                     title = "Madang lurr",
                     city = listCity,
                     time = "20.00",
@@ -130,28 +138,47 @@ class MainActivity : ComponentActivity() {
                 )
             val listPlan3 = listOf(
                 Plan(
-                    category = PlanCategory("On The Way", R.drawable.caricon),
+                    category = 0,
+//                    PlanCategory("On The Way", R.drawable.caricon),
                     title = "otw",
                     city = listCity,
                     time = "13.00",
                     cost = 0
                 ),
                 Plan(
-                    category = PlanCategory("Hotel", R.drawable.bedicon),
+                    category = 1,
+//                    PlanCategory("Hotel", R.drawable.bedicon),
                     title = "turu",
                     city = listCity,
                     time = "18.00",
                     cost = 0
                 ),
                 Plan(
-                    category = PlanCategory("Resto", R.drawable.foodicon),
+                    category = 2,
+//                    PlanCategory("Resto", R.drawable.foodicon),
                     title = "mangan",
                     city = listCity,
                     time = "20.00",
                     cost = 0
                 ),
                 Plan(
-                    category = PlanCategory("Destination", R.drawable.placeicon),
+                    category = 3,
+//                    PlanCategory("Destination", R.drawable.placeicon),
+                    title = "sampai lokasi",
+                    city = listCity,
+                    time = "21.00",
+                    cost = 0
+                ),
+                Plan(
+                    category = 3,
+//                    PlanCategory("Destination", R.drawable.placeicon),
+                    title = "sampai lokasi",
+                    city = listCity,
+                    time = "21.00",
+                    cost = 0
+                ), Plan(
+                    category = 3,
+//                    PlanCategory("Destination", R.drawable.placeicon),
                     title = "sampai lokasi",
                     city = listCity,
                     time = "21.00",
@@ -161,28 +188,32 @@ class MainActivity : ComponentActivity() {
 
             val listPlan4 = listOf(
                 Plan(
-                    category = PlanCategory("On The Way", R.drawable.caricon),
+                    category = 0,
+//                    PlanCategory("On The Way", R.drawable.caricon),
                     title = "otw",
                     city = listCity,
                     time = "13.00",
                     cost = 0
                 ),
                 Plan(
-                    category = PlanCategory("Hotel", R.drawable.bedicon),
+                    category = 1,
+//                    PlanCategory("Hotel", R.drawable.bedicon),
                     title = "turu",
                     city = listCity,
                     time = "18.00",
                     cost = 0
                 ),
                 Plan(
-                    category = PlanCategory("Resto", R.drawable.foodicon),
+                    category = 2,
+//                    PlanCategory("Resto", R.drawable.foodicon),
                     title = "mangan",
                     city = listCity,
                     time = "20.00",
                     cost = 0
                 ),
                 Plan(
-                    category = PlanCategory("Destination", R.drawable.placeicon),
+                    category = 2,
+//                    PlanCategory("Destination", R.drawable.placeicon),
                     title = "sampai lokasi",
                     city = listCity,
                     time = "21.00",
@@ -192,28 +223,95 @@ class MainActivity : ComponentActivity() {
 
             val listPlan5 = listOf(
                 Plan(
-                    category = PlanCategory("On The Way", R.drawable.caricon),
+                    category = 0,
+//                    PlanCategory("On The Way", R.drawable.caricon),
                     title = "otw",
                     city = listCity,
                     time = "13.00",
                     cost = 0
                 ),
                 Plan(
-                    category = PlanCategory("Hotel", R.drawable.bedicon),
+                    category = 1,
+//                    PlanCategory("Hotel", R.drawable.bedicon),
                     title = "turu",
                     city = listCity,
                     time = "18.00",
                     cost = 0
                 ),
                 Plan(
-                    category = PlanCategory("Resto", R.drawable.foodicon),
+                    category = 2,
+//                    PlanCategory("Resto", R.drawable.foodicon),
                     title = "mangan",
                     city = listCity,
                     time = "20.00",
                     cost = 0
                 ),
                 Plan(
-                    category = PlanCategory("Destination", R.drawable.placeicon),
+                    category = 3,
+//                    PlanCategory("Destination", R.drawable.placeicon),
+                    title = "sampai lokasi",
+                    city = listCity,
+                    time = "21.00",
+                    cost = 0
+                ),
+                Plan(
+                    category = 0,
+//                    PlanCategory("On The Way", R.drawable.caricon),
+                    title = "otw",
+                    city = listCity,
+                    time = "13.00",
+                    cost = 0
+                ),
+                Plan(
+                    category = 1,
+//                    PlanCategory("Hotel", R.drawable.bedicon),
+                    title = "turu",
+                    city = listCity,
+                    time = "18.00",
+                    cost = 0
+                ),
+                Plan(
+                    category = 2,
+//                    PlanCategory("Resto", R.drawable.foodicon),
+                    title = "mangan",
+                    city = listCity,
+                    time = "20.00",
+                    cost = 0
+                ),
+                Plan(
+                    category = 3,
+//                    PlanCategory("Destination", R.drawable.placeicon),
+                    title = "sampai lokasi",
+                    city = listCity,
+                    time = "21.00",
+                    cost = 0
+                ), Plan(
+                    category = 0,
+//                    PlanCategory("On The Way", R.drawable.caricon),
+                    title = "otw",
+                    city = listCity,
+                    time = "13.00",
+                    cost = 0
+                ),
+                Plan(
+                    category = 1,
+//                    PlanCategory("Hotel", R.drawable.bedicon),
+                    title = "turu",
+                    city = listCity,
+                    time = "18.00",
+                    cost = 0
+                ),
+                Plan(
+                    category = 2,
+//                    PlanCategory("Resto", R.drawable.foodicon),
+                    title = "mangan",
+                    city = listCity,
+                    time = "20.00",
+                    cost = 0
+                ),
+                Plan(
+                    category = 3,
+//                    PlanCategory("Destination", R.drawable.placeicon),
                     title = "sampai lokasi",
                     city = listCity,
                     time = "21.00",
@@ -221,8 +319,7 @@ class MainActivity : ComponentActivity() {
                 )
             )
 
-
-            val listCardPlan = listOf(listPlan1, listPlan2, listPlan3, listPlan4, listPlan5)
+            val listCardPlan = listOf(emptyList(), emptyList(), listPlan3, listPlan4, listPlan5)
 
 
             BanyumasTourismAppTheme {
@@ -242,7 +339,8 @@ class MainActivity : ComponentActivity() {
 
                         ),
                         plan = Plan(
-                            category = PlanCategory("On The Way", R.drawable.caricon),
+                            category = 0,
+//                            PlanCategory("On The Way", R.drawable.caricon),
                             title = "Kumpul Sejenak",
                             city = listCity,
                             time = "12.00",

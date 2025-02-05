@@ -51,6 +51,14 @@ android {
 
 dependencies {
 
+    //calendar & time picker M3 by maxkeppeler
+    implementation("com.maxkeppeler.sheets-compose-dialogs:core:1.3.0")
+    implementation ("com.maxkeppeler.sheets-compose-dialogs:calendar:1.3.0")
+    implementation ("com.maxkeppeler.sheets-compose-dialogs:clock:1.3.0")
+
+    //custom calendar by OrlandDroyd
+    implementation(libs.composecalendar)
+
     //coil
     implementation(libs.coil.compose)
 
