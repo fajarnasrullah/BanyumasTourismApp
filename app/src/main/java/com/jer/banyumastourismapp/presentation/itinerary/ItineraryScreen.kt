@@ -3,7 +3,6 @@ package com.jer.banyumastourismapp.presentation.itinerary
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
@@ -31,16 +30,22 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -50,32 +55,31 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.AsyncImage
-import com.gmail.orlandroyd.composecalendar.DateRangePickerDlg
 import com.jer.banyumastourismapp.R
 import com.jer.banyumastourismapp.common.verySmallIcon
 import com.jer.banyumastourismapp.presentation.component.AppBarCustom
 import com.jer.banyumastourismapp.presentation.home.User
-import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
+import com.jer.banyumastourismapp.presentation.itinerary.component.AlertDialogPlanInput
 import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarConfig
 import com.maxkeppeler.sheets.calendar.models.CalendarSelection
 import com.maxkeppeler.sheets.calendar.models.CalendarStyle
-import java.awt.font.NumericShaper.Range
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.Locale
-import kotlin.math.max
 
 @Composable
 fun ItineraryScreen(
@@ -371,6 +375,7 @@ fun PlanItem(
 
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardExpand(
     modifier: Modifier = Modifier,
@@ -386,6 +391,9 @@ fun CardExpand(
 ) {
     var expandedState by remember { mutableStateOf(false) }
     val rotationState by animateFloatAsState(targetValue = if (expandedState) 180f else 0f)
+    var isVisible by remember { mutableStateOf(false) }
+    var showAlert by remember {mutableStateOf(false)}
+    var selectedMenu by remember { mutableStateOf("") }
 
 //    Log.d("CardExpand", "listCategoryPlan size: ${listCategoryPlan?.size ?: 0}")
 
@@ -418,7 +426,7 @@ fun CardExpand(
 
                 if (isNotes) {
 
-                    Row {
+                    Row (modifier = Modifier.weight(1f)) {
                         IconButton(
                             onClick = { expandedState = !expandedState},
                             modifier = Modifier
@@ -443,7 +451,7 @@ fun CardExpand(
 
                 } else {
 
-                    Row {
+                    Row (modifier = Modifier.weight(1f)) {
 
                         IconButton(
                             onClick = { expandedState = !expandedState},
@@ -471,7 +479,6 @@ fun CardExpand(
 
                     }
 
-//                    Spacer(modifier = Modifier.width(10.dp))
 
 //                    itinerary?.cityGoals?.forEach { city ->
 //                        Text(
@@ -483,13 +490,22 @@ fun CardExpand(
 //                    }
                 }
 
+                Box(modifier = Modifier.weight(2f))
 
 
+                val listAction = listOf("Add", "Delete")
 
                 IconButton(
-                    onClick = { onClick() },
+                    onClick = {
+//                        onClick()
+                        isVisible = true
+
+                              },
+
                     modifier = Modifier
+                        .weight(0.5f)
                         .size(verySmallIcon)
+                        .align(Alignment.CenterVertically)
                 ) {
                     Icon(
                         imageVector = Icons.Default.MoreVert,
@@ -498,8 +514,52 @@ fun CardExpand(
                     )
                 }
 
+                val context = LocalContext.current
+                DropdownMenu(
+                    offset = DpOffset(200.dp, 10.dp),
+                    expanded = isVisible,
+                    onDismissRequest = { isVisible = false },
+                ) {
+                    listAction.forEach { menu ->
+                        DropdownMenuItem(
+                            text = { Text(text = menu) },
+                            onClick = {
+//                                onClick()
+                                // logic nya disini cuy
+
+                                isVisible = false
+                                showAlert = true
+                                selectedMenu = menu
+
+                            }
+                        )
+                    }
+                }
+
+                if (showAlert) {
+                    when (selectedMenu) {
+                        "Add" -> {
+                            AlertDialogPlanInput(onDismiss = {showAlert = false})
+                        }
+
+                        "Delete" -> {
+                            AlertDialogCore(
+                                negativeText = "No",
+                                positiveText = "Yes",
+                                onDismiss = { showAlert = false },
+                                message = "Are you sure to delete this plan?",
+                                actionNegative = {  },
+                                actionPositive = { }
+                            )
+                        }
+                    }
+
+                }
+
+
 
             }
+
 
             if (expandedState) {
                 Spacer(modifier = Modifier.height(15.dp))
@@ -539,6 +599,56 @@ fun CardExpand(
 
         }
     }
+}
+
+
+
+
+@Composable
+fun AlertDialogCore(
+    modifier: Modifier = Modifier,
+    onDismiss: () -> Unit,
+    negativeText: String,
+    positiveText: String,
+    message: String,
+    actionNegative: () -> Unit,
+    actionPositive: () -> Unit,
+) {
+
+    var showrequest by remember { mutableStateOf(true) }
+    if (showrequest)  {
+        AlertDialog(
+            onDismissRequest = {
+                showrequest = false
+                onDismiss() },
+            tonalElevation = 8.dp,
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        actionPositive()
+                        showrequest = false
+                        onDismiss()
+                    }
+                ) {
+                    Text(text = positiveText)
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        actionNegative()
+                        showrequest = false
+                        onDismiss()
+                    }
+                ) {
+                    Text(text = negativeText)
+                }
+            },
+            text = { Text(text = message) },
+        )
+    }
+
+
 }
 
 

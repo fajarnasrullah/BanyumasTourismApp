@@ -17,6 +17,8 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.DockedSearchBar
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -37,6 +39,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.PopupProperties
 import com.jer.banyumastourismapp.R
 import com.jer.banyumastourismapp.common.verySmallIcon
 import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
@@ -51,6 +55,8 @@ fun SearchBarForAll(modifier: Modifier = Modifier, hint: String) {
     var active by remember {
         mutableStateOf(false)
     }
+
+    var isVisible by remember { mutableStateOf(false) }
 
 //    var context = LocalContext.current
 
@@ -91,11 +97,14 @@ fun SearchBarForAll(modifier: Modifier = Modifier, hint: String) {
                         }
 
                     } else {
+
+                        val listDropdown = listOf("A - Z", "Z - A", "Reset")
+
                         Surface(
-                            onClick = { },
                             shape = CircleShape,
                             color = MaterialTheme.colorScheme.onPrimary,
-                            border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.outline)
+                            border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.outline),
+                            onClick = { isVisible = true },
                         ) {
                             Box(
                                 modifier = Modifier.size(30.dp),
@@ -106,6 +115,26 @@ fun SearchBarForAll(modifier: Modifier = Modifier, hint: String) {
                                     contentDescription = null,
                                     tint = MaterialTheme.colorScheme.primaryContainer,
                                     modifier = Modifier.size(verySmallIcon)
+                                )
+                            }
+                        }
+                        
+                        DropdownMenu(
+                            expanded = isVisible,
+                            onDismissRequest = { isVisible = false },
+                        ) {
+                            listDropdown.forEach { menuItem ->
+                                DropdownMenuItem(
+                                    text = { Text(
+                                        text = menuItem,
+                                        fontSize = 12.sp,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    ) },
+                                    onClick = {
+                                        isVisible = false
+
+                                        // sini cuy logic nya
+                                    }
                                 )
                             }
                         }
@@ -129,11 +158,11 @@ fun SearchBarForAll(modifier: Modifier = Modifier, hint: String) {
                         Box(
                             contentAlignment = Alignment.Center,
                             modifier = Modifier
-                            .size(20.dp)
-                            .clickable {
-                                listHistory.remove(item)
-                                active = false
-                            }
+                                .size(20.dp)
+                                .clickable {
+                                    listHistory.remove(item)
+                                    active = false
+                                }
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Delete,
