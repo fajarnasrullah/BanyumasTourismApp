@@ -50,6 +50,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -389,11 +390,11 @@ fun CardExpand(
     isNotes: Boolean = false,
     dayNumber: Int? = null
 ) {
-    var expandedState by remember { mutableStateOf(false) }
+    var expandedState by rememberSaveable { mutableStateOf(false) }
     val rotationState by animateFloatAsState(targetValue = if (expandedState) 180f else 0f)
-    var isVisible by remember { mutableStateOf(false) }
-    var showAlert by remember {mutableStateOf(false)}
-    var selectedMenu by remember { mutableStateOf("") }
+    var isVisible by rememberSaveable { mutableStateOf(false) }
+    var showAlert by rememberSaveable {mutableStateOf(false)}
+    var selectedMenu by rememberSaveable { mutableStateOf("") }
 
 //    Log.d("CardExpand", "listCategoryPlan size: ${listCategoryPlan?.size ?: 0}")
 
@@ -742,8 +743,8 @@ fun DatePeriodSection(modifier: Modifier = Modifier, onClick: () -> Unit, date: 
 
     val calendarState = rememberUseCaseState()
     var totalDaysRange by remember { mutableStateOf(0) }
-    var start by remember { mutableStateOf("") }
-    var end by remember { mutableStateOf("") }
+    var start by rememberSaveable { mutableStateOf("") }
+    var end by rememberSaveable { mutableStateOf("") }
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         val selectedDateRange = remember {

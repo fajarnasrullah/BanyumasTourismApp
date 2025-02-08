@@ -14,8 +14,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -25,23 +27,27 @@ import com.jer.banyumastourismapp.presentation.component.DestinationCardLandscap
 import com.jer.banyumastourismapp.presentation.component.SearchBarForAll
 import com.jer.banyumastourismapp.presentation.home.User
 import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.haze
 
 @Composable
 fun DestinationListScreen(
     modifier: Modifier = Modifier,
     destination: List<Destination>,
     user: User,
-    onClick: () -> Unit
+    navigateToDetail: () -> Unit
 ) {
 
     val scrollState = rememberScrollState()
 
+    val hazeState = remember { HazeState() }
+
     Scaffold (
-        modifier = modifier
+        modifier = modifier,
     ) { innerPadding ->
         ConstraintLayout(
             modifier = Modifier
-//                .fillMaxSize()
+
                 .padding(innerPadding)
 //                .verticalScroll(scrollState)
         ) {
@@ -66,7 +72,6 @@ fun DestinationListScreen(
                         top.linkTo(parent.top)
 
 
-
                     }
                     .padding(30.dp)
             )
@@ -83,7 +88,7 @@ fun DestinationListScreen(
 
             DestinationCardLandscapeColumn(
                 destination = destination,
-                onClick = {},
+                onClick = { navigateToDetail() },
                 modifier = Modifier
                     .constrainAs(destinationList) {
                         top.linkTo(category.bottom)
@@ -119,9 +124,11 @@ fun DestinationCardLandscapeColumn(
         modifier = modifier
     ) {
         items(destination.size) { index ->
+
             DestinationCardLandscape(
                 destination = destination[index],
-                onClick = { onClick() })
+                onClick = { onClick() }
+            )
         }
 
     }
@@ -178,7 +185,7 @@ private fun PreviewDestinationListScreen() {
                         3500000,
                     ),
         ),
-                    onClick = {}
+                    navigateToDetail = {}
         )
     }
 

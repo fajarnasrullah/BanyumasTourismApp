@@ -51,6 +51,13 @@ android {
 
 dependencies {
 
+
+    //Haze (blurry effect)
+    implementation("dev.chrisbanes.haze:haze-jetpack-compose:0.4.1")
+
+    //navigation compose
+    implementation ("androidx.navigation:navigation-compose:2.8.5")
+
     //calendar & time picker M3 by maxkeppeler
     implementation("com.maxkeppeler.sheets-compose-dialogs:core:1.3.0")
     implementation ("com.maxkeppeler.sheets-compose-dialogs:calendar:1.3.0")

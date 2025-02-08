@@ -34,6 +34,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,15 +58,15 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun AlertDialogPlanInput(modifier: Modifier = Modifier, onDismiss: () -> Unit) {
 
-    var showrequest by remember { mutableStateOf(true) }
-    var category by remember { mutableStateOf(0) }
-    var title by remember { mutableStateOf("") }
-    var time by remember { mutableStateOf("") }
-    var location by remember { mutableStateOf("") }
+    var showrequest by rememberSaveable { mutableStateOf(true) }
+    var category by rememberSaveable { mutableStateOf(0) }
+    var title by rememberSaveable { mutableStateOf("") }
+    var time by rememberSaveable { mutableStateOf("") }
+    var location by rememberSaveable { mutableStateOf("") }
 
-    var timeRequest by remember { mutableStateOf(false) }
+    var timeRequest by rememberSaveable { mutableStateOf(false) }
     val timeState = rememberUseCaseState()
-    var timeText by remember { mutableStateOf("") }
+    var timeText by rememberSaveable { mutableStateOf("") }
 
     val context = LocalContext.current
 

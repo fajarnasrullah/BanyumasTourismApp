@@ -30,6 +30,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -53,6 +54,8 @@ import com.jer.banyumastourismapp.presentation.component.CategoryRow
 import com.jer.banyumastourismapp.presentation.component.Destination
 import com.jer.banyumastourismapp.presentation.component.DestinationCardStandRow
 import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.haze
 
 
 @Composable
@@ -60,15 +63,18 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     user: User,
     destination: List<Destination>,
+    navigateToDetail: () -> Unit
 ) {
 
     val scrollState = rememberScrollState()
 
     Scaffold (
 //        containerColor = Color(0xFF0EA8B9),
+
         modifier = modifier,
     ) { innerPadding ->
         ConstraintLayout(
+
             modifier = Modifier
                 .padding(innerPadding)
                 .verticalScroll(scrollState)
@@ -161,7 +167,7 @@ fun HomeScreen(
                     .constrainAs(list) {
                         top.linkTo(subTitle.bottom)
                     },
-                onClick = {}
+                onClick = { navigateToDetail()}
             )
 
             Text(
@@ -184,7 +190,7 @@ fun HomeScreen(
                         top.linkTo(subTitle2.bottom)
                     }
                     .padding(bottom = 15.dp),
-                onClick = {}
+                onClick = { navigateToDetail() }
             )
 
 
@@ -457,23 +463,24 @@ data class User(
 @Composable
 private fun PreviewFirst() {
     BanyumasTourismAppTheme {
-        HomeScreen(user = User("Fajar" ), destination = listOf(
-            Destination(
-                "Raja Ampat",
-                "Raja Ampat, Papua Barat",
-                cost = 3500000,
-            ),
-            Destination(
-                "Raja Ampat",
-                "Raja Ampat, Papua Barat",
-                cost = 3500000,
-            ),
-            Destination(
-                "Raja Ampat",
-                "Raja Ampat, Papua Barat",
-                cost = 3500000,
-            ),
-        ) )
+//        HomeScreen(user = User("Fajar" ), destination = listOf(
+//            Destination(
+//                "Raja Ampat",
+//                "Raja Ampat, Papua Barat",
+//                cost = 3500000,
+//            ),
+//            Destination(
+//                "Raja Ampat",
+//                "Raja Ampat, Papua Barat",
+//                cost = 3500000,
+//            ),
+//            Destination(
+//                "Raja Ampat",
+//                "Raja Ampat, Papua Barat",
+//                cost = 3500000,
+//            ),
+//        )
+//        )
     }
 }
 

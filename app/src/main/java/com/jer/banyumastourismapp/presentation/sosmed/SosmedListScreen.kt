@@ -33,11 +33,15 @@ import com.jer.banyumastourismapp.presentation.component.SearchBarForAll
 import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
 
 @Composable
-fun SosmedListScreen(modifier: Modifier = Modifier, listSosmed: List<Sosmed>, onClick: () -> Unit)  {
+fun SosmedListScreen(
+    modifier: Modifier = Modifier,
+    listSosmed: List<Sosmed>,
+    navigateToDetail: () -> Unit
+)  {
 
     Scaffold(
         modifier = modifier,
-        floatingActionButton = {AddPostButton(onClick = onClick)}
+        floatingActionButton = {AddPostButton(onClick = navigateToDetail)}
         ) { innerPadding ->
         ConstraintLayout(
             modifier = Modifier.padding(innerPadding)
@@ -154,6 +158,6 @@ private fun PrevSosmedListScreen() {
         SosmedListScreen(
             listSosmed = listSosmed,
 
-            onClick = {})
+            navigateToDetail = {})
     }
 }

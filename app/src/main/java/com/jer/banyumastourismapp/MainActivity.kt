@@ -3,16 +3,22 @@ package com.jer.banyumastourismapp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.jer.banyumastourismapp.presentation.component.Destination
+import com.jer.banyumastourismapp.presentation.destination.DestinationListScreen
 import com.jer.banyumastourismapp.presentation.detaildestination.DetailDestination
 import com.jer.banyumastourismapp.presentation.detaildestination.DetailDestinationScreen
 import com.jer.banyumastourismapp.presentation.detaildestination.Facility
+import com.jer.banyumastourismapp.presentation.home.HomeScreen
 import com.jer.banyumastourismapp.presentation.home.User
 import com.jer.banyumastourismapp.presentation.itinerary.City
 import com.jer.banyumastourismapp.presentation.itinerary.Itinerary
@@ -20,6 +26,8 @@ import com.jer.banyumastourismapp.presentation.itinerary.ItineraryScreen
 import com.jer.banyumastourismapp.presentation.itinerary.Plan
 import com.jer.banyumastourismapp.presentation.itinerary.PlanCategory
 import com.jer.banyumastourismapp.presentation.itinerary.categoryPlan
+import com.jer.banyumastourismapp.presentation.navgraph.NavGraph
+import com.jer.banyumastourismapp.presentation.navgraph.Route
 import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -323,34 +331,38 @@ class MainActivity : ComponentActivity() {
 
 
             BanyumasTourismAppTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+//                Scaffold(
+//                    modifier = Modifier
+//                        .fillMaxSize()
+//
+//                ) { innerPadding ->
 
-                    ItineraryScreen(
-                        modifier = Modifier.padding(innerPadding),
-                        user = User(name = "Fajar Nasrullah"),
-                        itinerary = Itinerary (
-                            daysCount = 5,
-                            title = "Seru-seruan di Jawa Tengah",
-                            description = "Libur semesteran 7 hari full di jawa tengah bareng sobat jawir sekontrakan. Bakal berkunjung ke 4 kota dengan 10 destinasi.",
-                            membersCount = 5,
-                            cityGoals = listCity,
-                            notes = "Libur semesteran 7 hari full di jawa tengah bareng sobat jawir sekontrakan. Bakal berkunjung ke 4 kota dengan 10 destinasi.",
-                            listCardPlan = listCardPlan
-
-                        ),
-                        plan = Plan(
-                            category = 0,
-//                            PlanCategory("On The Way", R.drawable.caricon),
-                            title = "Kumpul Sejenak",
-                            city = listCity,
-                            time = "12.00",
-                            cost = 0
-                        ),
-//            listPlan = listPlan1,
-                        onClick = {}
-
-
-                    )
+//                    ItineraryScreen(
+//                        modifier = Modifier.padding(innerPadding),
+//                        user = User(name = "Fajar Nasrullah"),
+//                        itinerary = Itinerary (
+//                            daysCount = 5,
+//                            title = "Seru-seruan di Jawa Tengah",
+//                            description = "Libur semesteran 7 hari full di jawa tengah bareng sobat jawir sekontrakan. Bakal berkunjung ke 4 kota dengan 10 destinasi.",
+//                            membersCount = 5,
+//                            cityGoals = listCity,
+//                            notes = "Libur semesteran 7 hari full di jawa tengah bareng sobat jawir sekontrakan. Bakal berkunjung ke 4 kota dengan 10 destinasi.",
+//                            listCardPlan = listCardPlan
+//
+//                        ),
+//                        plan = Plan(
+//                            category = 0,
+////                            PlanCategory("On The Way", R.drawable.caricon),
+//                            title = "Kumpul Sejenak",
+//                            city = listCity,
+//                            time = "12.00",
+//                            cost = 0
+//                        ),
+////            listPlan = listPlan1,
+//                        onClick = {}
+//
+//
+//                    )
 
 //                    DetailDestinationScreen(
 //                        modifier = Modifier.padding(innerPadding),
@@ -384,7 +396,7 @@ class MainActivity : ComponentActivity() {
 
 //                    DestinationListScreen(
 //                        modifier = Modifier.padding(innerPadding),
-//                        userDummy = UserDummy("Fajar"),
+//                        user = User("Fajar"),
 //                        destination = listOf(
 //                            Destination(
 //                                "Raja Ampat",
@@ -429,10 +441,11 @@ class MainActivity : ComponentActivity() {
 //                                3500000,
 //                            ),
 //                        ),
-//                        onClick = {}
+//                        navigateToDetail = {}
 //                    )
 
-//                    HomeScreen(userDummy = UserDummy("Fajar","https://t4.ftcdn.net/jpg/02/14/74/61/360_F_214746128_31JkeaP6rU0NzzzdFC4khGkmqc8noe6h.jpg"), destination = listOf(
+//                    HomeScreen(
+//                        user = User("Fajar","https://t4.ftcdn.net/jpg/02/14/74/61/360_F_214746128_31JkeaP6rU0NzzzdFC4khGkmqc8noe6h.jpg"), destination = listOf(
 //                        Destination(
 //                            "Raja Ampat",
 //                            "Raja Ampat, Papua Barat",
@@ -450,13 +463,22 @@ class MainActivity : ComponentActivity() {
 //                        ),
 //
 //                        ),
-//                        modifier = Modifier.padding(innerPadding)
+//                        modifier = Modifier
+//                            .padding(innerPadding)
 //                    )
+
+//                Box(modifier = Modifier.background(color = MaterialTheme.colorScheme.primaryContainer )) {
+
+//                    val startDestination = viewModel.startDestination
+                    val startDestination = Route.AppStartNavigation.route
+                    NavGraph(startDestination = startDestination)
+//                }
 //                    Greeting(
 //                        name = "Android",
 //                        modifier = Modifier.padding(innerPadding)
 //                    )
-                }
+
+//                } ini batas Scaffold
             }
         }
     }
