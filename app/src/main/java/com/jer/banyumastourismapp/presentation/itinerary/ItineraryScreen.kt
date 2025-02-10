@@ -103,8 +103,8 @@ fun ItineraryScreen(
                 navigateBack = { },
                 title = "Your Itinerary",
                 backgroundColor = MaterialTheme.colorScheme.onPrimary,
-                actionIcon = painterResource(id = R.drawable.bookmarkbordericon),
-                action = { },
+//                actionIcon = painterResource(id = R.drawable.bookmarkbordericon),
+//                action = { },
                 modifier = Modifier.shadow(8.dp)
             ) }
     ) { innerPadding ->

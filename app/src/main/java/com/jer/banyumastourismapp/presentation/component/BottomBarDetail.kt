@@ -3,6 +3,7 @@ package com.jer.banyumastourismapp.presentation.component
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,13 +31,14 @@ import com.jer.banyumastourismapp.presentation.detaildestination.DetailDestinati
 @Composable
 fun BottomBarDetail(
     modifier: Modifier = Modifier,
-    detailDestination: DetailDestination,
+    headline: String? = null,
+    price: String,
     textButton: String,
     onClick: () -> Unit
 ) {
 
     Card(
-        elevation = CardDefaults.cardElevation(defaultElevation = 15.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
         shape = RectangleShape,
     ) {
 
@@ -48,19 +50,31 @@ fun BottomBarDetail(
                 .fillMaxWidth()
                 .padding(horizontal = 30.dp, vertical = 15.dp)
         ) {
-            Row {
+            Row (
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
                 Image(
                     painter = painterResource(id = R.drawable.priceicon),
                     contentDescription = null,
                     modifier = Modifier.size(25.dp)
                 )
-                Spacer(modifier = Modifier.width(5.dp))
+                Spacer(modifier = Modifier.width(10.dp))
 
-                Text(
-                    text = detailDestination.cost.toString(),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.SemiBold
-                )
+                Column (
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.Start
+                ) {
+                    if (headline != null) {
+                        Text(text = headline, fontSize = 14.sp, color = MaterialTheme.colorScheme.onBackground)
+                    }
+
+                    Text(
+                        text = price,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+
             }
 
             Button(
@@ -68,13 +82,15 @@ fun BottomBarDetail(
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer
                 ),
+                shape = MaterialTheme.shapes.medium,
                 onClick = { onClick() },
 
                 ) {
                 Text(
                     text = textButton,
                     fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.background
                 )
             }
 

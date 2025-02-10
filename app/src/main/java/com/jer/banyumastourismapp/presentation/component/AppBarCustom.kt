@@ -84,6 +84,8 @@ fun AppBarCustom(
                 onClick = action,
                 color = customColor
             )
+        } else {
+            Box(modifier = Modifier.size(45.dp).background(Color.Transparent), )
         }
     }
 

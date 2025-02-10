@@ -28,6 +28,7 @@ import com.jer.banyumastourismapp.presentation.destination.DestinationListScreen
 import com.jer.banyumastourismapp.presentation.home.HomeScreen
 import com.jer.banyumastourismapp.presentation.home.User
 import com.jer.banyumastourismapp.presentation.navgraph.Route
+import com.jer.banyumastourismapp.presentation.orders.OrdersForm
 import com.jer.banyumastourismapp.presentation.sosmed.Sosmed
 import com.jer.banyumastourismapp.presentation.sosmed.SosmedListScreen
 import dev.chrisbanes.haze.HazeState
@@ -207,7 +208,7 @@ fun CoreNavigator() {
             }
 
             composable(Route.TicketHistoryScreen.route) {
-
+                OrdersForm()
             }
 
             composable(Route.ProfileScreen.route) {

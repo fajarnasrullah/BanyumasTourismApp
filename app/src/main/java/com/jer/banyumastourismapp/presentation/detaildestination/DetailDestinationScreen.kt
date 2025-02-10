@@ -72,7 +72,7 @@ fun DetailDestinationScreen(
     Scaffold (
         bottomBar = {
             BottomBarDetail(
-                detailDestination = detailDestination,
+                price = detailDestination.price.toString(),
                 textButton = "Book",
                 onClick = {} )
                     },
@@ -587,7 +587,7 @@ data class DetailDestination(
     val imageUrl: String? = null,
     val location: String,
     val description: String,
-    val cost: Int,
+    val price: Int,
     val timeOpen: String,
     val rating: Float,
     val ig: String,
@@ -629,7 +629,7 @@ private fun PrevDetailDestination() {
                 title = "Curug Bayan",
                 location = "Desa Ketengger, Baturraden, Banyumas",
                 description = "Curug Bayan merupakan salah satu objek wisata yang berada di desa Ketengger, kecamatan Baturaden, kabupaten Banyumas. Curug Bayan memiliki keunikan tersendiri karena terletak dibawah lereng gunung slamet dan memiliki suasana yang sejuk dan dingin",
-                cost = 150000,
+                price = 150000,
                 timeOpen = "08.00 - 17.00",
                 rating = 5f,
                 ig = "curug_bayan",
