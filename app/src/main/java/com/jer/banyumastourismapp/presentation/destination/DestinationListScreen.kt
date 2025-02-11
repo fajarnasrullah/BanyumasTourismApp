@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -96,12 +97,7 @@ fun DestinationListScreen(
                     }
                     .fillMaxHeight()
             )
-          
-//
-
-
-
-
+            
 
         }
     }
@@ -119,7 +115,7 @@ fun DestinationCardLandscapeColumn(
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(15.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        contentPadding = PaddingValues( start = 30.dp, end = 30.dp, bottom = 30.dp, top = 20.dp),
+        contentPadding = PaddingValues( start = 30.dp, end = 30.dp, bottom = 320.dp, top = 20.dp),
 
         modifier = modifier
     ) {

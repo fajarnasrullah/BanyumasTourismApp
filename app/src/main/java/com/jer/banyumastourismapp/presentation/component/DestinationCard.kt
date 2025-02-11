@@ -157,7 +157,7 @@ fun DestinationCardLandscape(
                         Icon(
                             imageVector = Icons.Default.Star,
                             contentDescription = null,
-                            tint = Color.Yellow,
+                            tint = OrangeNice,
                             modifier = Modifier.size(verySmallIcon)
                         )
 

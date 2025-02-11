@@ -5,6 +5,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -41,7 +42,12 @@ fun SosmedListScreen(
 
     Scaffold(
         modifier = modifier,
-        floatingActionButton = {AddPostButton(onClick = navigateToDetail)}
+        floatingActionButton = {
+            Column { 
+                AddPostButton(onClick = navigateToDetail)
+                Spacer(modifier = Modifier.height(100.dp))
+            }
+        }
         ) { innerPadding ->
         ConstraintLayout(
             modifier = Modifier.padding(innerPadding)
@@ -117,7 +123,7 @@ fun SosmedListColumn(
 ) {
     LazyColumn(
         modifier = modifier,
-        contentPadding = PaddingValues(30.dp),
+        contentPadding = PaddingValues(start = 30.dp, end = 30.dp, top = 30.dp, bottom = 250.dp),
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
         items(listSosmed.size) { index ->

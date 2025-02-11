@@ -123,9 +123,11 @@ fun CategoryRow(
         Category("Beach", painterResource(id = R.drawable.beachicon)),
         Category("Waterfall", painterResource(id = R.drawable.waterfallicon)),
         Category("Temple", painterResource(id = R.drawable.tampleiconsvg)),
+        Category("Mountain", painterResource(id = R.drawable.mountainicon)),
+        Category("Beach", painterResource(id = R.drawable.beachicon)),
+        Category("Waterfall", painterResource(id = R.drawable.waterfallicon)),
         Category("Temple", painterResource(id = R.drawable.tampleiconsvg)),
-        Category("Temple", painterResource(id = R.drawable.tampleiconsvg)),
-        Category("Temple", painterResource(id = R.drawable.tampleiconsvg)),
+
     )
     val listState = rememberLazyListState()
     val selectedIndex = remember { mutableStateOf(-1) }

@@ -64,7 +64,9 @@ import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
 @Composable
 fun DetailDestinationScreen(
     modifier: Modifier = Modifier,
-    detailDestination: DetailDestination
+    detailDestination: DetailDestination,
+    navToOrders: () -> Unit,
+    navBack: () -> Unit
 ) {
 
     val scrollState = rememberScrollState()
@@ -74,7 +76,7 @@ fun DetailDestinationScreen(
             BottomBarDetail(
                 price = detailDestination.price.toString(),
                 textButton = "Book",
-                onClick = {} )
+                onClick = {navToOrders()} )
                     },
         modifier = Modifier
     ) { innerPadding ->
@@ -144,7 +146,7 @@ fun DetailDestinationScreen(
             )
 
             AppBarCustom(
-                navigateBack = {  },
+                navigateBack = { navBack() },
                 actionIcon = painterResource(id = R.drawable.bookmarkbordericon),
                 action = {},
                 modifier = Modifier
@@ -649,7 +651,9 @@ private fun PrevDetailDestination() {
                     "Bawa Kamera"
                 )
 
-            )
+            ),
+            navToOrders = {},
+            navBack = {}
         )
     }
 }

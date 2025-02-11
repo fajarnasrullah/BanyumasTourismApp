@@ -25,10 +25,24 @@ import androidx.navigation.compose.rememberNavController
 import com.jer.banyumastourismapp.R
 import com.jer.banyumastourismapp.presentation.component.Destination
 import com.jer.banyumastourismapp.presentation.destination.DestinationListScreen
+import com.jer.banyumastourismapp.presentation.detailDestination
+import com.jer.banyumastourismapp.presentation.detaildestination.DetailDestination
+import com.jer.banyumastourismapp.presentation.detaildestination.DetailDestinationScreen
+import com.jer.banyumastourismapp.presentation.detaildestination.Facility
 import com.jer.banyumastourismapp.presentation.home.HomeScreen
 import com.jer.banyumastourismapp.presentation.home.User
+import com.jer.banyumastourismapp.presentation.itinerary
+import com.jer.banyumastourismapp.presentation.itinerary.City
+import com.jer.banyumastourismapp.presentation.itinerary.Itinerary
+import com.jer.banyumastourismapp.presentation.itinerary.ItineraryScreen
+import com.jer.banyumastourismapp.presentation.itinerary.Plan
+import com.jer.banyumastourismapp.presentation.itinerary.PlanCategory
+import com.jer.banyumastourismapp.presentation.listCardPlan
+import com.jer.banyumastourismapp.presentation.listDestination
+import com.jer.banyumastourismapp.presentation.listSosmed
 import com.jer.banyumastourismapp.presentation.navgraph.Route
-import com.jer.banyumastourismapp.presentation.orders.OrdersForm
+import com.jer.banyumastourismapp.presentation.orders.OrdersFormScreen
+import com.jer.banyumastourismapp.presentation.plan
 import com.jer.banyumastourismapp.presentation.sosmed.Sosmed
 import com.jer.banyumastourismapp.presentation.sosmed.SosmedListScreen
 import dev.chrisbanes.haze.HazeState
@@ -38,62 +52,7 @@ import dev.chrisbanes.haze.haze
 fun CoreNavigator() {
 
 
-    val listSosmed = listOf(
-        Sosmed(
-            "Huru Hara 5 Hari di Bali",
-            "Fajar",
-            "Cerita pengalaman liburan di Bali ramai ramai selama 5 hari, ada seru dan mumet nya"
-        ),
-        Sosmed(
-            "Huru Hara 5 Hari di Bali",
-            "Fajar",
-            "Cerita pengalaman liburan di Bali ramai ramai selama 5 hari, ada seru dan mumet nya"
-        ),
-        Sosmed(
-            "Huru Hara 5 Hari di Bali",
-            "Fajar",
-            "Cerita pengalaman liburan di Bali ramai ramai selama 5 hari, ada seru dan mumet nya"
-        ),
-        Sosmed(
-            "Huru Hara 5 Hari di Bali",
-            "Fajar",
-            "Cerita pengalaman liburan di Bali ramai ramai selama 5 hari, ada seru dan mumet nya"
-        )
 
-    )
-
-    val listDestination = listOf(
-        Destination(
-            "Raja Ampat",
-            "Raja Ampat, Papua Barat",
-            cost = 3500000,
-        ),
-        Destination(
-            "Raja Ampat",
-            "Raja Ampat, Papua Barat",
-            cost = 3500000,
-        ),
-        Destination(
-            "Raja Ampat",
-            "Raja Ampat, Papua Barat",
-            cost = 3500000,
-        ),
-        Destination(
-            "Raja Ampat",
-            "Raja Ampat, Papua Barat",
-            cost = 3500000,
-        ),
-        Destination(
-            "Raja Ampat",
-            "Raja Ampat, Papua Barat",
-            cost = 3500000,
-        ),
-        Destination(
-            "Raja Ampat",
-            "Raja Ampat, Papua Barat",
-            cost = 3500000,
-        ),
-    )
 
     val listBottomNavigationItem = remember {
         listOf(
@@ -119,6 +78,8 @@ fun CoreNavigator() {
             ),
         )
     }
+
+
 
     val hazeState = remember { HazeState() }
     val navController = rememberNavController()
@@ -189,30 +150,58 @@ fun CoreNavigator() {
                 HomeScreen(
                     user = User("Fajar"),
                     destination = listDestination,
-                    navigateToDetail = { navigateToTab(navController, Route.DetailDestinationScreen.route) }
+                    navigateToDetail = { navController.navigate(Route.DetailDestinationScreen.route) },
+                    navigateToItinerary = { navController.navigate(Route.ItineraryScreen.route) }
                 )
             }
             composable(Route.DestinationListScreen.route) {
                 DestinationListScreen(
                     user = User("Fajar"),
                     destination = listDestination,
-                    navigateToDetail = { navigateToTab(navController, Route.DetailDestinationScreen.route) }
+                    navigateToDetail = { navController.navigate(Route.DetailDestinationScreen.route) }
                 )
             }
 
             composable(Route.SosmedListScreen.route) {
                 SosmedListScreen(
                     listSosmed = listSosmed,
-                    navigateToDetail = { navigateToTab(navController, Route.DetailSosmedScreen.route) }
+                    navigateToDetail = { navController.navigate(Route.DetailSosmedScreen.route) }
                 )
             }
 
             composable(Route.TicketHistoryScreen.route) {
-                OrdersForm()
             }
 
             composable(Route.ProfileScreen.route) {
 
+            }
+
+            composable(Route.DetailDestinationScreen.route) {
+                DetailDestinationScreen(
+                    detailDestination = detailDestination,
+                    navToOrders = {navController.navigate(Route.OrdersFormScreen.route)},
+                    navBack = {navController.navigateUp()}
+                )
+            }
+
+            composable(Route.DetailSosmedScreen.route) {
+
+            }
+
+            composable(Route.ItineraryScreen.route) {
+                ItineraryScreen(
+                    user = User("Fajar"),
+                    itinerary = itinerary,
+                    plan = plan,
+                    onClick = {},
+                    navBack = {navController.navigateUp()}
+                )
+            }
+
+            composable(Route.OrdersFormScreen.route) {
+                OrdersFormScreen (
+                    navBack = {navController.navigateUp()}
+                )
             }
         }
 
@@ -233,6 +222,11 @@ fun navigateToTab(navController: NavController, route: String) {
         }
     }
 }
+
+//private fun navigateToDetail(navController: NavController, article: Article) {
+//    navController.currentBackStackEntry?.savedStateHandle?.set("article", article)
+//    navController.navigate(Route.DetailsScreen.route)
+//}
 
 
 

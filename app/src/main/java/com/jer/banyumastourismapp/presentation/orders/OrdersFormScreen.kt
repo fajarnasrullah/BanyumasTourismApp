@@ -45,7 +45,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -74,7 +73,7 @@ import java.time.LocalDate
 
 
 @Composable
-fun OrdersForm(modifier: Modifier = Modifier) {
+fun OrdersFormScreen(modifier: Modifier = Modifier, navBack: () -> Unit) {
 
     val scrollState = rememberScrollState()
 
@@ -99,7 +98,7 @@ fun OrdersForm(modifier: Modifier = Modifier) {
 
     Scaffold (
         topBar = { AppBarCustom(
-            navigateBack = { /*TODO*/ },
+            navigateBack = { navBack() },
             backgroundColor = MaterialTheme.colorScheme.onPrimary,
             title = "Complete Your Order",
 
@@ -130,9 +129,11 @@ fun OrdersForm(modifier: Modifier = Modifier) {
                         start.linkTo(parent.start,)
                         end.linkTo(parent.end,)
                     }
-                    .padding(top = 30.dp, start = 30.dp, end = 30.dp)
+                    .padding( start = 30.dp, end = 30.dp)
                     .verticalScroll(scrollState)
             ) {
+
+                Spacer(modifier = Modifier.height(30.dp))
 
                 Text(
                     text = "Booking Data:",
@@ -483,8 +484,8 @@ fun TextSection(modifier: Modifier = Modifier, title: String, text: String, isFi
 @Composable
 private fun PrevOrdersForm() {
     BanyumasTourismAppTheme {
-        OrdersForm(
-
+        OrdersFormScreen(
+            navBack = {}
         )
     }
 

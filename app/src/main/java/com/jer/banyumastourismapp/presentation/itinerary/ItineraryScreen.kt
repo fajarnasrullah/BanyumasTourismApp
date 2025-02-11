@@ -89,7 +89,8 @@ fun ItineraryScreen(
     itinerary: Itinerary,
     plan: Plan,
 //    listPlan: List<Plan>,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    navBack: () -> Unit,
 ) {
 
 
@@ -100,7 +101,7 @@ fun ItineraryScreen(
         modifier = modifier,
         topBar = {
             AppBarCustom(
-                navigateBack = { },
+                navigateBack = { navBack() },
                 title = "Your Itinerary",
                 backgroundColor = MaterialTheme.colorScheme.onPrimary,
 //                actionIcon = painterResource(id = R.drawable.bookmarkbordericon),
@@ -1043,8 +1044,8 @@ private fun PrevItineraryScreen() {
 //            ),
 ////            listPlan = listPlan1,
 //            onClick = {}
-
-
+//
+//
 //        )
 //    }
 }

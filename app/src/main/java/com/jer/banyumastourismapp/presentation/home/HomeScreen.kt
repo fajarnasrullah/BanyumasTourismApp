@@ -63,7 +63,8 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     user: User,
     destination: List<Destination>,
-    navigateToDetail: () -> Unit
+    navigateToDetail: () -> Unit,
+    navigateToItinerary: () -> Unit
 ) {
 
     val scrollState = rememberScrollState()
@@ -116,7 +117,7 @@ fun HomeScreen(
                 
             }
             ItineraryCard(
-                onClick = {},
+                onClick = { navigateToItinerary() },
                 user = user,
                 modifier = Modifier
                     .constrainAs(itinerary) {
@@ -189,9 +190,10 @@ fun HomeScreen(
                     .constrainAs(list2) {
                         top.linkTo(subTitle2.bottom)
                     }
-                    .padding(bottom = 15.dp),
+                    .padding(bottom = 120.dp),
                 onClick = { navigateToDetail() }
             )
+
 
 
         }
