@@ -43,6 +43,8 @@ import com.jer.banyumastourismapp.presentation.listSosmed
 import com.jer.banyumastourismapp.presentation.navgraph.Route
 import com.jer.banyumastourismapp.presentation.orders.OrdersFormScreen
 import com.jer.banyumastourismapp.presentation.plan
+import com.jer.banyumastourismapp.presentation.profile.ProfileScreen
+import com.jer.banyumastourismapp.presentation.profile.bookmark.BookmarkState
 import com.jer.banyumastourismapp.presentation.sosmed.Sosmed
 import com.jer.banyumastourismapp.presentation.sosmed.SosmedListScreen
 import dev.chrisbanes.haze.HazeState
@@ -173,7 +175,10 @@ fun CoreNavigator() {
             }
 
             composable(Route.ProfileScreen.route) {
-
+                ProfileScreen(
+                    user = User(name = "Fajar Nasrullah", desc = "akwokaowkowka"),
+                    state = BookmarkState(),
+                    navigateToDetail = { /*TODO*/ })
             }
 
             composable(Route.DetailDestinationScreen.route) {

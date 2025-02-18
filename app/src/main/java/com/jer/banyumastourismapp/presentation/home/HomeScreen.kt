@@ -45,6 +45,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import coil.compose.AsyncImage
@@ -151,7 +152,7 @@ fun HomeScreen(
             
             Text(
                 text = "Popular Destination",
-                fontSize = TextUnit(16f, TextUnitType.Sp),
+                fontSize = 16.sp,
                 fontWeight = FontWeight.ExtraBold,
                 color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier
@@ -173,7 +174,7 @@ fun HomeScreen(
 
             Text(
                 text = "Nearby Destination",
-                fontSize = TextUnit(16f, TextUnitType.Sp),
+                fontSize = 16.sp,
                 fontWeight = FontWeight.ExtraBold,
                 color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier
@@ -287,7 +288,7 @@ fun ItineraryCard(
                 ){
                     Text(
                         text = "Seru-seruan di Jawa Tengah",
-                        fontSize = TextUnit(14f, TextUnitType.Sp),
+                        fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onBackground,
                         overflow = TextOverflow.Ellipsis,
@@ -298,7 +299,7 @@ fun ItineraryCard(
 
                     Text(
                         text = "Libur semesteran 7 hari full di jawa tengah bareng sobat jawir sekontrakan. Bakal berkunjung ke 4 kota dengan 10 destinasi.",
-                        fontSize = TextUnit(10f, TextUnitType.Sp),
+                        fontSize = 10.sp,
                         color = MaterialTheme.colorScheme.onBackground,
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 4
@@ -456,6 +457,7 @@ fun NotifTopButton(modifier: Modifier = Modifier, ) {
 data class User(
     val name: String,
     val photoUrl: String? = null,
+    val desc: String? = null,
 
     )
 
