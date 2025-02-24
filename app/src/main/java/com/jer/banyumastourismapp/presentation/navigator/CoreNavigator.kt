@@ -214,6 +214,7 @@ fun navigateToTab(navController: NavController, route: String) {
             launchSingleTop = true
             restoreState = true
         }
+
     }
 }
 
