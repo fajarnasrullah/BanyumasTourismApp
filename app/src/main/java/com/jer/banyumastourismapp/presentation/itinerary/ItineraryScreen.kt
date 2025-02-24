@@ -31,7 +31,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
@@ -41,7 +40,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -69,6 +67,10 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.AsyncImage
 import com.jer.banyumastourismapp.R
 import com.jer.banyumastourismapp.common.verySmallIcon
+import com.jer.banyumastourismapp.domain.model.Itinerary
+import com.jer.banyumastourismapp.domain.model.Plan
+import com.jer.banyumastourismapp.domain.model.PlanCategory
+import com.jer.banyumastourismapp.domain.model.categoryPlan
 import com.jer.banyumastourismapp.presentation.component.AppBarCustom
 import com.jer.banyumastourismapp.presentation.home.User
 import com.jer.banyumastourismapp.presentation.itinerary.component.AlertDialogPlanInput
@@ -302,7 +304,7 @@ fun PlanColumn(
 fun PlanItem(
     modifier: Modifier = Modifier,
     plan: Plan? = null,
-    listCategoryPlanItem: List<PlanCategory>? = null ,
+    listCategoryPlanItem: List<PlanCategory>? = null,
     indexItem: Int,
     onClick: () -> Unit
 ) {

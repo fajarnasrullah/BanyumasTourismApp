@@ -1,6 +1,12 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    id("com.google.devtools.ksp")
+//    id ("kotlin-kapt")
+    id ("kotlin-parcelize")
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
+
+
 }
 
 android {
@@ -30,14 +36,15 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -47,16 +54,43 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
+    secrets {
+        propertiesFileName = "secrets.properties"
+        defaultPropertiesFileName = "local.defaults.properties"
+    }
 }
 
 dependencies {
 
+    //timber
+    implementation(libs.timber)
+
+    //permission
+    implementation(libs.accompanist.permissions)
+
+    //google maps
+    implementation (libs.maps.compose)
+    implementation(libs.places)
+    implementation(libs.play.services.maps)
+
+
+    //retrofit, gson
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
+    implementation("com.google.code.gson:gson:2.10.1")
+
+    //room
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.room.runtime)
 
     //Haze (blurry effect)
     implementation("dev.chrisbanes.haze:haze-jetpack-compose:0.4.1")
 
     //navigation compose
-    implementation ("androidx.navigation:navigation-compose:2.8.5")
+    implementation (libs.androidx.navigation.compose)
 
     //calendar & time picker M3 by maxkeppeler
     implementation("com.maxkeppeler.sheets-compose-dialogs:core:1.3.0")

@@ -1,32 +1,37 @@
-package com.jer.banyumastourismapp.presentation.itinerary
+package com.jer.banyumastourismapp.domain.model
 
-import androidx.annotation.DrawableRes
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.res.painterResource
+import android.os.Parcelable
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.jer.banyumastourismapp.R
+import kotlinx.parcelize.Parcelize
 
+
+@Parcelize
+@Entity
 data class Itinerary(
-    val daysCount: Int,
-    val title: String,
-    val description: String,
-    val membersCount: Int,
-    val cityGoals: List<City>,
+    val daysCount: Int = 0,
+    @PrimaryKey val title: String,
+    val description: String = "",
+    val membersCount: Int = 0,
+    val cityGoals: List<City> = emptyList(),
     val notes: String? = null,
     val listCardPlan: List<List<Plan>>? = null,
-)
+): Parcelable
 
+@Parcelize
 data class City(
     val name: String,
     val imageUrl: String,
-)
+): Parcelable
 
 data class ListPlan(
     val listPlan: List<Plan>
 )
 
+@Parcelize
 data class Plan(
-    val category: Int ,
+    val category: Int,
 //    PlanCategory? = null,
 //    List<PlanCategory>? = null,
 //    List<List<PlanCategory>>,
@@ -34,7 +39,10 @@ data class Plan(
     val city: List<City>? = null,
     val time: String? = null,
     val cost: Int? = null,
-)
+): Parcelable
+
+
+
 //object ListCategoryPlan {
     val categoryPlan = listOf(
         PlanCategory("On The Way", R.drawable.caricon),

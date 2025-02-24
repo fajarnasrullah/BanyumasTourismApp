@@ -22,11 +22,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.jer.banyumastourismapp.domain.model.Destination
 import com.jer.banyumastourismapp.presentation.component.CategoryRow
-import com.jer.banyumastourismapp.presentation.component.Destination
 import com.jer.banyumastourismapp.presentation.component.DestinationCardLandscape
 import com.jer.banyumastourismapp.presentation.component.SearchBarForAll
 import com.jer.banyumastourismapp.presentation.home.User
+import com.jer.banyumastourismapp.presentation.listDestination
 import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.haze
@@ -137,50 +138,7 @@ private fun PreviewDestinationListScreen() {
     BanyumasTourismAppTheme {
         DestinationListScreen(
             user = User("Fajar"),
-                destination = listOf(
-            Destination(
-                "Raja Ampat",
-                "Raja Ampat, Papua Barat",
-                "3 Air  terjun (salah satu nya 20 meter), deck bentuk hati, rumah makan, gazebo, camping ground.3 Air  terjun (salah satu nya 20 meter), deck bentuk hati, rumah makan, gazebo, camping ground.",
-                3500000,
-            ),
-            Destination(
-                "Raja Ampat",
-                "Raja Ampat, Papua Barat",
-                "3 Air  terjun (salah satu nya 20 meter), deck bentuk hati, rumah makan, gazebo, camping ground.3 Air  terjun (salah satu nya 20 meter), deck bentuk hati, rumah makan, gazebo, camping ground.",
-                3500000,
-            ),
-            Destination(
-                "Raja Ampat",
-                "Raja Ampat, Papua Barat",
-                "3 Air  terjun (salah satu nya 20 meter), deck bentuk hati, rumah makan, gazebo, camping ground.3 Air  terjun (salah satu nya 20 meter), deck bentuk hati, rumah makan, gazebo, camping ground.",
-                3500000,
-            ),
-            Destination(
-                "Raja Ampat",
-                "Raja Ampat, Papua Barat",
-                "3 Air  terjun (salah satu nya 20 meter), deck bentuk hati, rumah makan, gazebo, camping ground.3 Air  terjun (salah satu nya 20 meter), deck bentuk hati, rumah makan, gazebo, camping ground.",
-                3500000,
-            ),
-            Destination(
-                "Raja Ampat",
-                "Raja Ampat, Papua Barat",
-                "3 Air  terjun (salah satu nya 20 meter), deck bentuk hati, rumah makan, gazebo, camping ground.3 Air  terjun (salah satu nya 20 meter), deck bentuk hati, rumah makan, gazebo, camping ground.",
-                3500000,
-            ),
-                    Destination(
-                        "Raja Ampat",
-                        "Raja Ampat, Papua Barat",
-                        "3 Air  terjun (salah satu nya 20 meter), deck bentuk hati, rumah makan, gazebo, camping ground.3 Air  terjun (salah satu nya 20 meter), deck bentuk hati, rumah makan, gazebo, camping ground.",
-                        3500000,
-                    ),
-                    Destination(
-                        "Raja Ampat",
-                        "Raja Ampat, Papua Barat",
-                        "3 Air  terjun (salah satu nya 20 meter), deck bentuk hati, rumah makan, gazebo, camping ground.3 Air  terjun (salah satu nya 20 meter), deck bentuk hati, rumah makan, gazebo, camping ground.",
-                        3500000,
-                    ),
-        ),
+                destination = listDestination,
                     navigateToDetail = {}
         )
     }

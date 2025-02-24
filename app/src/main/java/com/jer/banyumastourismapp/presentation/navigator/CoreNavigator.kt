@@ -1,9 +1,6 @@
 package com.jer.banyumastourismapp.presentation.navigator
 
-import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -13,9 +10,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
@@ -23,29 +17,22 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.jer.banyumastourismapp.R
-import com.jer.banyumastourismapp.presentation.component.Destination
 import com.jer.banyumastourismapp.presentation.destination.DestinationListScreen
 import com.jer.banyumastourismapp.presentation.detailDestination
-import com.jer.banyumastourismapp.presentation.detaildestination.DetailDestination
 import com.jer.banyumastourismapp.presentation.detaildestination.DetailDestinationScreen
-import com.jer.banyumastourismapp.presentation.detaildestination.Facility
 import com.jer.banyumastourismapp.presentation.home.HomeScreen
 import com.jer.banyumastourismapp.presentation.home.User
 import com.jer.banyumastourismapp.presentation.itinerary
-import com.jer.banyumastourismapp.presentation.itinerary.City
-import com.jer.banyumastourismapp.presentation.itinerary.Itinerary
 import com.jer.banyumastourismapp.presentation.itinerary.ItineraryScreen
-import com.jer.banyumastourismapp.presentation.itinerary.Plan
-import com.jer.banyumastourismapp.presentation.itinerary.PlanCategory
-import com.jer.banyumastourismapp.presentation.listCardPlan
 import com.jer.banyumastourismapp.presentation.listDestination
 import com.jer.banyumastourismapp.presentation.listSosmed
+import com.jer.banyumastourismapp.presentation.maps.MapsScreen
+import com.jer.banyumastourismapp.presentation.maps.MapsViewModel
 import com.jer.banyumastourismapp.presentation.navgraph.Route
 import com.jer.banyumastourismapp.presentation.orders.OrdersFormScreen
 import com.jer.banyumastourismapp.presentation.plan
 import com.jer.banyumastourismapp.presentation.profile.ProfileScreen
 import com.jer.banyumastourismapp.presentation.profile.bookmark.BookmarkState
-import com.jer.banyumastourismapp.presentation.sosmed.Sosmed
 import com.jer.banyumastourismapp.presentation.sosmed.SosmedListScreen
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.haze
@@ -67,8 +54,8 @@ fun CoreNavigator() {
                 icon = R.drawable.destinationlisticon
             ),
             BottomNavigationItem(
-                label = "Story",
-                icon = R.drawable.sosmedicon
+                label = "Maps",
+                icon = R.drawable.mapsicon
             ),
             BottomNavigationItem(
                 label = "Ticket",
@@ -94,7 +81,7 @@ fun CoreNavigator() {
         when (backStackState?.destination?.route) {
             Route.HomeScreen.route -> 0
             Route.DestinationListScreen.route -> 1
-            Route.SosmedListScreen.route -> 2
+            Route.MapsScreen.route -> 2
             Route.TicketHistoryScreen.route -> 3
             Route.ProfileScreen.route -> 4
             else -> 0
@@ -105,7 +92,7 @@ fun CoreNavigator() {
     val isBottomBarVisible = remember(key1 = backStackState) {
         backStackState?.destination?.route == Route.HomeScreen.route ||
         backStackState?.destination?.route == Route.DestinationListScreen.route ||
-        backStackState?.destination?.route == Route.SosmedListScreen.route ||
+        backStackState?.destination?.route == Route.MapsScreen.route ||
         backStackState?.destination?.route == Route.TicketHistoryScreen.route ||
         backStackState?.destination?.route == Route.ProfileScreen.route
     }
@@ -122,7 +109,7 @@ fun CoreNavigator() {
                         when (index){
                             0 -> navigateToTab(navController, Route.HomeScreen.route)
                             1 -> navigateToTab(navController, Route.DestinationListScreen.route)
-                            2 -> navigateToTab(navController, Route.SosmedListScreen.route)
+                            2 -> navigateToTab(navController, Route.MapsScreen.route)
                             3 -> navigateToTab(navController, Route.TicketHistoryScreen.route)
                             4 -> navigateToTab(navController, Route.ProfileScreen.route)
 
@@ -164,11 +151,13 @@ fun CoreNavigator() {
                 )
             }
 
-            composable(Route.SosmedListScreen.route) {
-                SosmedListScreen(
-                    listSosmed = listSosmed,
-                    navigateToDetail = { navController.navigate(Route.DetailSosmedScreen.route) }
-                )
+            composable(Route.MapsScreen.route) {
+//                SosmedListScreen(
+//                    listSosmed = listSosmed,
+//                    navigateToDetail = { navController.navigate(Route.DetailSosmedScreen.route) }
+//                )
+                val mapsViewModel = MapsViewModel()
+                MapsScreen(mapsViewModel = mapsViewModel)
             }
 
             composable(Route.TicketHistoryScreen.route) {

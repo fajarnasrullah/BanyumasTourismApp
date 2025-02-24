@@ -51,8 +51,8 @@ import androidx.constraintlayout.compose.Dimension
 import coil.compose.AsyncImage
 import com.jer.banyumastourismapp.R
 import com.jer.banyumastourismapp.common.verySmallIcon
+import com.jer.banyumastourismapp.domain.model.Destination
 import com.jer.banyumastourismapp.presentation.component.CategoryRow
-import com.jer.banyumastourismapp.presentation.component.Destination
 import com.jer.banyumastourismapp.presentation.component.DestinationCardStandRow
 import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
 import dev.chrisbanes.haze.HazeState

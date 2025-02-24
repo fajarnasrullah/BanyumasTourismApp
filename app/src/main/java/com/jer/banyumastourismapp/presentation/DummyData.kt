@@ -1,11 +1,11 @@
 package com.jer.banyumastourismapp.presentation
 
-import com.jer.banyumastourismapp.presentation.component.Destination
 import com.jer.banyumastourismapp.presentation.detaildestination.DetailDestination
 import com.jer.banyumastourismapp.presentation.detaildestination.Facility
-import com.jer.banyumastourismapp.presentation.itinerary.City
-import com.jer.banyumastourismapp.presentation.itinerary.Itinerary
-import com.jer.banyumastourismapp.presentation.itinerary.Plan
+import com.jer.banyumastourismapp.domain.model.City
+import com.jer.banyumastourismapp.domain.model.Destination
+import com.jer.banyumastourismapp.domain.model.Itinerary
+import com.jer.banyumastourismapp.domain.model.Plan
 import com.jer.banyumastourismapp.presentation.sosmed.Sosmed
 
 val listCity = listOf(
@@ -362,46 +362,55 @@ val listSosmed = listOf(
 
 val listDestination = listOf(
     Destination(
+        0,
         "Raja Ampat",
         "Raja Ampat, Papua Barat",
         cost = 3500000,
     ),
     Destination(
+        1,
         "Raja Ampat",
         "Raja Ampat, Papua Barat",
         cost = 3500000,
     ),
     Destination(
+        2,
         "Raja Ampat",
         "Raja Ampat, Papua Barat",
         cost = 3500000,
     ),
     Destination(
+        3,
         "Raja Ampat",
         "Raja Ampat, Papua Barat",
         cost = 3500000,
     ),
     Destination(
+        4,
         "Raja Ampat",
         "Raja Ampat, Papua Barat",
         cost = 3500000,
     ),
     Destination(
+        5,
         "Raja Ampat",
         "Raja Ampat, Papua Barat",
         cost = 3500000,
     ),
     Destination(
+        6,
         "Raja Ampat",
         "Raja Ampat, Papua Barat",
         cost = 3500000,
     ),
     Destination(
+        7,
         "Raja Ampat",
         "Raja Ampat, Papua Barat",
         cost = 3500000,
     ),
     Destination(
+        8,
         "Raja Ampat",
         "Raja Ampat, Papua Barat",
         cost = 3500000,

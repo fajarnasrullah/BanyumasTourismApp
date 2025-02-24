@@ -40,6 +40,8 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.jer.banyumastourismapp.R
 import com.jer.banyumastourismapp.common.verySmallIcon
+import com.jer.banyumastourismapp.domain.model.Destination
+import com.jer.banyumastourismapp.presentation.listDestination
 import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
 import com.jer.banyumastourismapp.ui.theme.OrangeNice
 
@@ -308,35 +310,13 @@ fun DestinationCardStandRow(
 
 }
 
-data class Destination(
-    val title: String,
-    val location: String,
-    val description: String? = null ,
-    val cost: Int,
-    val imageUrl: String? = null
-)
+
 
 @Preview
 @Composable
 private fun PreviewDestinationCardRow() {
     BanyumasTourismAppTheme {
-        DestinationCardStandRow(destination = listOf(
-            Destination(
-                "Raja Ampat",
-                "Raja Ampat, Papua Barat",
-                cost = 3500000,
-            ),
-            Destination(
-                "Raja Ampat",
-                "Raja Ampat, Papua Barat",
-                cost = 3500000,
-            ),
-            Destination(
-                "Raja Ampat",
-                "Raja Ampat, Papua Barat",
-                cost = 3500000,
-            )
-        ),
+        DestinationCardStandRow(destination = listDestination,
             onClick = {}
         )
     }
@@ -349,6 +329,7 @@ private fun PreviewDestinationCard() {
 
     BanyumasTourismAppTheme {
         DestinationCardPotrait(destination = Destination(
+            0,
             "Raja Ampat",
             "Raja Ampat, Papua Barat",
             cost = 3500000,
@@ -368,6 +349,7 @@ private fun PreviewDestinationCardLandscape() {
     BanyumasTourismAppTheme {
         DestinationCardLandscape(
             destination = Destination(
+                0,
                 "Raja Ampat",
                 "Raja Ampat, Papua Barat",
                 "3 Air  terjun (salah satu nya 20 meter), deck bentuk hati, rumah makan, gazebo, camping ground.3 Air  terjun (salah satu nya 20 meter), deck bentuk hati, rumah makan, gazebo, camping ground.",
