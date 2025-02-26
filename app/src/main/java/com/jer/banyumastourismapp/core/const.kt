@@ -1,4 +1,4 @@
-package com.jer.banyumastourismapp.common
+package com.jer.banyumastourismapp.core
 
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp

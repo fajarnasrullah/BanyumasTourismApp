@@ -56,7 +56,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import coil.compose.AsyncImage
 import com.jer.banyumastourismapp.R
-import com.jer.banyumastourismapp.common.verySmallIcon
+import com.jer.banyumastourismapp.core.verySmallIcon
 import com.jer.banyumastourismapp.presentation.component.AppBarCustom
 import com.jer.banyumastourismapp.presentation.component.BottomBarDetail
 import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme

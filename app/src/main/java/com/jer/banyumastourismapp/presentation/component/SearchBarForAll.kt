@@ -40,13 +40,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.PopupProperties
 import com.jer.banyumastourismapp.R
-import com.jer.banyumastourismapp.common.verySmallIcon
+import com.jer.banyumastourismapp.core.verySmallIcon
 import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
 
 @Composable
-fun SearchBarForAll(modifier: Modifier = Modifier, hint: String) {
+fun SearchBarForAll(modifier: Modifier = Modifier, hint: String, trailingIsVisible: Boolean) {
 
     var query by remember {
         mutableStateOf("")
@@ -98,44 +97,52 @@ fun SearchBarForAll(modifier: Modifier = Modifier, hint: String) {
 
                     } else {
 
-                        val listDropdown = listOf("A - Z", "Z - A", "Reset")
+                        if (trailingIsVisible) {
 
-                        Surface(
-                            shape = CircleShape,
-                            color = MaterialTheme.colorScheme.onPrimary,
-                            border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.outline),
-                            onClick = { isVisible = true },
-                        ) {
-                            Box(
-                                modifier = Modifier.size(30.dp),
-                                contentAlignment = Alignment.Center
+                            val listDropdown = listOf("A - Z", "Z - A", "Reset")
+
+                            Surface(
+                                shape = CircleShape,
+                                color = MaterialTheme.colorScheme.onPrimary,
+                                border = BorderStroke(
+                                    width = 1.dp,
+                                    color = MaterialTheme.colorScheme.outline
+                                ),
+                                onClick = { isVisible = true },
                             ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.filtericon),
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.primaryContainer,
-                                    modifier = Modifier.size(verySmallIcon)
-                                )
+                                Box(
+                                    modifier = Modifier.size(30.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.filtericon),
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.primaryContainer,
+                                        modifier = Modifier.size(verySmallIcon)
+                                    )
+                                }
                             }
-                        }
-                        
-                        DropdownMenu(
-                            expanded = isVisible,
-                            onDismissRequest = { isVisible = false },
-                        ) {
-                            listDropdown.forEach { menuItem ->
-                                DropdownMenuItem(
-                                    text = { Text(
-                                        text = menuItem,
-                                        fontSize = 12.sp,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    ) },
-                                    onClick = {
-                                        isVisible = false
 
-                                        // sini cuy logic nya
-                                    }
-                                )
+                            DropdownMenu(
+                                expanded = isVisible,
+                                onDismissRequest = { isVisible = false },
+                            ) {
+                                listDropdown.forEach { menuItem ->
+                                    DropdownMenuItem(
+                                        text = {
+                                            Text(
+                                                text = menuItem,
+                                                fontSize = 12.sp,
+                                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                            )
+                                        },
+                                        onClick = {
+                                            isVisible = false
+
+                                            // sini cuy logic nya
+                                        }
+                                    )
+                                }
                             }
                         }
 
@@ -196,7 +203,7 @@ fun SearchBarForAll(modifier: Modifier = Modifier, hint: String) {
 @Composable
 private fun PrevSearchBar() {
     BanyumasTourismAppTheme {
-        SearchBarForAll(hint = "Search Destination")
+        SearchBarForAll(hint = "Search Destination", trailingIsVisible = true)
     }
 
 }

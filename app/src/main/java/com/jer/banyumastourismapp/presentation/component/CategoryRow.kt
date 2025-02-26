@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import com.jer.banyumastourismapp.R
-import com.jer.banyumastourismapp.common.verySmallIcon
+import com.jer.banyumastourismapp.core.verySmallIcon
 import kotlinx.coroutines.delay
 
 data class Category(

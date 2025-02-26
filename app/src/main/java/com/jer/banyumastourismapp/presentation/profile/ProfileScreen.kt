@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -36,7 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.jer.banyumastourismapp.R
-import com.jer.banyumastourismapp.common.verySmallIcon
+import com.jer.banyumastourismapp.core.verySmallIcon
 import com.jer.banyumastourismapp.presentation.component.DestinationCardLandscape
 import com.jer.banyumastourismapp.presentation.home.User
 import com.jer.banyumastourismapp.presentation.profile.bookmark.BookmarkState
@@ -159,9 +160,15 @@ fun BookmarkList(modifier: Modifier = Modifier, state: BookmarkState, onClick: (
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         contentPadding = PaddingValues(start = 15.dp, end = 30.dp, top = 15.dp, bottom = 15.dp),
         modifier = Modifier.fillMaxWidth()
+
     ) {
         items(state.listBookMarkDestination) { item ->
-            DestinationCardLandscape(destination = item, onClick = onClick)
+            DestinationCardLandscape(
+                destination = item,
+                onClick = onClick,
+                buttonVisibility = false,
+                modifier = Modifier.width(348.dp)
+            )
         }
     }
 }

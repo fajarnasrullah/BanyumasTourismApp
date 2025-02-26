@@ -71,6 +71,7 @@ fun SosmedListScreen(
 
             SearchBarForAll (
                 hint = "Search Story",
+                trailingIsVisible = true,
                 modifier = Modifier
                     .constrainAs(searchbar) {
                         top.linkTo(parent.top)

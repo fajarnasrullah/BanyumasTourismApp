@@ -157,7 +157,7 @@ fun CoreNavigator() {
 //                    navigateToDetail = { navController.navigate(Route.DetailSosmedScreen.route) }
 //                )
                 val mapsViewModel = MapsViewModel()
-                MapsScreen(mapsViewModel = mapsViewModel)
+                MapsScreen(mapsViewModel = mapsViewModel, listDestination = listDestination, navigateToDetail = {})
             }
 
             composable(Route.TicketHistoryScreen.route) {

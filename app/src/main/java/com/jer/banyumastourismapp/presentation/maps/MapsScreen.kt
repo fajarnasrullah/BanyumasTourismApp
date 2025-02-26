@@ -3,12 +3,20 @@ package com.jer.banyumastourismapp.presentation.maps
 import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Icon
@@ -21,10 +29,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import androidx.core.content.ContextCompat
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
@@ -41,11 +53,21 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.jer.banyumastourismapp.R
+import com.jer.banyumastourismapp.domain.model.Destination
+import com.jer.banyumastourismapp.presentation.component.CategoryRow
+import com.jer.banyumastourismapp.presentation.component.DestinationCardLandscape
+import com.jer.banyumastourismapp.presentation.component.SearchBarForAll
+import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
 import timber.log.Timber
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun MapsScreen(modifier: Modifier = Modifier, mapsViewModel: MapsViewModel) {
+fun MapsScreen(
+    modifier: Modifier = Modifier,
+    mapsViewModel: MapsViewModel,
+    listDestination: List<Destination>,
+    navigateToDetail: () -> Unit
+) {
 
     val jakarta = LatLng(-6.200000, 106.816666)
     val banyumas = LatLng(-7.51417, 109.29417)
@@ -102,12 +124,12 @@ fun MapsScreen(modifier: Modifier = Modifier, mapsViewModel: MapsViewModel) {
     )
 
     val uiSettings = MapUiSettings(
-//        myLocationButtonEnabled = true,
+        myLocationButtonEnabled = false,
+        zoomControlsEnabled = false,
         compassEnabled = true,
         mapToolbarEnabled = true,
         scrollGesturesEnabled = true,
         scrollGesturesEnabledDuringRotateOrZoom = true,
-        zoomControlsEnabled = true,
         zoomGesturesEnabled = true,
         rotationGesturesEnabled = true,
         tiltGesturesEnabled = true,
@@ -120,24 +142,26 @@ fun MapsScreen(modifier: Modifier = Modifier, mapsViewModel: MapsViewModel) {
 
      Scaffold(
          floatingActionButton = {
-             Surface (
-                 onClick = {
-                     permissionUserLocation()
-                 },
-                 shape = CircleShape,
-                 color = MaterialTheme.colorScheme.background,
-                 tonalElevation = 8.dp,
-                 modifier = Modifier.size(50.dp)
-             ) {
-                 Icon(
-                     painter =
-                     if (isGrantedPermission) {
-                         painterResource(R.drawable.location_point_icon)
-                     } else {
-                         painterResource(R.drawable.location_disabled_icon)
+             Column {
+                 Surface(
+                     onClick = {
+                         permissionUserLocation()
                      },
-                     contentDescription = null,
-                     tint =
+                     shape = CircleShape,
+                     color = MaterialTheme.colorScheme.background,
+                     tonalElevation = 8.dp,
+                     modifier = Modifier.size(50.dp)
+                 ) {
+                     Icon(
+                         modifier = Modifier.padding(10.dp),
+                         painter =
+                         if (isGrantedPermission) {
+                             painterResource(R.drawable.location_point_icon)
+                         } else {
+                             painterResource(R.drawable.location_disabled_icon)
+                         },
+                         contentDescription = null,
+                         tint =
                          if (isGrantedPermission) {
                              MaterialTheme.colorScheme.primaryContainer
                          } else {
@@ -151,31 +175,111 @@ fun MapsScreen(modifier: Modifier = Modifier, mapsViewModel: MapsViewModel) {
 //                             MaterialTheme.colorScheme.outline
 //                         }
 //                     }
-                 )
+                     )
+                 }
+                 Spacer(modifier = Modifier.height(350.dp))
              }
          },
          modifier = Modifier.fillMaxSize()
      ) { innerPadding ->
 
-        GoogleMap(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxWidth()
-                .fillMaxHeight(fraction = 0.8f),
-            cameraPositionState = cameraPositionState
-            ,
-            properties = mapProperties,
-            uiSettings = uiSettings,
-            onMyLocationButtonClick = { true }
+         ConstraintLayout (
+             modifier = Modifier
+                 .fillMaxSize()
+                 .padding(innerPadding)
+         ) {
 
-        ) {
-            userLocation?.let {
-                Marker(
-                    state = MarkerState(position = it),
-                    title = "Your Location",
-                    snippet = "This is where you are currently located."
-                )
-                cameraPositionState.position = CameraPosition.fromLatLngZoom(it, 10f)}
-        }
+             val (maps, searchBar, category, listSection) = createRefs()
+
+             GoogleMap(
+                 modifier = Modifier
+                     .constrainAs(maps) {
+                         start.linkTo(parent.start)
+                         top.linkTo(parent.top)
+                     }
+                     .padding(innerPadding)
+                     .fillMaxSize(),
+                 cameraPositionState = cameraPositionState,
+                 properties = mapProperties,
+                 uiSettings = uiSettings,
+                 onMyLocationButtonClick = { true }
+
+             ) {
+                 userLocation?.let {
+                     Marker(
+                         state = MarkerState(position = it),
+                         title = "Your Location",
+                         snippet = "This is where you are currently located."
+                     )
+                     cameraPositionState.position = CameraPosition.fromLatLngZoom(it, 10f)}
+             }
+
+             SearchBarForAll(
+                 hint = "Search Destination",
+                 trailingIsVisible = false,
+                 modifier = Modifier
+                     .constrainAs(searchBar) {
+                         top.linkTo(parent.top)
+                     }
+                     .padding(30.dp)
+             )
+
+             CategoryRow(
+                 modifier = Modifier.constrainAs(category) {
+
+                     bottom.linkTo(listSection.top)
+                 }
+             )
+
+             DestinationListRowForMaps(
+                 items = listDestination,
+                 onClick = navigateToDetail,
+                 modifier = Modifier
+                     .constrainAs(listSection) {
+                         start.linkTo(parent.start)
+                         bottom.linkTo(parent.bottom)
+                         width = Dimension.fillToConstraints
+                     }
+                     .padding(bottom = 100.dp)
+
+
+             )
+
+
+         }
+
+
     }
 }
+
+
+@Composable
+fun DestinationListRowForMaps(
+    modifier: Modifier = Modifier,
+    items: List<Destination>,
+    onClick: () -> Unit
+) {
+
+    LazyRow (
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        contentPadding = PaddingValues(start = 30.dp, end = 30.dp, bottom = 30.dp, top = 15.dp),
+        modifier = modifier
+            .fillMaxWidth()
+    ) { items(items) { item ->
+
+        DestinationCardLandscape(
+            destination = item,
+            modifier = Modifier.width(348.dp),
+            onClick = onClick,
+            buttonVisibility = true
+        )
+    }
+
+    }
+
+}
+
+
+
+

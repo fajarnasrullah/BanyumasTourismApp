@@ -69,6 +69,7 @@ fun DestinationListScreen(
 
             SearchBarForAll(
                 hint = "Search Destination",
+                trailingIsVisible = true,
                 modifier = Modifier
                     .constrainAs(searchbar) {
                         top.linkTo(parent.top)
@@ -124,7 +125,8 @@ fun DestinationCardLandscapeColumn(
 
             DestinationCardLandscape(
                 destination = destination[index],
-                onClick = { onClick() }
+                onClick = { onClick() },
+                buttonVisibility = false
             )
         }
 

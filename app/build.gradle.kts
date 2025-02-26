@@ -5,6 +5,7 @@ plugins {
 //    id ("kotlin-kapt")
     id ("kotlin-parcelize")
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
+    alias(libs.plugins.google.gms.google.services)
 
 
 }
@@ -62,6 +63,18 @@ android {
 }
 
 dependencies {
+
+
+
+    //Firebase
+    //realtime database
+    implementation(libs.firebase.database)
+
+
+    //hilt
+    implementation(libs.hilt.android) // Ganti dengan versi terbaru
+    ksp(libs.hilt.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
 
     //timber
     implementation(libs.timber)
