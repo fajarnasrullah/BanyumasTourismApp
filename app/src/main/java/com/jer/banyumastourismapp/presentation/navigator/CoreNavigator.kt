@@ -11,16 +11,19 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.jer.banyumastourismapp.R
 import com.jer.banyumastourismapp.presentation.destination.DestinationListScreen
 import com.jer.banyumastourismapp.presentation.detailDestination
 import com.jer.banyumastourismapp.presentation.detaildestination.DetailDestinationScreen
 import com.jer.banyumastourismapp.presentation.home.HomeScreen
+import com.jer.banyumastourismapp.presentation.home.HomeViewModel
 import com.jer.banyumastourismapp.presentation.home.User
 import com.jer.banyumastourismapp.presentation.itinerary
 import com.jer.banyumastourismapp.presentation.itinerary.ItineraryScreen
@@ -136,17 +139,21 @@ fun CoreNavigator() {
 //            modifier = Modifier.padding(bottom = bottomBarPadding)
         ) {
             composable(Route.HomeScreen.route) {
+                val viewModel: HomeViewModel = hiltViewModel()
+                val destinations = viewModel.destinations.collectAsLazyPagingItems()
+
                 HomeScreen(
                     user = User("Fajar"),
-                    destination = listDestination,
+                    destination = destinations,
                     navigateToDetail = { navController.navigate(Route.DetailDestinationScreen.route) },
                     navigateToItinerary = { navController.navigate(Route.ItineraryScreen.route) }
                 )
             }
             composable(Route.DestinationListScreen.route) {
+                val viewModel: HomeViewModel = hiltViewModel()
+                val destinations = viewModel.destinations.collectAsLazyPagingItems()
                 DestinationListScreen(
-                    user = User("Fajar"),
-                    destination = listDestination,
+                    destination = destinations,
                     navigateToDetail = { navController.navigate(Route.DetailDestinationScreen.route) }
                 )
             }

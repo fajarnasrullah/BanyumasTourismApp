@@ -7,12 +7,13 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.paging.compose.LazyPagingItems
 import com.jer.banyumastourismapp.domain.model.Destination
 
 @Composable
 fun DestinationCardStandRow(
     modifier: Modifier = Modifier,
-    destination: List<Destination>,
+    destination: LazyPagingItems<Destination>,
     onClick: () -> Unit
 ) {
 
@@ -22,8 +23,10 @@ fun DestinationCardStandRow(
         modifier = modifier.fillMaxWidth(),
 
         ) {
-        items(destination.size) {count ->
-            DestinationCardPotrait(destination = destination[count], onClick = {onClick()})
+        items(count = destination.itemCount) {count ->
+            destination[count]?.let {
+                DestinationCardPotrait(destination = it, onClick = {onClick()})
+            }
         }
     }
 

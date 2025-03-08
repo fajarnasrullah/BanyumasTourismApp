@@ -47,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.paging.compose.LazyPagingItems
 import coil.compose.AsyncImage
 import com.jer.banyumastourismapp.R
 import com.jer.banyumastourismapp.core.verySmallIcon
@@ -60,7 +61,7 @@ import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
 fun HomeScreen(
     modifier: Modifier = Modifier,
     user: User,
-    destination: List<Destination>,
+    destination: LazyPagingItems<Destination>,
     navigateToDetail: () -> Unit,
     navigateToItinerary: () -> Unit
 ) {

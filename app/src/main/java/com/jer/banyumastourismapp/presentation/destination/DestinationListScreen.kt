@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.paging.compose.LazyPagingItems
 import com.jer.banyumastourismapp.domain.model.Destination
 import com.jer.banyumastourismapp.presentation.component.CategoryRow
 import com.jer.banyumastourismapp.presentation.component.DestinationCardLandscape
@@ -35,8 +36,7 @@ import dev.chrisbanes.haze.haze
 @Composable
 fun DestinationListScreen(
     modifier: Modifier = Modifier,
-    destination: List<Destination>,
-    user: User,
+    destination: LazyPagingItems<Destination>,
     navigateToDetail: () -> Unit
 ) {
 
@@ -111,7 +111,7 @@ fun DestinationListScreen(
 @Composable
 fun DestinationCardLandscapeColumn(
     modifier: Modifier = Modifier,
-    destination: List<Destination>,
+    destination: LazyPagingItems<Destination>,
     onClick: () -> Unit
 ) {
     LazyColumn(
@@ -121,29 +121,31 @@ fun DestinationCardLandscapeColumn(
 
         modifier = modifier
     ) {
-        items(destination.size) { index ->
+        items(count = destination.itemCount) { index ->
 
-            DestinationCardLandscape(
-                destination = destination[index],
-                onClick = { onClick() },
-                buttonVisibility = false
-            )
+            destination[index]?.let {
+                DestinationCardLandscape(
+                    destination = it,
+                    onClick = { onClick() },
+                    buttonVisibility = false
+                )
+            }
         }
 
     }
 }
 
-@Preview(showBackground = true)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun PreviewDestinationListScreen() {
-    BanyumasTourismAppTheme {
-        DestinationListScreen(
-            user = User("Fajar"),
-                destination = listDestination,
-                    navigateToDetail = {}
-        )
-    }
-
-}
+//@Preview(showBackground = true)
+//@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+//@Composable
+//private fun PreviewDestinationListScreen() {
+//    BanyumasTourismAppTheme {
+//        DestinationListScreen(
+//            user = User("Fajar"),
+//                destination = listDestination,
+//                    navigateToDetail = {}
+//        )
+//    }
+//
+//}
 

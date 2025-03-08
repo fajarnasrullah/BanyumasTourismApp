@@ -362,66 +362,12 @@ val listSosmed = listOf(
 
 val listDestination = listOf(
     Destination(
-        0,
-        "Raja Ampat",
-        "Raja Ampat, Papua Barat",
-        "3 Air  terjun (salah satu nya 20 meter), deck bentuk hati, rumah makan, gazebo, camping ground.3 Air  terjun (salah satu nya 20 meter), deck bentuk hati, rumah makan, gazebo, camping ground.",
+        id = 0,
+        title = "Raja Ampat",
+
+        description = "3 Air  terjun (salah satu nya 20 meter), deck bentuk hati, rumah makan, gazebo, camping ground.3 Air  terjun (salah satu nya 20 meter), deck bentuk hati, rumah makan, gazebo, camping ground.",
+        location = "Raja Ampat, Papua Barat",
         cost = 3500000,
     ),
-    Destination(
-        1,
-        "Raja Ampat",
-        "Raja Ampat, Papua Barat",
-        "3 Air  terjun (salah satu nya 20 meter), deck bentuk hati, rumah makan, gazebo, camping ground.3 Air  terjun (salah satu nya 20 meter), deck bentuk hati, rumah makan, gazebo, camping ground.",
-        cost = 3500000,
-    ),
-    Destination(
-        2,
-        "Raja Ampat",
-        "Raja Ampat, Papua Barat",
-        "3 Air  terjun (salah satu nya 20 meter), deck bentuk hati, rumah makan, gazebo, camping ground.3 Air  terjun (salah satu nya 20 meter), deck bentuk hati, rumah makan, gazebo, camping ground.",
-        cost = 3500000,
-    ),
-    Destination(
-        3,
-        "Raja Ampat",
-        "Raja Ampat, Papua Barat",
-        "3 Air  terjun (salah satu nya 20 meter), deck bentuk hati, rumah makan, gazebo, camping ground.3 Air  terjun (salah satu nya 20 meter), deck bentuk hati, rumah makan, gazebo, camping ground.",
-        cost = 3500000,
-    ),
-    Destination(
-        4,
-        "Raja Ampat",
-        "Raja Ampat, Papua Barat",
-        "3 Air  terjun (salah satu nya 20 meter), deck bentuk hati, rumah makan, gazebo, camping ground.3 Air  terjun (salah satu nya 20 meter), deck bentuk hati, rumah makan, gazebo, camping ground.",
-        cost = 3500000,
-    ),
-    Destination(
-        5,
-        "Raja Ampat",
-        "Raja Ampat, Papua Barat",
-        "3 Air  terjun (salah satu nya 20 meter), deck bentuk hati, rumah makan, gazebo, camping ground.3 Air  terjun (salah satu nya 20 meter), deck bentuk hati, rumah makan, gazebo, camping ground.",
-        cost = 3500000,
-    ),
-    Destination(
-        6,
-        "Raja Ampat",
-        "Raja Ampat, Papua Barat",
-        "3 Air  terjun (salah satu nya 20 meter), deck bentuk hati, rumah makan, gazebo, camping ground.3 Air  terjun (salah satu nya 20 meter), deck bentuk hati, rumah makan, gazebo, camping ground.",
-        cost = 3500000,
-    ),
-    Destination(
-        7,
-        "Raja Ampat",
-        "Raja Ampat, Papua Barat",
-        "3 Air  terjun (salah satu nya 20 meter), deck bentuk hati, rumah makan, gazebo, camping ground.3 Air  terjun (salah satu nya 20 meter), deck bentuk hati, rumah makan, gazebo, camping ground.",
-        cost = 3500000,
-    ),
-    Destination(
-        8,
-        "Raja Ampat",
-        "Raja Ampat, Papua Barat",
-        "3 Air  terjun (salah satu nya 20 meter), deck bentuk hati, rumah makan, gazebo, camping ground.3 Air  terjun (salah satu nya 20 meter), deck bentuk hati, rumah makan, gazebo, camping ground.",
-        cost = 3500000,
-    ),
+
 )

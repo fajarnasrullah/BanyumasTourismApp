@@ -107,7 +107,7 @@ fun DestinationCardLandscape(
 
                     Text(
                         text = destination.title,
-                        fontSize = TextUnit(14f, Sp),
+                        fontSize = 12.sp,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onBackground
                     )
@@ -115,15 +115,17 @@ fun DestinationCardLandscape(
 
                     Text(
                         text = destination.location,
-                        fontSize = TextUnit(10f, Sp),
-                        color = MaterialTheme.colorScheme.outline
+                        fontSize = 10.sp,
+                        color = MaterialTheme.colorScheme.outline,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
 
                     Spacer(modifier = Modifier.height(5.dp))
 
                     Text(
                         text = destination.description ?: "",
-                        fontSize = TextUnit(8f, Sp),
+                        fontSize = 8.sp,
                         color = MaterialTheme.colorScheme.onBackground,
                         maxLines = if (buttonVisibility) 2 else 3,
                         overflow = TextOverflow.Ellipsis
@@ -240,7 +242,7 @@ fun DestinationCardPotrait(
 
     Card(
         modifier = Modifier
-//            .height(230.dp)
+            .height(250.dp)
             .width(174.dp),
         onClick = onClick,
         shape = ShapeDefaults.Large,
@@ -248,46 +250,53 @@ fun DestinationCardPotrait(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onPrimary)
     ) {
         Column(
-            verticalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.Start,
             modifier = Modifier
                 .padding(all = 10.dp),
 
         ) {
-            if (destination.imageUrl == null) {
-                Image(
-                    painter = painterResource(id = R.drawable.viewdefault),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .clip(MaterialTheme.shapes.large)
-                        .size(158.dp)
-                )
-            } else {
-                AsyncImage(
-                    model = destination.imageUrl,
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .clip(MaterialTheme.shapes.large)
-                        .size(158.dp)
-                )
+            Column(){
+                if (destination.imageUrl == null) {
+                    Image(
+                        painter = painterResource(id = R.drawable.viewdefault),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .clip(MaterialTheme.shapes.large)
+                            .size(158.dp)
+                    )
+                } else {
+                    AsyncImage(
+                        model = destination.imageUrl,
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .clip(MaterialTheme.shapes.large)
+                            .size(158.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.height(5.dp))
+
+                Column() {
+                    Text(
+                        text = destination.title,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+
+
+                    Text(
+                        text = destination.location,
+                        fontSize = TextUnit(10f, Sp),
+                        color = MaterialTheme.colorScheme.outline,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+
+                    )
+                }
             }
-            Spacer(modifier = Modifier.height(5.dp))
-
-            Text(
-                text = destination.title,
-                fontSize = TextUnit(14f, Sp),
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-
-
-            Text(
-                text = destination.location,
-                fontSize = TextUnit(10f, Sp),
-                color = MaterialTheme.colorScheme.outline
-            )
 
             Spacer(modifier = Modifier.height(5.dp))
 
@@ -344,15 +353,15 @@ fun DestinationCardPotrait(
 
 
 
-@Preview
-@Composable
-private fun PreviewDestinationCardRow() {
-    BanyumasTourismAppTheme {
-        DestinationCardStandRow(destination = listDestination,
-            onClick = {}
-        )
-    }
-}
+//@Preview
+//@Composable
+//private fun PreviewDestinationCardRow() {
+//    BanyumasTourismAppTheme {
+//        DestinationCardStandRow(destination = listDestination,
+//            onClick = {}
+//        )
+//    }
+//}
 
 @Preview(showBackground = true)
 @Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
@@ -373,23 +382,23 @@ private fun PreviewDestinationCard() {
 
 }
 
-@Preview(showBackground = true)
-@Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
-@Composable
-private fun PreviewDestinationCardLandscape() {
-
-    BanyumasTourismAppTheme {
-        DestinationCardLandscape(
-            destination = Destination(
-                0,
-                "Raja Ampat",
-                "Raja Ampat, Papua Barat",
-                "3 Air  terjun (salah satu nya 20 meter), deck bentuk hati, rumah makan, gazebo, camping ground.3 Air  terjun (salah satu nya 20 meter), deck bentuk hati, rumah makan, gazebo, camping ground.",
-                3500000,
-            ),
-            buttonVisibility = true,
-            onClick = {}
-        )
-    }
-
-}
+//@Preview(showBackground = true)
+//@Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
+//@Composable
+//private fun PreviewDestinationCardLandscape() {
+//
+//    BanyumasTourismAppTheme {
+//        DestinationCardLandscape(
+//            destination = Destination(
+//                0,
+//                "Raja Ampat",
+//                "Raja Ampat, Papua Barat",
+//                "3 Air  terjun (salah satu nya 20 meter), deck bentuk hati, rumah makan, gazebo, camping ground.3 Air  terjun (salah satu nya 20 meter), deck bentuk hati, rumah makan, gazebo, camping ground.",
+//                3500000,
+//            ),
+//            buttonVisibility = true,
+//            onClick = {}
+//        )
+//    }
+//
+//}

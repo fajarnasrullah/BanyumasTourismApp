@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     id("com.google.devtools.ksp")
 //    id ("kotlin-kapt")
+    id("com.google.dagger.hilt.android")
     id ("kotlin-parcelize")
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
     alias(libs.plugins.google.gms.google.services)
@@ -65,6 +66,9 @@ android {
 dependencies {
 
 
+    //Paging3
+    implementation(libs.androidx.paging.runtime)
+    implementation(libs.androidx.paging.compose)
 
     //Firebase
     //realtime database
@@ -72,7 +76,7 @@ dependencies {
 
 
     //hilt
-    implementation(libs.hilt.android) // Ganti dengan versi terbaru
+    implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
 

@@ -587,12 +587,15 @@ fun ContentPlaceCard(
 data class DetailDestination(
     val title: String,
     val imageUrl: String? = null,
-    val location: String,
     val description: String,
+    val location: String,
+    val latitude: Double? = null,
+    val longitude: Double? = null,
     val price: Int,
     val timeOpen: String,
     val rating: Float,
     val ig: String,
+    val igUrl: String? = null,
     val facility: List<Facility>,
     val route: String,
     val accessibility: List<String>,
@@ -629,8 +632,8 @@ private fun PrevDetailDestination() {
         DetailDestinationScreen(detailDestination =
             DetailDestination(
                 title = "Curug Bayan",
-                location = "Desa Ketengger, Baturraden, Banyumas",
                 description = "Curug Bayan merupakan salah satu objek wisata yang berada di desa Ketengger, kecamatan Baturaden, kabupaten Banyumas. Curug Bayan memiliki keunikan tersendiri karena terletak dibawah lereng gunung slamet dan memiliki suasana yang sejuk dan dingin",
+                location = "Desa Ketengger, Baturraden, Banyumas",
                 price = 150000,
                 timeOpen = "08.00 - 17.00",
                 rating = 5f,

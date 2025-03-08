@@ -8,10 +8,10 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 @Entity
 data class Destination(
-    @PrimaryKey(autoGenerate = true) val id: Int ,
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val title: String = "",
+    val imageUrl: String? = "",
+    val description: String? = "" ,
     val location: String = "",
-    val description: String? = null ,
     val cost: Int = 0,
-    val imageUrl: String? = null
 ): Parcelable
