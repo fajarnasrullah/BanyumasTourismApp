@@ -62,7 +62,7 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     user: User,
     destination: LazyPagingItems<Destination>,
-    navigateToDetail: () -> Unit,
+    navigateToDetail: (Destination) -> Unit,
     navigateToItinerary: () -> Unit
 ) {
 
@@ -167,7 +167,7 @@ fun HomeScreen(
                     .constrainAs(list) {
                         top.linkTo(subTitle.bottom)
                     },
-                onClick = { navigateToDetail()}
+                onClick = { navigateToDetail(it)}
             )
 
             Text(
@@ -190,7 +190,7 @@ fun HomeScreen(
                         top.linkTo(subTitle2.bottom)
                     }
                     .padding(bottom = 120.dp),
-                onClick = { navigateToDetail() }
+                onClick = { navigateToDetail(it) }
             )
 
 

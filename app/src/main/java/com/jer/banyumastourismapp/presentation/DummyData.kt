@@ -1,9 +1,9 @@
 package com.jer.banyumastourismapp.presentation
 
 import com.jer.banyumastourismapp.presentation.detaildestination.DetailDestination
-import com.jer.banyumastourismapp.presentation.detaildestination.Facility
 import com.jer.banyumastourismapp.domain.model.City
 import com.jer.banyumastourismapp.domain.model.Destination
+import com.jer.banyumastourismapp.domain.model.Facility
 import com.jer.banyumastourismapp.domain.model.Itinerary
 import com.jer.banyumastourismapp.domain.model.Plan
 import com.jer.banyumastourismapp.presentation.sosmed.Sosmed

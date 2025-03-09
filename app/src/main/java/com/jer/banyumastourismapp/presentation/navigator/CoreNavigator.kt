@@ -19,6 +19,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.jer.banyumastourismapp.R
+import com.jer.banyumastourismapp.domain.model.Destination
 import com.jer.banyumastourismapp.presentation.destination.DestinationListScreen
 import com.jer.banyumastourismapp.presentation.detailDestination
 import com.jer.banyumastourismapp.presentation.detaildestination.DetailDestinationScreen
@@ -145,7 +146,7 @@ fun CoreNavigator() {
                 HomeScreen(
                     user = User("Fajar"),
                     destination = destinations,
-                    navigateToDetail = { navController.navigate(Route.DetailDestinationScreen.route) },
+                    navigateToDetail = { navigateToDetail(navController, it) },
                     navigateToItinerary = { navController.navigate(Route.ItineraryScreen.route) }
                 )
             }
@@ -154,7 +155,7 @@ fun CoreNavigator() {
                 val destinations = viewModel.destinations.collectAsLazyPagingItems()
                 DestinationListScreen(
                     destination = destinations,
-                    navigateToDetail = { navController.navigate(Route.DetailDestinationScreen.route) }
+                    navigateToDetail = { navigateToDetail(navController, it) }
                 )
             }
 
@@ -164,7 +165,11 @@ fun CoreNavigator() {
 //                    navigateToDetail = { navController.navigate(Route.DetailSosmedScreen.route) }
 //                )
                 val mapsViewModel = MapsViewModel()
-                MapsScreen(mapsViewModel = mapsViewModel, listDestination = listDestination, navigateToDetail = {})
+                MapsScreen(
+                    mapsViewModel = mapsViewModel,
+                    listDestination = listDestination,
+                    navigateToDetail = { }
+                )
             }
 
             composable(Route.TicketHistoryScreen.route) {
@@ -178,11 +183,15 @@ fun CoreNavigator() {
             }
 
             composable(Route.DetailDestinationScreen.route) {
-                DetailDestinationScreen(
-                    detailDestination = detailDestination,
-                    navToOrders = {navController.navigate(Route.OrdersFormScreen.route)},
-                    navBack = {navController.navigateUp()}
-                )
+
+                navController.previousBackStackEntry?.savedStateHandle?.get<Destination>("destination")?.let {destination ->
+                    DetailDestinationScreen(
+                        detailDestination = destination,
+                        navToOrders = {navController.navigate(Route.OrdersFormScreen.route)},
+                        navBack = {navController.navigateUp()}
+                    )
+                }
+
             }
 
             composable(Route.DetailSosmedScreen.route) {
@@ -225,10 +234,10 @@ fun navigateToTab(navController: NavController, route: String) {
     }
 }
 
-//private fun navigateToDetail(navController: NavController, article: Article) {
-//    navController.currentBackStackEntry?.savedStateHandle?.set("article", article)
-//    navController.navigate(Route.DetailsScreen.route)
-//}
+private fun navigateToDetail(navController: NavController, destination: Destination) {
+    navController.currentBackStackEntry?.savedStateHandle?.set("destination", destination)
+    navController.navigate(Route.DetailDestinationScreen.route)
+}
 
 
 

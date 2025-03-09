@@ -57,6 +57,8 @@ import androidx.constraintlayout.compose.Dimension
 import coil.compose.AsyncImage
 import com.jer.banyumastourismapp.R
 import com.jer.banyumastourismapp.core.verySmallIcon
+import com.jer.banyumastourismapp.domain.model.Destination
+import com.jer.banyumastourismapp.domain.model.Facility
 import com.jer.banyumastourismapp.presentation.component.AppBarCustom
 import com.jer.banyumastourismapp.presentation.component.BottomBarDetail
 import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
@@ -64,7 +66,7 @@ import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
 @Composable
 fun DetailDestinationScreen(
     modifier: Modifier = Modifier,
-    detailDestination: DetailDestination,
+    detailDestination: Destination,
     navToOrders: () -> Unit,
     navBack: () -> Unit
 ) {
@@ -74,7 +76,7 @@ fun DetailDestinationScreen(
     Scaffold (
         bottomBar = {
             BottomBarDetail(
-                price = detailDestination.price.toString(),
+                price = detailDestination.cost.toString(),
                 textButton = "Book",
                 onClick = {navToOrders()} )
                     },
@@ -91,7 +93,7 @@ fun DetailDestinationScreen(
             val (appBar, image, placeCard, content,) = createRefs()
 
 
-            if (detailDestination.imageUrl == null) {
+            if (detailDestination.imageUrl == "") {
                 Image(
                     painter = painterResource(id = R.drawable.viewdefault),
                     contentDescription = null,
@@ -169,7 +171,7 @@ fun DetailDestinationScreen(
 
 
 @Composable
-fun RouteAndAccessibility(modifier: Modifier = Modifier, detailDestination: DetailDestination) {
+fun RouteAndAccessibility(modifier: Modifier = Modifier, detailDestination: Destination) {
     Column (
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.Start
@@ -293,7 +295,7 @@ fun CardExpanded(
 @Composable
 fun PlaceDetailContent(
     modifier: Modifier = Modifier,
-    detailDestination: DetailDestination
+    detailDestination: Destination
     ) {
 
     Column (
@@ -324,7 +326,7 @@ fun PlaceDetailContent(
 }
 
 @Composable
-fun FacilityContent(modifier: Modifier = Modifier, detailDestination: DetailDestination) {
+fun FacilityContent(modifier: Modifier = Modifier, detailDestination: Destination) {
     Column (
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.Start
@@ -363,14 +365,14 @@ fun FacilityContent(modifier: Modifier = Modifier, detailDestination: DetailDest
 }
 
 @Composable
-fun ItemFacility1(modifier: Modifier = Modifier, detailDestination: DetailDestination) {
+fun ItemFacility1(modifier: Modifier = Modifier, detailDestination: Destination) {
     detailDestination.facility.take(3).forEach{ item ->
         Row(
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-            if (item.icon == null) {
+            if (item.icon == "") {
                 Image(
                     painterResource(id = R.drawable.waterfallicon),
                     contentDescription = null,
@@ -397,7 +399,7 @@ fun ItemFacility1(modifier: Modifier = Modifier, detailDestination: DetailDestin
 }
 
 @Composable
-fun ItemFacility2(modifier: Modifier = Modifier, detailDestination: DetailDestination) {
+fun ItemFacility2(modifier: Modifier = Modifier, detailDestination: Destination) {
     detailDestination.facility.takeLast(3).forEach{ item ->
         Row(
             horizontalArrangement = Arrangement.Start,
@@ -405,7 +407,7 @@ fun ItemFacility2(modifier: Modifier = Modifier, detailDestination: DetailDestin
 
             ) {
 
-            if (item.icon == null) {
+            if (item.icon == "") {
                 Image(
                     painterResource(id = R.drawable.waterfallicon),
                     contentDescription = null,
@@ -432,7 +434,7 @@ fun ItemFacility2(modifier: Modifier = Modifier, detailDestination: DetailDestin
 @Composable
 fun PlaceCard(
     modifier: Modifier = Modifier,
-    detailDestination: DetailDestination,
+    detailDestination: Destination,
     onClickLocation: () -> Unit
 ) {
     
@@ -604,10 +606,7 @@ data class DetailDestination(
 
 
 
-data class Facility(
-    val text: String,
-    val icon: String? = null,
-)
+
 
 data class RouteDestination(
     val transport: String,
@@ -630,13 +629,13 @@ private fun PrevDetailDestination() {
     )
     BanyumasTourismAppTheme {
         DetailDestinationScreen(detailDestination =
-            DetailDestination(
+            Destination(
                 title = "Curug Bayan",
                 description = "Curug Bayan merupakan salah satu objek wisata yang berada di desa Ketengger, kecamatan Baturaden, kabupaten Banyumas. Curug Bayan memiliki keunikan tersendiri karena terletak dibawah lereng gunung slamet dan memiliki suasana yang sejuk dan dingin",
                 location = "Desa Ketengger, Baturraden, Banyumas",
-                price = 150000,
+                cost = 150000,
                 timeOpen = "08.00 - 17.00",
-                rating = 5f,
+                rating = 5.0,
                 ig = "curug_bayan",
                 facility = listFacilityDummy,
                 route = "Curug Bayan merupakan salah satu objek wisata yang berada di desa Ketengger, kecamatan Baturaden, kabupaten Banyumas. Curug Bayan memiliki keunikan tersendiri karena terletak dibawah lereng gunung slamet dan memiliki suasana yang sejuk dan dingin",

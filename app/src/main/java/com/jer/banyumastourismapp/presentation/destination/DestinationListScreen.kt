@@ -37,7 +37,7 @@ import dev.chrisbanes.haze.haze
 fun DestinationListScreen(
     modifier: Modifier = Modifier,
     destination: LazyPagingItems<Destination>,
-    navigateToDetail: () -> Unit
+    navigateToDetail: (Destination) -> Unit
 ) {
 
     val scrollState = rememberScrollState()
@@ -91,7 +91,7 @@ fun DestinationListScreen(
 
             DestinationCardLandscapeColumn(
                 destination = destination,
-                onClick = { navigateToDetail() },
+                onClick = { navigateToDetail(it) },
                 modifier = Modifier
                     .constrainAs(destinationList) {
                         top.linkTo(category.bottom)
@@ -112,7 +112,7 @@ fun DestinationListScreen(
 fun DestinationCardLandscapeColumn(
     modifier: Modifier = Modifier,
     destination: LazyPagingItems<Destination>,
-    onClick: () -> Unit
+    onClick: (Destination) -> Unit
 ) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(15.dp),
@@ -126,7 +126,7 @@ fun DestinationCardLandscapeColumn(
             destination[index]?.let {
                 DestinationCardLandscape(
                     destination = it,
-                    onClick = { onClick() },
+                    onClick = { onClick(it) },
                     buttonVisibility = false
                 )
             }

@@ -53,14 +53,14 @@ fun DestinationCardLandscape(
     modifier: Modifier = Modifier,
     destination: Destination,
     buttonVisibility: Boolean,
-    onClick: () -> Unit
+    onClick: (Destination) -> Unit
 ) {
 
 
     Card(
         modifier = modifier
             .height(if (buttonVisibility) 160.dp else 130.dp)
-            .clickable { onClick() },
+            .clickable { onClick(destination) },
         shape = ShapeDefaults.Large,
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onPrimary)
@@ -73,9 +73,9 @@ fun DestinationCardLandscape(
                 .padding(all = 10.dp),
 
             ) {
-            if (destination.imageUrl == null) {
+            if (destination.imageUrl == "") {
                 Image(
-                    painter = painterResource(id = R.drawable.viewdefault),
+                    painter = painterResource(id = R.drawable.picturedummy),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -237,14 +237,14 @@ fun DestinationCardLandscape(
 fun DestinationCardPotrait(
     modifier: Modifier = Modifier,
     destination: Destination,
-    onClick: () -> Unit
+    onClick: (Destination) -> Unit
 ) {
 
     Card(
         modifier = Modifier
             .height(250.dp)
             .width(174.dp),
-        onClick = onClick,
+        onClick = { onClick(destination) },
         shape = ShapeDefaults.Large,
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onPrimary)
@@ -253,13 +253,15 @@ fun DestinationCardPotrait(
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.Start,
             modifier = Modifier
-                .padding(all = 10.dp),
+                .padding(all = 10.dp)
+                .fillMaxHeight(),
 
         ) {
-            Column(){
-                if (destination.imageUrl == null) {
+            Column(
+            ){
+                if (destination.imageUrl == "") {
                     Image(
-                        painter = painterResource(id = R.drawable.viewdefault),
+                        painter = painterResource(id = R.drawable.picturedummy),
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
@@ -289,7 +291,7 @@ fun DestinationCardPotrait(
 
                     Text(
                         text = destination.location,
-                        fontSize = TextUnit(10f, Sp),
+                        fontSize = 10.sp,
                         color = MaterialTheme.colorScheme.outline,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis
@@ -298,7 +300,6 @@ fun DestinationCardPotrait(
                 }
             }
 
-            Spacer(modifier = Modifier.height(5.dp))
 
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -373,6 +374,7 @@ private fun PreviewDestinationCard() {
             0,
             "Raja Ampat",
             "Raja Ampat, Papua Barat",
+            location = "jalan jalanan afjicbfwefuiwebfwneiufbwenfiouwebfnweufknwiuvwsnfuwiefhnweiu",
             cost = 3500000,
 
         ),

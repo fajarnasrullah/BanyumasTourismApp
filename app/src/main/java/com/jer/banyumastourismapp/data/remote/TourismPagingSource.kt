@@ -6,7 +6,6 @@ import androidx.paging.PagingState
 import com.google.firebase.database.FirebaseDatabase
 import com.jer.banyumastourismapp.domain.model.Destination
 import kotlinx.coroutines.tasks.await
-import timber.log.Timber
 
 class TourismPagingSource(
     private val db: FirebaseDatabase
@@ -36,9 +35,22 @@ class TourismPagingSource(
                     val tempDestination = Destination(
                         id = listDestinations.size,
                         title = it.title,
-                        location = it.location,
+                        imageUrl = it.imageUrl,
+                        imageList = it.imageList,
                         description = it.description,
+                        location = it.location,
+                        latitude = it.latitude,
+                        longitude = it.longitude,
                         cost = it.cost,
+                        timeOpen = it.timeOpen,
+                        rating = it.rating,
+                        ig = it.ig,
+                        igUrl = it.igUrl,
+                        facility = it.facility,
+                        route = it.route,
+                        accessibility = it.accessibility,
+                        tips = it.tips
+
                     )
                     listDestinations.add(tempDestination)
                 }

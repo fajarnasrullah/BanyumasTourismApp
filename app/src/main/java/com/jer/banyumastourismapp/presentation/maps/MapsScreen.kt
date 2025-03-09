@@ -66,7 +66,7 @@ fun MapsScreen(
     modifier: Modifier = Modifier,
     mapsViewModel: MapsViewModel,
     listDestination: List<Destination>,
-    navigateToDetail: () -> Unit
+    navigateToDetail: (Destination) -> Unit
 ) {
 
     val jakarta = LatLng(-6.200000, 106.816666)
@@ -257,7 +257,7 @@ fun MapsScreen(
 fun DestinationListRowForMaps(
     modifier: Modifier = Modifier,
     items: List<Destination>,
-    onClick: () -> Unit
+    onClick: (Destination) -> Unit
 ) {
 
     LazyRow (

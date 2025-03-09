@@ -14,7 +14,7 @@ import com.jer.banyumastourismapp.domain.model.Destination
 fun DestinationCardStandRow(
     modifier: Modifier = Modifier,
     destination: LazyPagingItems<Destination>,
-    onClick: () -> Unit
+    onClick: (Destination) -> Unit
 ) {
 
     LazyRow (
@@ -25,7 +25,7 @@ fun DestinationCardStandRow(
         ) {
         items(count = destination.itemCount) {count ->
             destination[count]?.let {
-                DestinationCardPotrait(destination = it, onClick = {onClick()})
+                DestinationCardPotrait(destination = it, onClick = {onClick(it)})
             }
         }
     }

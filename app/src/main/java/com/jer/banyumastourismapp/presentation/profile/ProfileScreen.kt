@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.jer.banyumastourismapp.R
 import com.jer.banyumastourismapp.core.verySmallIcon
+import com.jer.banyumastourismapp.domain.model.Destination
 import com.jer.banyumastourismapp.presentation.component.DestinationCardLandscape
 import com.jer.banyumastourismapp.presentation.home.User
 import com.jer.banyumastourismapp.presentation.profile.bookmark.BookmarkState
@@ -48,7 +49,7 @@ import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
 fun ProfileScreen(
     user: User,
     state: BookmarkState,
-    navigateToDetail: () -> Unit,
+    navigateToDetail: (Destination) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column (
@@ -153,7 +154,7 @@ fun ProfileScreen(
 }
 
 @Composable
-fun BookmarkList(modifier: Modifier = Modifier, state: BookmarkState, onClick: () -> Unit) {
+fun BookmarkList(modifier: Modifier = Modifier, state: BookmarkState, onClick: (Destination) -> Unit) {
 
     LazyRow (
         verticalAlignment = Alignment.CenterVertically,
