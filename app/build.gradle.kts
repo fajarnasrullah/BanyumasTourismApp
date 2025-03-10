@@ -66,6 +66,10 @@ android {
 dependencies {
 
 
+    //coroutine
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.androidx.runtime.android)
+
     //Paging3
     implementation(libs.androidx.paging.runtime)
     implementation(libs.androidx.paging.compose)
@@ -73,6 +77,13 @@ dependencies {
     //Firebase
     //realtime database
     implementation(libs.firebase.database)
+    //auth
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth)
+    implementation(libs.androidx.credentials)
+    implementation(libs.play.services.auth)
+    implementation(libs.androidx.credentials.play.services.auth)
+    implementation(libs.googleid)
 
 
     //hilt

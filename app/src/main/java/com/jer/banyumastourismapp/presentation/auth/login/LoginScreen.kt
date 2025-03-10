@@ -1,6 +1,8 @@
 package com.jer.banyumastourismapp.presentation.auth.login
 
 import android.content.res.Configuration
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -26,13 +28,17 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -43,17 +49,105 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.credentials.CredentialManager
+import androidx.credentials.CustomCredential
+import androidx.credentials.GetCredentialRequest
+import androidx.credentials.GetCredentialResponse
+import androidx.credentials.exceptions.GetCredentialException
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import com.jer.banyumastourismapp.R
 import com.jer.banyumastourismapp.core.verySmallIcon
+import com.jer.banyumastourismapp.presentation.auth.AuthViewModel
 import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.coroutineScope
 
 @Composable
-fun LoginScreen(modifier: Modifier = Modifier) {
-
+fun LoginScreen(
+    modifier: Modifier = Modifier,
+    navigateToHome: () -> Unit,
+    viewModel: AuthViewModel
+) {
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var pwVisible by remember { mutableStateOf(false) }
+
+    val coroutineScope = rememberCoroutineScope()
+    val signinResult by viewModel.signInResult.collectAsState()
+    val context = LocalContext.current
+
+     fun signIn() {
+        val credentialManager = CredentialManager.create(context)
+        val googleIdOption = GetGoogleIdOption.Builder()
+            .setFilterByAuthorizedAccounts(false)
+            .setServerClientId(context.getString(R.string.web_client_id))
+            .build()
+
+
+        val request = GetCredentialRequest.Builder()
+            .addCredentialOption(googleIdOption)
+            .build()
+
+        coroutineScope.launch {
+            fun onSignInFailure(message: String) {
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            }
+            try {
+                val result: GetCredentialResponse = credentialManager.getCredential(
+                    request = request,
+                    context = context,
+                )
+                when (val credential = result.credential) {
+                    is GoogleIdTokenCredential -> {
+                        try {
+                            val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
+                            viewModel.signInWithGoogle(googleIdTokenCredential.idToken)
+                        } catch (e: GoogleIdTokenParsingException) {
+                            Log.e("LoginScreen", "Failed, Google ID token parsing is invalid.", e)
+                            onSignInFailure("Failed, Google ID token parsing is invalid.")
+                        }
+                    }
+                    else -> {
+                        Log.e("LoginScreen", "Unknown credential type.")
+                        onSignInFailure("Unknown credential type.")
+                    }
+                }
+            } catch (e: GetCredentialException) {
+                Log.e("Error Credential", e.message.toString())
+                onSignInFailure(e.message.toString())
+            }
+
+        }
+
+
+    }
+
+
+
+
+    LaunchedEffect(signinResult) {
+        signinResult?.let { result ->
+            if (result.isSuccess) {
+                val user = result.getOrNull()
+                if (user != null) {
+                    navigateToHome()
+                }
+            } else {
+                Log.e("LoginScreen", "Sign in failed: ${result.exceptionOrNull()}")
+            }
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        val currentUser = viewModel.getCurrentUser()
+        if (currentUser != null) {
+            navigateToHome()
+        }
+    }
 
     Column (
         verticalArrangement = Arrangement.Center,
@@ -188,7 +282,7 @@ fun LoginScreen(modifier: Modifier = Modifier) {
                 .fillMaxWidth()
                 .height(56.dp),
             onClick = {
-
+                signIn()
             }
         ) {
 
@@ -223,9 +317,11 @@ fun LoginScreen(modifier: Modifier = Modifier) {
 
 }
 
-@Preview(showBackground = true)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun PrevLoginScreen() {
-    BanyumasTourismAppTheme{ LoginScreen() }
-}
+
+
+//@Preview(showBackground = true)
+//@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+//@Composable
+//private fun PrevLoginScreen() {
+//    BanyumasTourismAppTheme{ LoginScreen() }
+//}

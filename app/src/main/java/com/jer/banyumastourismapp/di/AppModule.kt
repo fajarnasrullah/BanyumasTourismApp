@@ -2,6 +2,7 @@ package com.jer.banyumastourismapp.di
 
 import android.app.Application
 import androidx.room.Room
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.jer.banyumastourismapp.core.Const.DB_NAME_ROOM
 import com.jer.banyumastourismapp.data.local.DaoDestination
@@ -9,8 +10,10 @@ import com.jer.banyumastourismapp.data.local.DatabaseTourism
 import com.jer.banyumastourismapp.data.local.ItsTypeConverter
 import com.jer.banyumastourismapp.data.repository.TourismRepositoryImpl
 import com.jer.banyumastourismapp.domain.repository.TourismRepository
+import com.jer.banyumastourismapp.domain.usecase.tourism.GetCurrentUser
 import com.jer.banyumastourismapp.domain.usecase.tourism.GetDestination
 import com.jer.banyumastourismapp.domain.usecase.tourism.GetDestinations
+import com.jer.banyumastourismapp.domain.usecase.tourism.SigninWithGoogle
 import com.jer.banyumastourismapp.domain.usecase.tourism.TourismUseCase
 import dagger.Module
 import dagger.Provides
@@ -24,6 +27,11 @@ import javax.inject.Singleton
 object AppModule {
 
 
+    @Provides
+    @Singleton
+    fun provideFirebaseAuth(): FirebaseAuth {
+        return FirebaseAuth.getInstance()
+    }
 
     @Provides
     @Singleton
@@ -50,8 +58,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideTourismRepository(db: FirebaseDatabase, daoDestination: DaoDestination): TourismRepository {
-        return TourismRepositoryImpl(db, daoDestination)
+    fun provideTourismRepository(db: FirebaseDatabase, daoDestination: DaoDestination, auth: FirebaseAuth): TourismRepository {
+        return TourismRepositoryImpl(db, daoDestination, auth)
     }
 
     @Provides
@@ -59,7 +67,9 @@ object AppModule {
     fun provideTourismUsecase(repository: TourismRepository): TourismUseCase {
         return TourismUseCase(
             getDestinations = GetDestinations(repository),
-            getDestination = GetDestination(repository)
+            getDestination = GetDestination(repository),
+            getCurrentUser = GetCurrentUser(repository),
+            signinWithGoogle = SigninWithGoogle(repository)
         )
     }
 

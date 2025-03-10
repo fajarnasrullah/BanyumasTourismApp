@@ -18,8 +18,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.google.firebase.auth.FirebaseAuth
 import com.jer.banyumastourismapp.R
 import com.jer.banyumastourismapp.domain.model.Destination
+import com.jer.banyumastourismapp.domain.usecase.tourism.GetCurrentUser
+import com.jer.banyumastourismapp.presentation.auth.AuthViewModel
+import com.jer.banyumastourismapp.presentation.auth.login.LoginScreen
 import com.jer.banyumastourismapp.presentation.destination.DestinationListScreen
 import com.jer.banyumastourismapp.presentation.detailDestination
 import com.jer.banyumastourismapp.presentation.detaildestination.DetailDestinationScreen
@@ -143,11 +147,21 @@ fun CoreNavigator() {
                 val viewModel: HomeViewModel = hiltViewModel()
                 val destinations = viewModel.destinations.collectAsLazyPagingItems()
 
+
                 HomeScreen(
                     user = User("Fajar"),
                     destination = destinations,
                     navigateToDetail = { navigateToDetail(navController, it) },
-                    navigateToItinerary = { navController.navigate(Route.ItineraryScreen.route) }
+                    navigateToItinerary = { navController.navigate(Route.ItineraryScreen.route) },
+                    navigateToLogin = {navController.navigate(Route.LoginScreen.route)}
+                )
+            }
+            composable(Route.LoginScreen.route) {
+                val viewModel: AuthViewModel = hiltViewModel()
+
+                LoginScreen(
+                    navigateToHome = { navController.navigate(Route.HomeScreen.route) },
+                    viewModel = viewModel
                 )
             }
             composable(Route.DestinationListScreen.route) {

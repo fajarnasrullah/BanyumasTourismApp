@@ -1,6 +1,7 @@
 package com.jer.banyumastourismapp.domain.repository
 
 import androidx.paging.PagingData
+import com.google.firebase.auth.FirebaseUser
 import com.jer.banyumastourismapp.domain.model.Destination
 import kotlinx.coroutines.flow.Flow
 
@@ -11,4 +12,7 @@ interface TourismRepository {
     suspend fun insertDestination(destination: Destination)
     suspend fun deleteDestination(destination: Destination)
     fun selectArticles(): Flow<List<Destination>>
+
+    suspend fun signInWithGoogle(idToken: String): Result<FirebaseUser?>
+    fun getCurrentUser(): FirebaseUser?
 }

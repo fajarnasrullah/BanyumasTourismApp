@@ -30,6 +30,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -49,6 +50,9 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.paging.compose.LazyPagingItems
 import coil.compose.AsyncImage
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
 import com.jer.banyumastourismapp.R
 import com.jer.banyumastourismapp.core.verySmallIcon
 import com.jer.banyumastourismapp.domain.model.Destination
@@ -63,10 +67,18 @@ fun HomeScreen(
     user: User,
     destination: LazyPagingItems<Destination>,
     navigateToDetail: (Destination) -> Unit,
-    navigateToItinerary: () -> Unit
+    navigateToItinerary: () -> Unit,
+    navigateToLogin: () -> Unit
 ) {
 
     val scrollState = rememberScrollState()
+    val auth = Firebase.auth
+    val firebaseUser = auth.currentUser
+    LaunchedEffect(Unit) {
+        if (firebaseUser == null) {
+            navigateToLogin()
+        }
+    }
 
     Scaffold (
 //        containerColor = Color(0xFF0EA8B9),
