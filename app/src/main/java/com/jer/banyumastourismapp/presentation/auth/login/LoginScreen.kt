@@ -49,6 +49,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.credentials.ClearCredentialStateRequest
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
@@ -106,6 +107,7 @@ fun LoginScreen(
                         try {
                             val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
                             viewModel.signInWithGoogle(googleIdTokenCredential.idToken)
+                            Log.d("LoginScreen", "User Success to Sign In ")
                         } catch (e: GoogleIdTokenParsingException) {
                             Log.e("LoginScreen", "Failed, Google ID token parsing is invalid.", e)
                             onSignInFailure("Failed, Google ID token parsing is invalid.")
@@ -148,6 +150,8 @@ fun LoginScreen(
             navigateToHome()
         }
     }
+
+
 
     Column (
         verticalArrangement = Arrangement.Center,

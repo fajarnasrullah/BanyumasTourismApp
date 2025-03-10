@@ -1,6 +1,7 @@
 package com.jer.banyumastourismapp.presentation.home
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -31,6 +32,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,6 +40,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -48,6 +51,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.credentials.ClearCredentialStateRequest
+import androidx.credentials.CredentialManager
 import androidx.paging.compose.LazyPagingItems
 import coil.compose.AsyncImage
 import com.google.firebase.Firebase
@@ -59,6 +64,7 @@ import com.jer.banyumastourismapp.domain.model.Destination
 import com.jer.banyumastourismapp.presentation.component.CategoryRow
 import com.jer.banyumastourismapp.presentation.component.DestinationCardStandRow
 import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -72,11 +78,25 @@ fun HomeScreen(
 ) {
 
     val scrollState = rememberScrollState()
+    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
     val auth = Firebase.auth
     val firebaseUser = auth.currentUser
     LaunchedEffect(Unit) {
         if (firebaseUser == null) {
             navigateToLogin()
+        }
+    }
+
+
+    fun signOut() {
+        coroutineScope.launch {
+            Log.d("HomeScreen", "User Success to Sign Out ")
+            val credentialManager = CredentialManager.create(context)
+            auth.signOut()
+            credentialManager.clearCredentialState(ClearCredentialStateRequest())
+            navigateToLogin()
+
         }
     }
 
@@ -124,7 +144,7 @@ fun HomeScreen(
             ) {
                 UserTopSection( user = user)
 
-                NotifTopButton()
+                NotifTopButton(onClick = { signOut() })
                 
             }
             ItineraryCard(
@@ -430,7 +450,7 @@ fun UserTopSection(modifier: Modifier = Modifier, user: User) {
 }
 
 @Composable
-fun NotifTopButton(modifier: Modifier = Modifier, ) {
+fun NotifTopButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .size(width = 50.dp, height = 50.dp)
@@ -438,7 +458,8 @@ fun NotifTopButton(modifier: Modifier = Modifier, ) {
                 elevation = 5.dp,
                 shape = CircleShape,
                 spotColor = Color.Black.copy(alpha = 50f),
-            ),
+            )
+            .clickable { onClick() },
         shape = CircleShape,
         CardDefaults.cardColors(
             containerColor = Color.White,
