@@ -6,10 +6,12 @@ import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -19,6 +21,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -35,17 +40,21 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -72,6 +81,7 @@ fun DetailDestinationScreen(
 ) {
 
     val scrollState = rememberScrollState()
+    val imgSelected = rememberSaveable { mutableStateOf("") }
 
     Scaffold (
         bottomBar = {
@@ -107,7 +117,7 @@ fun DetailDestinationScreen(
                 )
             } else {
                 AsyncImage(
-                    model = detailDestination.imageUrl,
+                    model = if (imgSelected.value.isNotEmpty()) imgSelected.value else detailDestination.imageUrl,
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -131,6 +141,7 @@ fun DetailDestinationScreen(
             ) {
                 PlaceDetailContent(
                     detailDestination = detailDestination,
+                    imgSelected = imgSelected
                 )
             }
 
@@ -174,7 +185,8 @@ fun DetailDestinationScreen(
 fun RouteAndAccessibility(modifier: Modifier = Modifier, detailDestination: Destination) {
     Column (
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.Start
+        horizontalAlignment = Alignment.Start,
+        modifier = modifier
     ) {
         Text(
             text = "Route & Accessibility",
@@ -295,31 +307,130 @@ fun CardExpanded(
 @Composable
 fun PlaceDetailContent(
     modifier: Modifier = Modifier,
-    detailDestination: Destination
+    detailDestination: Destination,
+    imgSelected: MutableState<String>
     ) {
 
-    Column (
-        horizontalAlignment = Alignment.Start,
-        modifier = Modifier
-            .padding(30.dp)
-    ) {
+    val minimumLineLength = 5
 
-        Spacer(modifier = Modifier.height(55.dp))
+    var expandedState by rememberSaveable { mutableStateOf(false) }
+    var showReadMoreButtonState by rememberSaveable { mutableStateOf(false) }
+    val maxLines = if (expandedState) 50 else minimumLineLength
 
-        Text(
-            text = detailDestination.description,
-            fontSize = 12.sp,
-            textAlign = TextAlign.Justify,
-            color = MaterialTheme.colorScheme.onBackground
+
+    Column {
+
+        Spacer(modifier = Modifier.height(70.dp))
+
+        Column(
+            horizontalAlignment = Alignment.Start,
+            modifier = Modifier
+                .padding(30.dp)
+        ) {
+            Column {
+                Text(
+                    text = detailDestination.description,
+                    fontSize = 12.sp,
+                    textAlign = TextAlign.Justify,
+                    maxLines = maxLines,
+                    overflow = TextOverflow.Ellipsis,
+                    onTextLayout = { textLayoutResult: TextLayoutResult ->
+                        if (textLayoutResult.lineCount > minimumLineLength - 1) {
+                            if (textLayoutResult.isLineEllipsized(minimumLineLength - 1)) showReadMoreButtonState =
+                                true
+                        }
+                    },
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                if (showReadMoreButtonState) {
+                    Text(
+                        text = if (expandedState) "Read Less" else "Read More",
+                        color = MaterialTheme.colorScheme.outline,
+
+                        modifier = Modifier.clickable {
+                            expandedState = !expandedState
+                        },
+
+                        fontSize = 12.sp
+
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(30.dp))
+
+            FacilityContent(detailDestination = detailDestination)
+        }
+
+        PictureRow(
+            destination = detailDestination, imgSelected = imgSelected
         )
-        
-        Spacer(modifier = Modifier.height(30.dp))
-
-        FacilityContent(detailDestination = detailDestination)
 
         Spacer(modifier = Modifier.height(30.dp))
 
-        RouteAndAccessibility(detailDestination = detailDestination)
+        RouteAndAccessibility(detailDestination = detailDestination, modifier = Modifier.padding(horizontal = 30.dp))
+
+        Spacer(modifier = Modifier.height(30.dp))
+
+
+    }
+
+}
+
+@Composable
+fun PictureRow(
+    modifier: Modifier = Modifier,
+    destination: Destination,
+    imgSelected: MutableState<String> = mutableStateOf("")
+) {
+
+    var selected by rememberSaveable { mutableStateOf(-1) }
+
+
+    LazyRow (
+        horizontalArrangement = Arrangement.spacedBy(15.dp),
+        contentPadding = PaddingValues(horizontal = 30.dp),
+        modifier = Modifier.fillMaxWidth()
+    ) { itemsIndexed(destination.imageList) { index, img ->
+
+        if (img.isEmpty()) {
+            Image(
+                painter = painterResource(id = R.drawable.picturedummy),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(100.dp)
+                    .clip(MaterialTheme.shapes.medium)
+                    .border(
+                        width =
+                        if (selected == index) 5.dp else 0.dp,
+                        color = if (selected == index) MaterialTheme.colorScheme.primaryContainer else Color.Transparent,
+                        shape = MaterialTheme.shapes.medium
+                    )
+                    .clickable { selected = index },
+            )
+        } else {
+            AsyncImage(
+                model = img,
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(100.dp)
+                    .clip(MaterialTheme.shapes.medium)
+                    .border(
+                        width =
+                        if (selected == index) 5.dp else 0.dp,
+                        color = if (selected == index) MaterialTheme.colorScheme.primaryContainer else Color.Transparent,
+                        shape = MaterialTheme.shapes.medium
+                    )
+                    .clickable {
+                        selected = index
+                        imgSelected.value = img
+                    },
+            )
+        }
+
+    }
 
     }
 
