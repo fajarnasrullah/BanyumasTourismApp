@@ -15,6 +15,7 @@ import com.jer.banyumastourismapp.domain.usecase.tourism.GetDestination
 import com.jer.banyumastourismapp.domain.usecase.tourism.GetDestinations
 import com.jer.banyumastourismapp.domain.usecase.tourism.SigninWithGoogle
 import com.jer.banyumastourismapp.domain.usecase.tourism.TourismUseCase
+import com.jer.banyumastourismapp.domain.usecase.tourism.UpdateUserData
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -69,7 +70,8 @@ object AppModule {
             getDestinations = GetDestinations(repository),
             getDestination = GetDestination(repository),
             getCurrentUser = GetCurrentUser(repository),
-            signinWithGoogle = SigninWithGoogle(repository)
+            signinWithGoogle = SigninWithGoogle(repository),
+            updateUserData = UpdateUserData(repository)
         )
     }
 

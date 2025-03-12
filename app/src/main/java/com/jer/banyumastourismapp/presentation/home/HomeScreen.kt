@@ -32,6 +32,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -61,8 +63,10 @@ import com.google.firebase.auth.auth
 import com.jer.banyumastourismapp.R
 import com.jer.banyumastourismapp.core.verySmallIcon
 import com.jer.banyumastourismapp.domain.model.Destination
+import com.jer.banyumastourismapp.domain.model.User
 import com.jer.banyumastourismapp.presentation.component.CategoryRow
 import com.jer.banyumastourismapp.presentation.component.DestinationCardStandRow
+import com.jer.banyumastourismapp.presentation.profile.ProfileViewModel
 import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
 import kotlinx.coroutines.launch
 
@@ -70,7 +74,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    user: User,
+    viewModel: ProfileViewModel,
     destination: LazyPagingItems<Destination>,
     navigateToDetail: (Destination) -> Unit,
     navigateToItinerary: () -> Unit,
@@ -82,11 +86,19 @@ fun HomeScreen(
     val context = LocalContext.current
     val auth = Firebase.auth
     val firebaseUser = auth.currentUser
+
+    val userData by viewModel.userData.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.getUserData()
+    }
+
     LaunchedEffect(Unit) {
         if (firebaseUser == null) {
             navigateToLogin()
         }
     }
+
 
 
     fun signOut() {
@@ -142,14 +154,13 @@ fun HomeScreen(
                     .padding(all = 30.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                UserTopSection( user = user)
+                UserTopSection( user = userData, photoUrl = firebaseUser?.photoUrl.toString())
 
                 NotifTopButton(onClick = { signOut() })
                 
             }
             ItineraryCard(
                 onClick = { navigateToItinerary() },
-                user = user,
                 modifier = Modifier
                     .constrainAs(itinerary) {
                         top.linkTo(userAndNotif.bottom)
@@ -237,7 +248,6 @@ fun HomeScreen(
 @Composable
 fun ItineraryCard(
     modifier: Modifier = Modifier,
-    user: User,
     onClick: () -> Unit
 ) {
     Card(
@@ -289,7 +299,7 @@ fun ItineraryCard(
                     .padding(15.dp)
             ) {
 
-                if (user.photoUrl == null) {
+//                if (user.photoUrl == null) {
                     Image(
                         painter = painterResource(id = R.drawable.picturedummy),
                         contentDescription = null,
@@ -298,16 +308,16 @@ fun ItineraryCard(
                             .size(102.dp)
                             .clip(MaterialTheme.shapes.large)
                     )
-                } else {
-                    AsyncImage(
-                        model = user.photoUrl,
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .size(102.dp)
-                            .clip(MaterialTheme.shapes.large)
-                    )
-                }
+//                } else {
+//                    AsyncImage(
+//                        model = user.photoUrl,
+//                        contentDescription = null,
+//                        contentScale = ContentScale.Crop,
+//                        modifier = Modifier
+//                            .size(102.dp)
+//                            .clip(MaterialTheme.shapes.large)
+//                    )
+//                }
 
                 Spacer(modifier = Modifier.width(15.dp))
 
@@ -378,7 +388,7 @@ fun IconAndText(modifier: Modifier = Modifier, painter: Painter, text: String) {
 }
 
 @Composable
-fun UserTopSection(modifier: Modifier = Modifier, user: User) {
+fun UserTopSection(modifier: Modifier = Modifier, user: User?, photoUrl: String = "") {
     Card (
         modifier = Modifier
             .height(50.dp)
@@ -401,7 +411,7 @@ fun UserTopSection(modifier: Modifier = Modifier, user: User) {
             modifier = Modifier.padding(start = 10.dp, end = 15.dp,top = 5.dp, bottom = 5.dp)
         ) {
 
-            if (user.photoUrl == null) {
+            if (photoUrl == "") {
 
                 Image(
                     painter = painterResource(id = R.drawable.userimage),
@@ -413,7 +423,7 @@ fun UserTopSection(modifier: Modifier = Modifier, user: User) {
                 )
             } else {
                 AsyncImage(
-                    model = user.photoUrl,
+                    model = photoUrl,
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -431,7 +441,7 @@ fun UserTopSection(modifier: Modifier = Modifier, user: User) {
                 horizontalAlignment = Alignment.Start
             ) {
                 Text(
-                    text = "Hi, " + user.name + "!",
+                    text = "Hi, " + user?.name + "!",
                     fontSize = TextUnit(12f, TextUnitType.Sp),
                     )
                 Spacer(modifier = Modifier.height(5.dp))
@@ -485,12 +495,7 @@ fun NotifTopButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
 }
 
 
-data class User(
-    val name: String,
-    val photoUrl: String? = null,
-    val desc: String? = null,
 
-    )
 
 
 @Preview
@@ -523,7 +528,7 @@ private fun PreviewFirst() {
 @Composable
 private fun PreviewItinerary() {
     BanyumasTourismAppTheme {
-        ItineraryCard(user = User("Fajar"), onClick = {})
+        ItineraryCard(onClick = {})
     }
 
 

@@ -15,4 +15,6 @@ interface TourismRepository {
 
     suspend fun signInWithGoogle(idToken: String): Result<FirebaseUser?>
     fun getCurrentUser(): FirebaseUser?
+    fun saveUserData(user: FirebaseUser?, provider: String)
+    fun updateUserData(name: String, desc: String)
 }

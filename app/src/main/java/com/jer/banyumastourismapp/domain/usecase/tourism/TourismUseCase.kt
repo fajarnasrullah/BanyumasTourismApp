@@ -4,6 +4,7 @@ class TourismUseCase(
     val getDestinations: GetDestinations,
     val getDestination: GetDestination,
     val signinWithGoogle: SigninWithGoogle,
-    val getCurrentUser: GetCurrentUser
+    val getCurrentUser: GetCurrentUser,
+    val updateUserData: UpdateUserData
 ) {
 }

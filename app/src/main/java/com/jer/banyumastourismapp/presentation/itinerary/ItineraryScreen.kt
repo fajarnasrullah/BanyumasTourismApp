@@ -65,14 +65,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.AsyncImage
+import com.google.firebase.auth.FirebaseUser
 import com.jer.banyumastourismapp.R
 import com.jer.banyumastourismapp.core.verySmallIcon
 import com.jer.banyumastourismapp.domain.model.Itinerary
 import com.jer.banyumastourismapp.domain.model.Plan
 import com.jer.banyumastourismapp.domain.model.PlanCategory
+import com.jer.banyumastourismapp.domain.model.User
 import com.jer.banyumastourismapp.domain.model.categoryPlan
 import com.jer.banyumastourismapp.presentation.component.AppBarCustom
-import com.jer.banyumastourismapp.presentation.home.User
 import com.jer.banyumastourismapp.presentation.itinerary.component.AlertDialogPlanInput
 import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
@@ -87,7 +88,7 @@ import java.util.Locale
 @Composable
 fun ItineraryScreen(
     modifier: Modifier = Modifier,
-    user: User,
+    user: FirebaseUser?,
     itinerary: Itinerary,
     plan: Plan,
 //    listPlan: List<Plan>,
@@ -682,7 +683,7 @@ fun DescriptionSection(modifier: Modifier = Modifier, description: String) {
 }
 
 @Composable
-fun UserSection(modifier: Modifier = Modifier, user: User) {
+fun UserSection(modifier: Modifier = Modifier, user: FirebaseUser?) {
     Row (
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically,
@@ -694,7 +695,7 @@ fun UserSection(modifier: Modifier = Modifier, user: User) {
             shape = CircleShape,
         ) {
             Box(modifier = Modifier.size(40.dp), contentAlignment = Alignment.Center) {
-                if (user.photoUrl.isNullOrBlank()) {
+                if (user?.photoUrl == null) {
                     Image(
                         painter = painterResource(id = R.drawable.userimage),
                         contentDescription = null,
@@ -727,11 +728,13 @@ fun UserSection(modifier: Modifier = Modifier, user: User) {
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
-            Text(
-                text = user.name,
-                fontSize = 14.sp,
-                color = MaterialTheme.colorScheme.onBackground
-            )
+            user?.displayName?.let {
+                Text(
+                    text = it,
+                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            }
         }
 
     }

@@ -18,7 +18,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
 import com.jer.banyumastourismapp.R
 import com.jer.banyumastourismapp.domain.model.Destination
 import com.jer.banyumastourismapp.domain.usecase.tourism.GetCurrentUser
@@ -29,7 +31,6 @@ import com.jer.banyumastourismapp.presentation.detailDestination
 import com.jer.banyumastourismapp.presentation.detaildestination.DetailDestinationScreen
 import com.jer.banyumastourismapp.presentation.home.HomeScreen
 import com.jer.banyumastourismapp.presentation.home.HomeViewModel
-import com.jer.banyumastourismapp.presentation.home.User
 import com.jer.banyumastourismapp.presentation.itinerary
 import com.jer.banyumastourismapp.presentation.itinerary.ItineraryScreen
 import com.jer.banyumastourismapp.presentation.listDestination
@@ -40,6 +41,7 @@ import com.jer.banyumastourismapp.presentation.navgraph.Route
 import com.jer.banyumastourismapp.presentation.orders.OrdersFormScreen
 import com.jer.banyumastourismapp.presentation.plan
 import com.jer.banyumastourismapp.presentation.profile.ProfileScreen
+import com.jer.banyumastourismapp.presentation.profile.ProfileViewModel
 import com.jer.banyumastourismapp.presentation.profile.bookmark.BookmarkState
 import com.jer.banyumastourismapp.presentation.sosmed.SosmedListScreen
 import dev.chrisbanes.haze.HazeState
@@ -145,11 +147,12 @@ fun CoreNavigator() {
         ) {
             composable(Route.HomeScreen.route) {
                 val viewModel: HomeViewModel = hiltViewModel()
+                val profileViewModel: ProfileViewModel = hiltViewModel()
                 val destinations = viewModel.destinations.collectAsLazyPagingItems()
 
 
                 HomeScreen(
-                    user = User("Fajar"),
+                    viewModel = profileViewModel,
                     destination = destinations,
                     navigateToDetail = { navigateToDetail(navController, it) },
                     navigateToItinerary = { navController.navigate(Route.ItineraryScreen.route) },
@@ -189,9 +192,11 @@ fun CoreNavigator() {
             composable(Route.TicketHistoryScreen.route) {
             }
 
-            composable(Route.ProfileScreen.route) {
+            composable (Route.ProfileScreen.route) {
+                val viewModel: ProfileViewModel = hiltViewModel()
+
                 ProfileScreen(
-                    user = User(name = "Fajar Nasrullah", desc = "akwokaowkowka"),
+                    viewModel = viewModel,
                     state = BookmarkState(),
                     navigateToDetail = { /*TODO*/ })
             }
@@ -213,8 +218,10 @@ fun CoreNavigator() {
             }
 
             composable(Route.ItineraryScreen.route) {
+                val auth = Firebase.auth
+                val user = auth.currentUser
                 ItineraryScreen(
-                    user = User("Fajar"),
+                    user = user,
                     itinerary = itinerary,
                     plan = plan,
                     onClick = {},

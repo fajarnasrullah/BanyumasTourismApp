@@ -27,7 +27,6 @@ import com.jer.banyumastourismapp.domain.model.Destination
 import com.jer.banyumastourismapp.presentation.component.CategoryRow
 import com.jer.banyumastourismapp.presentation.component.DestinationCardLandscape
 import com.jer.banyumastourismapp.presentation.component.SearchBarForAll
-import com.jer.banyumastourismapp.presentation.home.User
 import com.jer.banyumastourismapp.presentation.listDestination
 import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
 import dev.chrisbanes.haze.HazeState
