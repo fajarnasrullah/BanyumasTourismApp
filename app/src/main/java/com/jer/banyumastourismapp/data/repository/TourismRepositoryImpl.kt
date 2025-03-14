@@ -43,9 +43,10 @@ class TourismRepositoryImpl(
         return daoDestination.delete(destination)
     }
 
-    override fun selectArticles(): Flow<List<Destination>> {
+    override fun selectDestinations(): Flow<List<Destination>> {
         return daoDestination.getDestinations()
     }
+
 
     override suspend fun signInWithGoogle(idToken: String): Result<FirebaseUser?> {
         return try {

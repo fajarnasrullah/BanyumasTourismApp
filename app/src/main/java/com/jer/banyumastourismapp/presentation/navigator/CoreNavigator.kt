@@ -181,11 +181,12 @@ fun CoreNavigator() {
 //                    listSosmed = listSosmed,
 //                    navigateToDetail = { navController.navigate(Route.DetailSosmedScreen.route) }
 //                )
-                val mapsViewModel = MapsViewModel()
+                val mapsViewModel: MapsViewModel = hiltViewModel()
+                val destinations = mapsViewModel.destinations.collectAsLazyPagingItems()
                 MapsScreen(
                     mapsViewModel = mapsViewModel,
-                    listDestination = listDestination,
-                    navigateToDetail = { }
+                    listDestination = destinations,
+                    navigateToDetail = { navigateToDetail(navController, it) }
                 )
             }
 

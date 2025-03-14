@@ -3,6 +3,8 @@ package com.jer.banyumastourismapp.presentation.maps
 import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,6 +25,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -31,13 +34,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.core.content.ContextCompat
+import androidx.paging.compose.LazyPagingItems
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.android.gms.location.LocationServices
@@ -50,12 +58,14 @@ import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapType
 import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerInfoWindowContent
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.jer.banyumastourismapp.R
 import com.jer.banyumastourismapp.domain.model.Destination
 import com.jer.banyumastourismapp.presentation.component.CategoryRow
 import com.jer.banyumastourismapp.presentation.component.DestinationCardLandscape
+import com.jer.banyumastourismapp.presentation.component.DestinationCardPotrait
 import com.jer.banyumastourismapp.presentation.component.SearchBarForAll
 import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
 import timber.log.Timber
@@ -65,7 +75,7 @@ import timber.log.Timber
 fun MapsScreen(
     modifier: Modifier = Modifier,
     mapsViewModel: MapsViewModel,
-    listDestination: List<Destination>,
+    listDestination: LazyPagingItems<Destination>,
     navigateToDetail: (Destination) -> Unit
 ) {
 
@@ -202,16 +212,56 @@ fun MapsScreen(
                  cameraPositionState = cameraPositionState,
                  properties = mapProperties,
                  uiSettings = uiSettings,
-                 onMyLocationButtonClick = { true }
+                 onMyLocationButtonClick = { true },
 
              ) {
+                 for ( index in 0 until listDestination.itemCount) {
+                     val destination = listDestination[index]
+                     if (destination != null) {
+                         val latLng: LatLng = LatLng(destination.latitude, destination.longitude)
+                         val markerState = remember {MarkerState(position = latLng)}
+                         MarkerInfoWindowContent(
+                             state = markerState,
+                             title = destination.title,
+                             snippet = destination.description,
+                             onInfoWindowClick = {navigateToDetail(destination)}
+                         ) {
+                             Column(
+                                 modifier = Modifier
+                                     .width(200.dp)
+                                     .border(
+                                         2.dp,
+                                         shape = MaterialTheme.shapes.medium,
+                                         color = MaterialTheme.colorScheme.primaryContainer
+                                     )
+                                     .padding(15.dp)
+                             ) {
+                                 Text(
+                                     text = destination.title,
+                                     fontSize = 12.sp,
+                                     fontWeight = FontWeight.Bold,
+                                     color = Color.Black
+                                 )
+
+                                 Spacer(modifier = Modifier.height(15.dp))
+
+                                 Text(
+                                     text = destination.location,
+                                     fontSize = 10.sp,
+                                     color = Color.DarkGray,
+                                     maxLines = 2,
+                                     overflow = TextOverflow.Ellipsis
+
+                                 )
+                             }
+                         }
+
+                     }
+                 }
                  userLocation?.let {
-                     Marker(
-                         state = MarkerState(position = it),
-                         title = "Your Location",
-                         snippet = "This is where you are currently located."
-                     )
-                     cameraPositionState.position = CameraPosition.fromLatLngZoom(it, 10f)}
+                     cameraPositionState.position = CameraPosition.fromLatLngZoom(it, 10f)
+                 }
+
              }
 
              SearchBarForAll(
@@ -256,7 +306,7 @@ fun MapsScreen(
 @Composable
 fun DestinationListRowForMaps(
     modifier: Modifier = Modifier,
-    items: List<Destination>,
+    items: LazyPagingItems<Destination>,
     onClick: (Destination) -> Unit
 ) {
 
@@ -266,14 +316,16 @@ fun DestinationListRowForMaps(
         contentPadding = PaddingValues(start = 30.dp, end = 30.dp, bottom = 30.dp, top = 15.dp),
         modifier = modifier
             .fillMaxWidth()
-    ) { items(items) { item ->
+    ) { items(count = items.itemCount) { count ->
 
-        DestinationCardLandscape(
-            destination = item,
-            modifier = Modifier.width(348.dp),
-            onClick = onClick,
-            buttonVisibility = true
-        )
+        items[count]?.let {
+            DestinationCardLandscape(
+                destination = it,
+                modifier = Modifier.width(348.dp),
+                onClick = onClick,
+                buttonVisibility = true
+            )
+        }
     }
 
     }
