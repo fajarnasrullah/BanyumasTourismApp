@@ -12,6 +12,7 @@ interface TourismRepository {
     suspend fun insertDestination(destination: Destination)
     suspend fun deleteDestination(destination: Destination)
     fun selectDestinations(): Flow<List<Destination>>
+    suspend fun getDestinationsForMaps(): List<Destination>
 
     suspend fun signInWithGoogle(idToken: String): Result<FirebaseUser?>
     fun getCurrentUser(): FirebaseUser?

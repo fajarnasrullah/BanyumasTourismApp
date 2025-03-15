@@ -13,6 +13,7 @@ import com.jer.banyumastourismapp.domain.repository.TourismRepository
 import com.jer.banyumastourismapp.domain.usecase.tourism.GetCurrentUser
 import com.jer.banyumastourismapp.domain.usecase.tourism.GetDestination
 import com.jer.banyumastourismapp.domain.usecase.tourism.GetDestinations
+import com.jer.banyumastourismapp.domain.usecase.tourism.GetDestinationsForMaps
 import com.jer.banyumastourismapp.domain.usecase.tourism.SigninWithGoogle
 import com.jer.banyumastourismapp.domain.usecase.tourism.TourismUseCase
 import com.jer.banyumastourismapp.domain.usecase.tourism.UpdateUserData
@@ -71,7 +72,8 @@ object AppModule {
             getDestination = GetDestination(repository),
             getCurrentUser = GetCurrentUser(repository),
             signinWithGoogle = SigninWithGoogle(repository),
-            updateUserData = UpdateUserData(repository)
+            updateUserData = UpdateUserData(repository),
+            getDestinationsForMaps = GetDestinationsForMaps(repository)
         )
     }
 

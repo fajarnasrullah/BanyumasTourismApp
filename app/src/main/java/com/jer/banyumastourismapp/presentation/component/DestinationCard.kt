@@ -43,7 +43,6 @@ import coil.compose.AsyncImage
 import com.jer.banyumastourismapp.R
 import com.jer.banyumastourismapp.core.verySmallIcon
 import com.jer.banyumastourismapp.domain.model.Destination
-import com.jer.banyumastourismapp.presentation.listDestination
 import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
 import com.jer.banyumastourismapp.ui.theme.OrangeNice
 
@@ -53,7 +52,7 @@ fun DestinationCardLandscape(
     modifier: Modifier = Modifier,
     destination: Destination,
     buttonVisibility: Boolean,
-    onClick: (Destination) -> Unit
+    onClick: (Destination) -> Unit,
 ) {
 
 
@@ -91,7 +90,7 @@ fun DestinationCardLandscape(
                     modifier = Modifier
                         .clip(MaterialTheme.shapes.large)
                         .width(150.dp)
-                        .height(111.dp)
+                        .height(150.dp)
                 )
             }
             Spacer(modifier = Modifier.width(15.dp))
@@ -113,13 +112,15 @@ fun DestinationCardLandscape(
                     )
 
 
-                    Text(
-                        text = destination.location,
-                        fontSize = 10.sp,
-                        color = MaterialTheme.colorScheme.outline,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
+                    if (!buttonVisibility){
+                        Text(
+                            text = destination.location,
+                            fontSize = 10.sp,
+                            color = MaterialTheme.colorScheme.outline,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
 
                     Spacer(modifier = Modifier.height(5.dp))
 
@@ -178,49 +179,24 @@ fun DestinationCardLandscape(
                     }
                 }
 
-                if (buttonVisibility){
-                    Row(
-                        modifier = Modifier.fillMaxWidth()
+                if (buttonVisibility) {
+                    Button(
+                        onClick = {
+
+                        },
+                        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primaryContainer),
+                        shape = MaterialTheme.shapes.small,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(40.dp)
+
                     ) {
-                        Button(
-                            onClick = {
-
-                            },
-                            colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primaryContainer),
-                            shape = MaterialTheme.shapes.small,
-                            modifier = Modifier
-                                .weight(1.5f)
-                                .height(40.dp)
-
-                        ) {
-                            Text(
-                                text = "Book",
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                color = MaterialTheme.colorScheme.background
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.width(5.dp))
-
-                        OutlinedButton(
-                            onClick = { },
-                            shape = MaterialTheme.shapes.small,
-                            border = BorderStroke(
-                                width = 1.dp,
-                                color = MaterialTheme.colorScheme.onBackground
-                            ),
-                            modifier = Modifier
-                                .height(40.dp)
-                                .weight(1f)
-                        ) {
-                           Icon(
-                               imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                               contentDescription = null,
-                               tint = MaterialTheme.colorScheme.onBackground,
-                               modifier = Modifier.size(20.dp)
-                           )
-                        }
+                        Text(
+                            text = "Book",
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.background
+                        )
                     }
                 }
 

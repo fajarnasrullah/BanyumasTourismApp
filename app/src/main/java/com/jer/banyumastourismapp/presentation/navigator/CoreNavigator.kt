@@ -185,7 +185,7 @@ fun CoreNavigator() {
                 val destinations = mapsViewModel.destinations.collectAsLazyPagingItems()
                 MapsScreen(
                     mapsViewModel = mapsViewModel,
-                    listDestination = destinations,
+//                    listDestination = destinations,
                     navigateToDetail = { navigateToDetail(navController, it) }
                 )
             }

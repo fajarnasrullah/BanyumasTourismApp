@@ -47,6 +47,41 @@ class TourismRepositoryImpl(
         return daoDestination.getDestinations()
     }
 
+    override suspend fun getDestinationsForMaps(): List<Destination> {
+        val snapshot = db.getReference("destinations").get().await()
+//            snapshot.getValue(Destination::class.java)
+//            totalDestiCount += snapshot.childrenCount.toInt()
+        Log.d("TourismRepositoryImpl","Succeed to get Destination From Realtime Database")
+        val listDestinations = mutableListOf<Destination>()
+        for (destinationSnapshot in snapshot.children) {
+            val destination = destinationSnapshot.getValue(Destination::class.java)
+            destination?.let {
+                val tempDestination = Destination(
+                    id = listDestinations.size,
+                    title = it.title,
+                    imageUrl = it.imageUrl,
+                    imageList = it.imageList,
+                    description = it.description,
+                    location = it.location,
+                    latitude = it.latitude,
+                    longitude = it.longitude,
+                    cost = it.cost,
+                    timeOpen = it.timeOpen,
+                    rating = it.rating,
+                    ig = it.ig,
+                    igUrl = it.igUrl,
+                    facility = it.facility,
+                    route = it.route,
+                    accessibility = it.accessibility,
+                    tips = it.tips
+
+                )
+                listDestinations.add(tempDestination)
+            }
+        }
+        return listDestinations
+    }
+
 
     override suspend fun signInWithGoogle(idToken: String): Result<FirebaseUser?> {
         return try {

@@ -4,13 +4,11 @@ import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,9 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -28,9 +24,13 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,7 +39,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -47,12 +46,9 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.core.content.ContextCompat
 import androidx.paging.compose.LazyPagingItems
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.LocationSource
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapType
@@ -65,9 +61,7 @@ import com.jer.banyumastourismapp.R
 import com.jer.banyumastourismapp.domain.model.Destination
 import com.jer.banyumastourismapp.presentation.component.CategoryRow
 import com.jer.banyumastourismapp.presentation.component.DestinationCardLandscape
-import com.jer.banyumastourismapp.presentation.component.DestinationCardPotrait
 import com.jer.banyumastourismapp.presentation.component.SearchBarForAll
-import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
 import timber.log.Timber
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -75,7 +69,7 @@ import timber.log.Timber
 fun MapsScreen(
     modifier: Modifier = Modifier,
     mapsViewModel: MapsViewModel,
-    listDestination: LazyPagingItems<Destination>,
+//    listDestination: LazyPagingItems<Destination>,
     navigateToDetail: (Destination) -> Unit
 ) {
 
@@ -84,6 +78,11 @@ fun MapsScreen(
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(banyumas, 10f)
 
+    }
+    val listDestination by mapsViewModel.destinationForMaps.collectAsState()
+    var cardIsActive by rememberSaveable { mutableStateOf(false) }
+    var cardSelected: Destination? by rememberSaveable {
+        mutableStateOf(null)
     }
 
     var isGrantedPermission by remember { mutableStateOf(false) }
@@ -187,11 +186,12 @@ fun MapsScreen(
 //                     }
                      )
                  }
-                 Spacer(modifier = Modifier.height(350.dp))
+                 Spacer(modifier = Modifier.height( if (cardIsActive) 350.dp else 200.dp))
              }
          },
          modifier = Modifier.fillMaxSize()
      ) { innerPadding ->
+
 
          ConstraintLayout (
              modifier = Modifier
@@ -200,6 +200,9 @@ fun MapsScreen(
          ) {
 
              val (maps, searchBar, category, listSection) = createRefs()
+
+
+
 
              GoogleMap(
                  modifier = Modifier
@@ -215,17 +218,25 @@ fun MapsScreen(
                  onMyLocationButtonClick = { true },
 
              ) {
-                 for ( index in 0 until listDestination.itemCount) {
+                 for ( index in 0 until listDestination.size) {
                      val destination = listDestination[index]
                      if (destination != null) {
                          val latLng: LatLng = LatLng(destination.latitude, destination.longitude)
-                         val markerState = remember {MarkerState(position = latLng)}
+                         val markerState  = remember(destination.id) { MarkerState(position = latLng) }
+
+
                          MarkerInfoWindowContent(
                              state = markerState,
                              title = destination.title,
-                             snippet = destination.description,
-                             onInfoWindowClick = {navigateToDetail(destination)}
-                         ) {
+                             snippet = destination.location,
+                             onInfoWindowClick = {navigateToDetail(destination)},
+                             onClick = {
+                                 cardIsActive = true
+                                 cardSelected = destination
+                                 false
+                             }
+                             ) {
+
                              Column(
                                  modifier = Modifier
                                      .width(200.dp)
@@ -256,6 +267,8 @@ fun MapsScreen(
                              }
                          }
 
+
+
                      }
                  }
                  userLocation?.let {
@@ -281,19 +294,34 @@ fun MapsScreen(
                  }
              )
 
-             DestinationListRowForMaps(
-                 items = listDestination,
-                 onClick = navigateToDetail,
-                 modifier = Modifier
-                     .constrainAs(listSection) {
-                         start.linkTo(parent.start)
-                         bottom.linkTo(parent.bottom)
-                         width = Dimension.fillToConstraints
+             if (cardIsActive) {
+                 Box(
+                     modifier = Modifier
+                         .fillMaxWidth()
+                         .constrainAs(listSection) {
+                             start.linkTo(parent.start)
+                             bottom.linkTo(parent.bottom)
+                             width = Dimension.fillToConstraints
+                         }
+                         .padding(bottom = 130.dp, top = 15.dp, start = 30.dp, end = 30.dp)
+
+
+                 ) {
+
+                     cardSelected?.let {
+                         DestinationCardLandscape(
+                             destination = it,
+                             modifier = Modifier.fillMaxWidth(),
+                             onClick = navigateToDetail,
+                             buttonVisibility = true,
+                         )
+
                      }
-                     .padding(bottom = 100.dp)
+
+                 }
+             }
 
 
-             )
 
 
          }
@@ -302,35 +330,6 @@ fun MapsScreen(
     }
 }
 
-
-@Composable
-fun DestinationListRowForMaps(
-    modifier: Modifier = Modifier,
-    items: LazyPagingItems<Destination>,
-    onClick: (Destination) -> Unit
-) {
-
-    LazyRow (
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        contentPadding = PaddingValues(start = 30.dp, end = 30.dp, bottom = 30.dp, top = 15.dp),
-        modifier = modifier
-            .fillMaxWidth()
-    ) { items(count = items.itemCount) { count ->
-
-        items[count]?.let {
-            DestinationCardLandscape(
-                destination = it,
-                modifier = Modifier.width(348.dp),
-                onClick = onClick,
-                buttonVisibility = true
-            )
-        }
-    }
-
-    }
-
-}
 
 
 
