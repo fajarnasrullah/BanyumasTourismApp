@@ -23,6 +23,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
@@ -34,7 +35,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -49,6 +52,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapType
@@ -62,6 +66,9 @@ import com.jer.banyumastourismapp.domain.model.Destination
 import com.jer.banyumastourismapp.presentation.component.CategoryRow
 import com.jer.banyumastourismapp.presentation.component.DestinationCardLandscape
 import com.jer.banyumastourismapp.presentation.component.SearchBarForAll
+import com.jer.banyumastourismapp.presentation.listDestination
+import com.jer.banyumastourismapp.presentation.utils.BitmapParameters
+import com.jer.banyumastourismapp.presentation.utils.vectorToBitmap
 import timber.log.Timber
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -186,7 +193,7 @@ fun MapsScreen(
 //                     }
                      )
                  }
-                 Spacer(modifier = Modifier.height( if (cardIsActive) 350.dp else 200.dp))
+                 Spacer(modifier = Modifier.height( if (cardIsActive) 350.dp else 110.dp))
              }
          },
          modifier = Modifier.fillMaxSize()
@@ -200,8 +207,7 @@ fun MapsScreen(
          ) {
 
              val (maps, searchBar, category, listSection) = createRefs()
-
-
+             var iconSelected by rememberSaveable { mutableIntStateOf(-1) }
 
 
              GoogleMap(
@@ -218,24 +224,51 @@ fun MapsScreen(
                  onMyLocationButtonClick = { true },
 
              ) {
+
+
                  for ( index in 0 until listDestination.size) {
                      val destination = listDestination[index]
                      if (destination != null) {
                          val latLng: LatLng = LatLng(destination.latitude, destination.longitude)
                          val markerState  = remember(destination.id) { MarkerState(position = latLng) }
 
+                         val mountainIcon = vectorToBitmap(
+                             context,
+                             BitmapParameters(
+                                 id = R.drawable.mountain_icon_vector,
+                                 iconColor = MaterialTheme.colorScheme.onPrimary.toArgb(),
+                                 backgroundColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
+                             )
+                         )
 
                          MarkerInfoWindowContent(
                              state = markerState,
                              title = destination.title,
                              snippet = destination.location,
-                             onInfoWindowClick = {navigateToDetail(destination)},
+                             icon = if (iconSelected == index) {
+                                 null
+                             } else mountainIcon,
+                             anchor = Offset(0.5f, 0.5f),
+
+                             onInfoWindowClick = {
+                                 navigateToDetail(destination)
+                                 iconSelected = -1
+                                                 },
+
+                             onInfoWindowClose = {
+                                 iconSelected = -1
+                             },
+
                              onClick = {
                                  cardIsActive = true
                                  cardSelected = destination
+                                 iconSelected = index
+
                                  false
                              }
-                             ) {
+
+                         ) {
+
 
                              Column(
                                  modifier = Modifier
@@ -271,10 +304,20 @@ fun MapsScreen(
 
                      }
                  }
+
+
                  userLocation?.let {
                      cameraPositionState.position = CameraPosition.fromLatLngZoom(it, 10f)
                  }
 
+             }
+
+             DisposableEffect(key1 = Unit) {
+                 onDispose {
+                     iconSelected = -1
+                     cardIsActive = false
+                     cardSelected = null
+                 }
              }
 
              SearchBarForAll(
@@ -329,6 +372,9 @@ fun MapsScreen(
 
     }
 }
+
+
+
 
 
 
