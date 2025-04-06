@@ -107,14 +107,27 @@ fun ProfileScreen(
             modifier = Modifier.fillMaxWidth()
 
         ){
-            userData?.name?.let {
-                Text(
-                    text = it,
-                    fontSize = 16.sp,
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onBackground,
-                )
+            if (userData != null) {
+                userData?.name?.let {
+                    Text(
+                        text = it,
+                        fontSize = 16.sp,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onBackground,
+                    )
+                }
+            } else {
+                firebaseUser?.displayName?.let {
+                    Text(
+                        text = it,
+                        fontSize = 16.sp,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onBackground,
+                    )
+                }
+
             }
+
 
             IconButton(
                 onClick = {

@@ -10,12 +10,12 @@ import com.jer.banyumastourismapp.domain.model.Itinerary
 @Dao
 interface DaoItinerary {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertItinerary(itinerary: Itinerary)
 
     @Delete
     suspend fun deleteItinerary(itinerary: Itinerary)
 
-    @Query("SELECT * FROM Itinerary")
-    suspend fun getItinerary(): Itinerary
+    @Query("SELECT * FROM Itinerary WHERE uid =:uid ")
+    suspend fun getItinerary(uid: String): Itinerary
 }

@@ -1,5 +1,6 @@
 package com.jer.banyumastourismapp.presentation.navigator
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -10,6 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -32,7 +34,10 @@ import com.jer.banyumastourismapp.presentation.detaildestination.DetailDestinati
 import com.jer.banyumastourismapp.presentation.home.HomeScreen
 import com.jer.banyumastourismapp.presentation.home.HomeViewModel
 import com.jer.banyumastourismapp.presentation.itinerary
+import com.jer.banyumastourismapp.presentation.itinerary.ItineraryFormScreen
 import com.jer.banyumastourismapp.presentation.itinerary.ItineraryScreen
+import com.jer.banyumastourismapp.presentation.itinerary.ItineraryViewModel
+import com.jer.banyumastourismapp.presentation.itinerary.component.ItineraryEvent
 import com.jer.banyumastourismapp.presentation.listDestination
 import com.jer.banyumastourismapp.presentation.listSosmed
 import com.jer.banyumastourismapp.presentation.maps.MapsScreen
@@ -147,15 +152,18 @@ fun CoreNavigator() {
         ) {
             composable(Route.HomeScreen.route) {
                 val viewModel: HomeViewModel = hiltViewModel()
-                val profileViewModel: ProfileViewModel = hiltViewModel()
+                val itineraryViewModel: ItineraryViewModel = hiltViewModel()
                 val destinations = viewModel.destinations.collectAsLazyPagingItems()
 
 
                 HomeScreen(
-                    viewModel = profileViewModel,
+                    viewModel = itineraryViewModel,
                     destination = destinations,
                     navigateToDetail = { navigateToDetail(navController, it) },
-                    navigateToItinerary = { navController.navigate(Route.ItineraryScreen.route) },
+                    navigateToItinerary = {
+                        navController.navigate(Route.ItineraryScreen.route)
+                    },
+                    navigateToItineraryForm = { navController.navigate(Route.ItineraryFormScreen.route) },
                     navigateToLogin = {navController.navigate(Route.LoginScreen.route)}
                 )
             }
@@ -221,12 +229,24 @@ fun CoreNavigator() {
             composable(Route.ItineraryScreen.route) {
                 val auth = Firebase.auth
                 val user = auth.currentUser
+                val viewModel: ItineraryViewModel = hiltViewModel()
                 ItineraryScreen(
                     user = user,
-                    itinerary = itinerary,
                     plan = plan,
                     onClick = {},
-                    navBack = {navController.navigateUp()}
+                    navBack = {navController.navigateUp()},
+                    viewModel = viewModel,
+
+                )
+            }
+
+            composable(Route.ItineraryFormScreen.route) {
+                val viewModel: ItineraryViewModel = hiltViewModel()
+
+                ItineraryFormScreen(
+                    navToItinerary = { navController.navigate(Route.ItineraryScreen.route) },
+                    navBack = { navController.navigateUp()},
+                    viewModel = viewModel,
                 )
             }
 

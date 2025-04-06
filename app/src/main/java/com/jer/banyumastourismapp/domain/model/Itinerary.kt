@@ -1,22 +1,35 @@
 package com.jer.banyumastourismapp.domain.model
 
 import android.os.Parcelable
+import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.jer.banyumastourismapp.R
 import kotlinx.parcelize.Parcelize
 
 
 @Parcelize
-@Entity
-data class Itinerary(
+@Entity(foreignKeys = [ForeignKey(
+    entity = User::class,
+    parentColumns = arrayOf("uid"),
+    childColumns = arrayOf("uid"),
+    onUpdate = ForeignKey.CASCADE,
+    onDelete = ForeignKey.CASCADE
+)])
+data class Itinerary (
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @ColumnInfo(name = "uid") val uid: String = "",
     val daysCount: Int = 0,
-    @PrimaryKey val title: String,
-    val description: String = "",
-    val membersCount: Int = 0,
+    val title: String? = null,
+    val date: String? = null,
+    val description: String? = null,
     val cityGoals: List<City> = emptyList(),
     val notes: String? = null,
-    val listCardPlan: List<List<Plan>>? = null,
+    val totalMoneySpend: Int = 0,
+    val totalDestinations: Int = 0,
+    val totalMembers: Int = 0,
+    val listCardPlan: List<List<Plan>> = emptyList(),
 ): Parcelable
 
 @Parcelize

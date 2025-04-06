@@ -5,7 +5,7 @@ import com.jer.banyumastourismapp.domain.repository.TourismRepository
 
 class SigninWithGoogle (private val repository: TourismRepository) {
 
-    operator suspend fun invoke(idToken: String): Result<FirebaseUser?> {
+    suspend operator fun invoke(idToken: String): Result<FirebaseUser?> {
         return repository.signInWithGoogle(idToken)
     }
 

@@ -97,9 +97,9 @@ fun AlertDialogEditProfile(
                     Spacer(modifier = Modifier.height(10.dp))
 
 
-                    username?.let {
+                    username?.let { name ->
                         OutlinedTextField(
-                            value = it,
+                            value = name,
                             onValueChange = { username = it },
                             label = { Text("Username") },
                             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
@@ -109,15 +109,17 @@ fun AlertDialogEditProfile(
                     Spacer(modifier = Modifier.height(10.dp))
 
 
+                    description?.let{ desc ->
                         OutlinedTextField(
 
-                            value = userData?.desc ?: "",
+                            value = desc ?: "",
                             onValueChange = { description = it },
                             label = { Text(text = "Description") },
                             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
                             modifier = Modifier.width(300.dp)
 
                         )
+                    }
 
                     Spacer(modifier = Modifier.height(10.dp))
 

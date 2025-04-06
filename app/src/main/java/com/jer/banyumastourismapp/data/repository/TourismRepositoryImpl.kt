@@ -10,8 +10,11 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.FirebaseDatabase
 import com.jer.banyumastourismapp.data.local.DaoDestination
+import com.jer.banyumastourismapp.data.local.DaoItinerary
+import com.jer.banyumastourismapp.data.local.DaoUser
 import com.jer.banyumastourismapp.data.remote.TourismPagingSource
 import com.jer.banyumastourismapp.domain.model.Destination
+import com.jer.banyumastourismapp.domain.model.Itinerary
 import com.jer.banyumastourismapp.domain.model.User
 import com.jer.banyumastourismapp.domain.repository.TourismRepository
 import kotlinx.coroutines.flow.Flow
@@ -20,6 +23,8 @@ import kotlinx.coroutines.tasks.await
 class TourismRepositoryImpl(
     private val db: FirebaseDatabase,
     private val daoDestination: DaoDestination,
+    private val daoItinerary: DaoItinerary,
+    private val daoUser: DaoUser,
     private val auth: FirebaseAuth
 ): TourismRepository {
     override fun getDestinations(): Flow<PagingData<Destination>> {
@@ -130,6 +135,32 @@ class TourismRepositoryImpl(
                 }
             }
         }
+    }
+
+
+
+    override suspend fun insertItinerary(itinerary: Itinerary) {
+        daoItinerary.insertItinerary(itinerary)
+    }
+
+    override suspend fun deleteItinerary(itinerary: Itinerary) {
+        daoItinerary.deleteItinerary(itinerary)
+    }
+
+    override suspend fun getItinerary(uid: String): Itinerary? {
+        return daoItinerary.getItinerary(uid)
+    }
+
+    override suspend fun insertUser(user: User) {
+        return daoUser.insertUser(user)
+    }
+
+    override suspend fun deleteUser(user: User) {
+        return daoUser.deleteUser(user)
+    }
+
+    override suspend fun getUser(uid: String): User? {
+        return daoUser.getUser(uid)
     }
 
 }

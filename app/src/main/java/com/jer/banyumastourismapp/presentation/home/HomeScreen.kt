@@ -63,9 +63,11 @@ import com.google.firebase.auth.auth
 import com.jer.banyumastourismapp.R
 import com.jer.banyumastourismapp.core.verySmallIcon
 import com.jer.banyumastourismapp.domain.model.Destination
+import com.jer.banyumastourismapp.domain.model.Itinerary
 import com.jer.banyumastourismapp.domain.model.User
 import com.jer.banyumastourismapp.presentation.component.CategoryRow
 import com.jer.banyumastourismapp.presentation.component.DestinationCardStandRow
+import com.jer.banyumastourismapp.presentation.itinerary.ItineraryViewModel
 import com.jer.banyumastourismapp.presentation.profile.ProfileViewModel
 import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
 import kotlinx.coroutines.launch
@@ -74,10 +76,12 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    viewModel: ProfileViewModel,
+//    viewModel: ProfileViewModel,
+    viewModel: ItineraryViewModel,
     destination: LazyPagingItems<Destination>,
     navigateToDetail: (Destination) -> Unit,
     navigateToItinerary: () -> Unit,
+    navigateToItineraryForm: () -> Unit,
     navigateToLogin: () -> Unit
 ) {
 
@@ -88,9 +92,12 @@ fun HomeScreen(
     val firebaseUser = auth.currentUser
 
     val userData by viewModel.userData.collectAsState()
+    val itinerary by viewModel.itinerary.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.getUserData()
+//        userData?.let { viewModel.getItinerary(it.uid) }
+        firebaseUser?.uid?.let { viewModel.getItinerary(it) }
     }
 
     LaunchedEffect(Unit) {
@@ -126,7 +133,7 @@ fun HomeScreen(
         ) {
 
             val (
-                bg, userAndNotif, itinerary, category1, category2,
+                bg, userAndNotif, itinerarySection, category1, category2,
                 subTitle, list, subTitle2, list2,
             ) = createRefs()
             
@@ -160,9 +167,12 @@ fun HomeScreen(
                 
             }
             ItineraryCard(
-                onClick = { navigateToItinerary() },
+                itinerary = itinerary,
+                onClick = {
+                    if (itinerary?.uid != "" && firebaseUser?.uid == itinerary?.uid && itinerary?.title != null) navigateToItinerary() else navigateToItineraryForm()
+                },
                 modifier = Modifier
-                    .constrainAs(itinerary) {
+                    .constrainAs(itinerarySection) {
                         top.linkTo(userAndNotif.bottom)
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
@@ -175,7 +185,7 @@ fun HomeScreen(
             CategoryRow(
                 modifier = Modifier
                     .constrainAs(category1) {
-                        top.linkTo(itinerary.bottom)
+                        top.linkTo(itinerarySection.bottom)
                     }
                     .padding(bottom = 5.dp),
 
@@ -248,6 +258,7 @@ fun HomeScreen(
 @Composable
 fun ItineraryCard(
     modifier: Modifier = Modifier,
+    itinerary: Itinerary? = null,
     onClick: () -> Unit
 ) {
     Card(
@@ -327,7 +338,7 @@ fun ItineraryCard(
                     modifier = Modifier.height(102.dp)
                 ){
                     Text(
-                        text = "Seru-seruan di Jawa Tengah",
+                        text = itinerary?.title ?: "title is empty",
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onBackground,
@@ -338,7 +349,7 @@ fun ItineraryCard(
 
 
                     Text(
-                        text = "Libur semesteran 7 hari full di jawa tengah bareng sobat jawir sekontrakan. Bakal berkunjung ke 4 kota dengan 10 destinasi.",
+                        text = itinerary?.description ?: "Libur semesteran 7 hari full di jawa tengah bareng sobat jawir sekontrakan. Bakal berkunjung ke 4 kota dengan 10 destinasi.",
                         fontSize = 10.sp,
                         color = MaterialTheme.colorScheme.onBackground,
                         overflow = TextOverflow.Ellipsis,
@@ -356,10 +367,10 @@ fun ItineraryCard(
                     .fillMaxWidth()
                     .padding(start = 15.dp, end = 15.dp, bottom = 15.dp)
             ) {
-                IconAndText(painter = painterResource(id = R.drawable.moneyicon), text = "Rp. 100.000")
-                IconAndText(painter = painterResource(id = R.drawable.destinationicon), text = "8")
-                IconAndText(painter = painterResource(id = R.drawable.peopleicon), text = "12")
-                IconAndText(painter = painterResource(id = R.drawable.calendaricon), text = "22 - 27 August")
+                IconAndText(painter = painterResource(id = R.drawable.moneyicon), text = "Rp. ${itinerary?.totalMoneySpend}" ?: "Rp. 500.000")
+                IconAndText(painter = painterResource(id = R.drawable.destinationicon), text = itinerary?.totalDestinations.toString() ?: "8")
+                IconAndText(painter = painterResource(id = R.drawable.peopleicon), text = itinerary?.totalMembers.toString() ?: "12")
+                IconAndText(painter = painterResource(id = R.drawable.calendaricon), text = itinerary?.date ?: "22 - 27 August")
             }
         }
 
@@ -524,15 +535,15 @@ private fun PreviewFirst() {
     }
 }
 
-@Preview
-@Composable
-private fun PreviewItinerary() {
-    BanyumasTourismAppTheme {
-        ItineraryCard(onClick = {})
-    }
-
-
-}
+//@Preview
+//@Composable
+//private fun PreviewItinerary() {
+//    BanyumasTourismAppTheme {
+//        ItineraryCard(onClick = {})
+//    }
+//
+//
+//}
 
 //@Preview
 //@Composable

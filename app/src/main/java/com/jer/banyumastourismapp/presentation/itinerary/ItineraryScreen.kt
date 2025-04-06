@@ -45,6 +45,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -74,7 +76,9 @@ import com.jer.banyumastourismapp.domain.model.PlanCategory
 import com.jer.banyumastourismapp.domain.model.User
 import com.jer.banyumastourismapp.domain.model.categoryPlan
 import com.jer.banyumastourismapp.presentation.component.AppBarCustom
+import com.jer.banyumastourismapp.presentation.itinerary.component.AlertDialogCore
 import com.jer.banyumastourismapp.presentation.itinerary.component.AlertDialogPlanInput
+import com.jer.banyumastourismapp.presentation.listCardPlanDummy
 import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarConfig
@@ -88,14 +92,26 @@ import java.util.Locale
 @Composable
 fun ItineraryScreen(
     modifier: Modifier = Modifier,
+    viewModel: ItineraryViewModel,
     user: FirebaseUser?,
-    itinerary: Itinerary,
+//    itinerary: Itinerary,
     plan: Plan,
 //    listPlan: List<Plan>,
     onClick: () -> Unit,
     navBack: () -> Unit,
 ) {
 
+    val userData by viewModel.userData.collectAsState()
+    val itinerary by viewModel.itinerary.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.getUserData()
+        viewModel.getItinerary(user?.uid ?: "")
+        itinerary?.let {
+            Log.d("ItineraryFormScreen", "Get Itinerary, idUser: ${it.uid}, title ${it.title}")
+        }
+
+    }
 
     val scrollState = rememberScrollState()
 
@@ -123,20 +139,25 @@ fun ItineraryScreen(
 
             val ( title, userNDate, description, notes, planSection) = createRefs()
 
-            Text(
-                text = itinerary.title,
-                fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.onBackground,
-                fontWeight = FontWeight.Bold,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .constrainAs(title) {
-                        top.linkTo(parent.top)
-                    }
-                    .padding(top = 30.dp, start = 30.dp, end = 30.dp)
-            )
+            if (itinerary?.title != null) {
+                itinerary?.title?.let {
+                    Text(
+                        text = it,
+                        fontSize = 24.sp,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .constrainAs(title) {
+                                top.linkTo(parent.top)
+                            }
+                            .padding(top = 30.dp, start = 30.dp, end = 30.dp)
+                    )
+                }
+
+            }
 
             Row (
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -148,25 +169,29 @@ fun ItineraryScreen(
                     }
                     .padding(horizontal = 30.dp, vertical = 30.dp)
             ) {
-                UserSection(user = user)
-                DatePeriodSection(onClick = { /*TODO*/ }, date = "August 21 - 25")
+                UserSection(user = user, userData = userData)
+                DatePeriodSection(onClick = { /*TODO*/ }, date = itinerary?.date)
             }
 
 
-            DescriptionSection(
-                description = itinerary.description,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .constrainAs(description) {
-                        top.linkTo(userNDate.bottom)
+            if (itinerary?.description != null) {
+                itinerary?.description?.let {
+                    DescriptionSection(
+                        description = it,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .constrainAs(description) {
+                                top.linkTo(userNDate.bottom)
 
-                    }
-                    .padding(horizontal = 30.dp)
-            )
+                            }
+                            .padding(horizontal = 30.dp)
+                    )
+                }
+            }
 
             CardExpand(
                 itinerary = itinerary,
-                notes = itinerary.notes,
+                notes = itinerary?.notes,
                 onClick = {},
                 isNotes = true,
                 listCategoryPlan = categoryPlan,
@@ -179,20 +204,22 @@ fun ItineraryScreen(
 
             )
 
-            PlanSection(
-                plan = plan,
-                itinerary = itinerary,
-                onClick = { },
-                listCardPlan = itinerary.listCardPlan ,
-                listCategoryPlan = categoryPlan,
-//                plan.category ?: emptyList(),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .constrainAs(planSection) {
-                        top.linkTo(notes.bottom)
-                    }
-                    .padding(horizontal = 30.dp)
-            )
+            itinerary?.let {
+                PlanSection(
+                    plan = plan,
+                    itinerary = it,
+                    onClick = { },
+                    listCardPlan = it.listCardPlan ,
+                    listCategoryPlan = categoryPlan,
+        //                plan.category ?: emptyList(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .constrainAs(planSection) {
+                            top.linkTo(notes.bottom)
+                        }
+                        .padding(horizontal = 30.dp)
+                )
+            }
 
         }
     }
@@ -203,7 +230,7 @@ fun ItineraryScreen(
 fun PlanSection(
     modifier: Modifier = Modifier,
     plan: Plan,
-    listCardPlan: List<List<Plan>>? = null,
+    listCardPlan: List<List<Plan>>,
     listCategoryPlan: List<PlanCategory>,
 //    listCategoryPlan: List<List<PlanCategory>>,
     itinerary: Itinerary,
@@ -235,17 +262,32 @@ fun PlanSection(
         ) {
 
                 itemsIndexed(finalListPlan) { index, plan ->
-                    CardExpand(
-                        isNotes = false,
-                        plan = plan,
-                        listPlan = listCardPlan?.get(index),
-                        listCategoryPlan = listCategoryPlan,
-                        itinerary = itinerary,
-                        dayNumber = index,
-                        onClick = {
-                            onClick()
-                        }
-                    )
+                    if (listCardPlan?.isNotEmpty() == true){
+                        CardExpand(
+                            isNotes = false,
+                            plan = plan,
+                            listPlan = listCardPlan?.get(index),
+                            listCategoryPlan = listCategoryPlan,
+                            itinerary = itinerary,
+                            dayNumber = index,
+                            onClick = {
+                                onClick()
+                            }
+                        )
+                    }
+                    else {
+                        CardExpand(
+                            isNotes = false,
+                            plan = plan,
+                            listPlan = listCardPlanDummy.get(index),
+                            listCategoryPlan = listCategoryPlan,
+                            itinerary = itinerary,
+                            dayNumber = index,
+                            onClick = {
+                                onClick()
+                            }
+                        )
+                    }
 
                 }
 
@@ -609,52 +651,7 @@ fun CardExpand(
 
 
 
-@Composable
-fun AlertDialogCore(
-    modifier: Modifier = Modifier,
-    onDismiss: () -> Unit,
-    negativeText: String,
-    positiveText: String,
-    message: String,
-    actionNegative: () -> Unit,
-    actionPositive: () -> Unit,
-) {
 
-    var showrequest by remember { mutableStateOf(true) }
-    if (showrequest)  {
-        AlertDialog(
-            onDismissRequest = {
-                showrequest = false
-                onDismiss() },
-            tonalElevation = 8.dp,
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        actionPositive()
-                        showrequest = false
-                        onDismiss()
-                    }
-                ) {
-                    Text(text = positiveText)
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = {
-                        actionNegative()
-                        showrequest = false
-                        onDismiss()
-                    }
-                ) {
-                    Text(text = negativeText)
-                }
-            },
-            text = { Text(text = message) },
-        )
-    }
-
-
-}
 
 
 @Composable
@@ -683,7 +680,7 @@ fun DescriptionSection(modifier: Modifier = Modifier, description: String) {
 }
 
 @Composable
-fun UserSection(modifier: Modifier = Modifier, user: FirebaseUser?) {
+fun UserSection(modifier: Modifier = Modifier, user: FirebaseUser?, userData: User?) {
     Row (
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically,
@@ -728,7 +725,7 @@ fun UserSection(modifier: Modifier = Modifier, user: FirebaseUser?) {
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
-            user?.displayName?.let {
+            userData?.name?.let {
                 Text(
                     text = it,
                     fontSize = 14.sp,
@@ -744,7 +741,7 @@ fun UserSection(modifier: Modifier = Modifier, user: FirebaseUser?) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DatePeriodSection(modifier: Modifier = Modifier, onClick: () -> Unit, date: String ) {
+fun DatePeriodSection(modifier: Modifier = Modifier, onClick: () -> Unit, date: String? ) {
 
 
     val calendarState = rememberUseCaseState()
@@ -826,7 +823,7 @@ fun DatePeriodSection(modifier: Modifier = Modifier, onClick: () -> Unit, date: 
             )
 
             Text(
-                text =  "${start} - \n${end}",
+                text = date ?: "$start - \n$end",
 //                date,
                 fontSize = 14.sp,
                 color = MaterialTheme.colorScheme.onBackground

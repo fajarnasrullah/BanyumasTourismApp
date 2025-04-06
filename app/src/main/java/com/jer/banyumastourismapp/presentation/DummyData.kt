@@ -274,7 +274,19 @@ val listPlan5 = listOf(
     )
 )
 
-val listCardPlan = listOf(emptyList(), emptyList(), listPlan3, listPlan4, listPlan5)
+val listPlan = listOf(
+    Plan(
+        category = 0,
+//                    PlanCategory("On The Way", R.drawable.caricon),
+        title = "",
+        city = listCity,
+        time = "",
+        cost = 0
+    ),
+)
+
+//val listCardPlanDummy = listOf(emptyList(), emptyList(), listPlan3, listPlan4, listPlan5)
+val listCardPlanDummy = listOf(emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), listPlan)
 
 val listFacilityDummy: List<Facility> = listOf(
     Facility("Waterfall"),
@@ -314,10 +326,10 @@ val itinerary = Itinerary (
     daysCount = 5,
     title = "Seru-seruan di Jawa Tengah",
     description = "Libur semesteran 7 hari full di jawa tengah bareng sobat jawir sekontrakan. Bakal berkunjung ke 4 kota dengan 10 destinasi.",
-    membersCount = 5,
+    totalMembers = 5,
     cityGoals = listCity,
     notes = "Libur semesteran 7 hari full di jawa tengah bareng sobat jawir sekontrakan. Bakal berkunjung ke 4 kota dengan 10 destinasi.",
-    listCardPlan = listCardPlan
+    listCardPlan = listCardPlanDummy
 
 )
 
