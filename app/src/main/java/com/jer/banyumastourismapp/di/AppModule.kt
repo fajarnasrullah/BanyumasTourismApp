@@ -13,14 +13,18 @@ import com.jer.banyumastourismapp.data.local.ItsTypeConverter
 import com.jer.banyumastourismapp.data.repository.TourismRepositoryImpl
 import com.jer.banyumastourismapp.domain.repository.TourismRepository
 import com.jer.banyumastourismapp.domain.usecase.tourism.DeleteItinerary
+import com.jer.banyumastourismapp.domain.usecase.tourism.DeletePlanCard
 import com.jer.banyumastourismapp.domain.usecase.tourism.DeleteUser
 import com.jer.banyumastourismapp.domain.usecase.tourism.GetCurrentUser
 import com.jer.banyumastourismapp.domain.usecase.tourism.GetDestination
 import com.jer.banyumastourismapp.domain.usecase.tourism.GetDestinations
 import com.jer.banyumastourismapp.domain.usecase.tourism.GetDestinationsForMaps
 import com.jer.banyumastourismapp.domain.usecase.tourism.GetItinerary
+import com.jer.banyumastourismapp.domain.usecase.tourism.GetItineraryWithPlanCards
 import com.jer.banyumastourismapp.domain.usecase.tourism.GetUser
 import com.jer.banyumastourismapp.domain.usecase.tourism.InsertItinerary
+import com.jer.banyumastourismapp.domain.usecase.tourism.InsertPlan
+import com.jer.banyumastourismapp.domain.usecase.tourism.InsertPlanCard
 import com.jer.banyumastourismapp.domain.usecase.tourism.InsertUser
 import com.jer.banyumastourismapp.domain.usecase.tourism.SigninWithGoogle
 import com.jer.banyumastourismapp.domain.usecase.tourism.TourismUseCase
@@ -97,8 +101,12 @@ object AppModule {
             updateUserData = UpdateUserData(repository),
             getDestinationsForMaps = GetDestinationsForMaps(repository),
             insertItinerary = InsertItinerary(repository),
+            insertPlanCard = InsertPlanCard(repository),
+            insertPlan = InsertPlan(repository),
             deleteItinerary = DeleteItinerary(repository),
+            deletePlanCard = DeletePlanCard(repository),
             getItinerary = GetItinerary(repository),
+            getItineraryWithPlanCards = GetItineraryWithPlanCards(repository),
             insertUser = InsertUser(repository),
             deleteUser = DeleteUser(repository),
             getUser = GetUser(repository)

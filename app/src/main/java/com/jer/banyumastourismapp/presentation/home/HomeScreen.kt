@@ -92,7 +92,8 @@ fun HomeScreen(
     val firebaseUser = auth.currentUser
 
     val userData by viewModel.userData.collectAsState()
-    val itinerary by viewModel.itinerary.collectAsState()
+//    val itinerary by viewModel.itinerary.collectAsState()
+    val itinerary by viewModel.itineraryWithPlanCards.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.getUserData()
@@ -167,9 +168,9 @@ fun HomeScreen(
                 
             }
             ItineraryCard(
-                itinerary = itinerary,
+                itinerary = itinerary?.itinerary,
                 onClick = {
-                    if (itinerary?.uid != "" && firebaseUser?.uid == itinerary?.uid && itinerary?.title != null) navigateToItinerary() else navigateToItineraryForm()
+                    if (itinerary?.itinerary?.uid != "" && firebaseUser?.uid == itinerary?.itinerary?.uid && itinerary?.itinerary?.title != null) navigateToItinerary() else navigateToItineraryForm()
                 },
                 modifier = Modifier
                     .constrainAs(itinerarySection) {

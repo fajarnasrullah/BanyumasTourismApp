@@ -71,14 +71,16 @@ import com.google.firebase.auth.FirebaseUser
 import com.jer.banyumastourismapp.R
 import com.jer.banyumastourismapp.core.verySmallIcon
 import com.jer.banyumastourismapp.domain.model.Itinerary
+import com.jer.banyumastourismapp.domain.model.ItineraryWithPlanCards
 import com.jer.banyumastourismapp.domain.model.Plan
+import com.jer.banyumastourismapp.domain.model.PlanCardData
+import com.jer.banyumastourismapp.domain.model.PlanCardWithPlans
 import com.jer.banyumastourismapp.domain.model.PlanCategory
 import com.jer.banyumastourismapp.domain.model.User
 import com.jer.banyumastourismapp.domain.model.categoryPlan
 import com.jer.banyumastourismapp.presentation.component.AppBarCustom
 import com.jer.banyumastourismapp.presentation.itinerary.component.AlertDialogCore
 import com.jer.banyumastourismapp.presentation.itinerary.component.AlertDialogPlanInput
-import com.jer.banyumastourismapp.presentation.listCardPlanDummy
 import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarConfig
@@ -95,20 +97,21 @@ fun ItineraryScreen(
     viewModel: ItineraryViewModel,
     user: FirebaseUser?,
 //    itinerary: Itinerary,
-    plan: Plan,
+//    plan: Plan,
 //    listPlan: List<Plan>,
     onClick: () -> Unit,
     navBack: () -> Unit,
 ) {
 
     val userData by viewModel.userData.collectAsState()
-    val itinerary by viewModel.itinerary.collectAsState()
+//    val itinerary by viewModel.itinerary.collectAsState()
+    val itinerary by viewModel.itineraryWithPlanCards.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.getUserData()
         viewModel.getItinerary(user?.uid ?: "")
         itinerary?.let {
-            Log.d("ItineraryFormScreen", "Get Itinerary, idUser: ${it.uid}, title ${it.title}")
+            Log.d("ItineraryFormScreen", "Get Itinerary, idUser: ${it.itinerary.uid}, title ${it.itinerary.title}")
         }
 
     }
@@ -139,8 +142,8 @@ fun ItineraryScreen(
 
             val ( title, userNDate, description, notes, planSection) = createRefs()
 
-            if (itinerary?.title != null) {
-                itinerary?.title?.let {
+            if (itinerary?.itinerary?.title != null) {
+                itinerary?.itinerary?.title?.let {
                     Text(
                         text = it,
                         fontSize = 24.sp,
@@ -170,12 +173,12 @@ fun ItineraryScreen(
                     .padding(horizontal = 30.dp, vertical = 30.dp)
             ) {
                 UserSection(user = user, userData = userData)
-                DatePeriodSection(onClick = { /*TODO*/ }, date = itinerary?.date)
+                DatePeriodSection(onClick = { /*TODO*/ }, date = itinerary?.itinerary?.date)
             }
 
 
-            if (itinerary?.description != null) {
-                itinerary?.description?.let {
+            if (itinerary?.itinerary?.description != null) {
+                itinerary?.itinerary?.description?.let {
                     DescriptionSection(
                         description = it,
                         modifier = Modifier
@@ -191,11 +194,12 @@ fun ItineraryScreen(
 
             CardExpand(
                 itinerary = itinerary,
-                notes = itinerary?.notes,
+                notes = itinerary?.itinerary?.notes,
                 onClick = {},
                 isNotes = true,
                 listCategoryPlan = categoryPlan,
 //                plan.category ?: emptyList(),
+                viewModel = viewModel,
                 modifier = Modifier
                     .constrainAs(notes) {
                         top.linkTo(description.bottom)
@@ -206,10 +210,11 @@ fun ItineraryScreen(
 
             itinerary?.let {
                 PlanSection(
-                    plan = plan,
+//                    plan = plan,
                     itinerary = it,
+                    viewModel = viewModel,
                     onClick = { },
-                    listCardPlan = it.listCardPlan ,
+//                    listCardPlan = it.listPlanCard ,
                     listCategoryPlan = categoryPlan,
         //                plan.category ?: emptyList(),
                     modifier = Modifier
@@ -229,18 +234,21 @@ fun ItineraryScreen(
 @Composable
 fun PlanSection(
     modifier: Modifier = Modifier,
-    plan: Plan,
-    listCardPlan: List<List<Plan>>,
+    viewModel: ItineraryViewModel,
+//    plan: Plan,
+//    listCardPlan: List<PlanCardWithPlans>,
+//    List<List<Plan>>,
     listCategoryPlan: List<PlanCategory>,
 //    listCategoryPlan: List<List<PlanCategory>>,
-    itinerary: Itinerary,
+    itinerary: ItineraryWithPlanCards,
     onClick: () -> Unit
 ) {
 
 
-    val daysArray = IntArray(itinerary.daysCount)
-    val finalListPlan = MutableList(itinerary.daysCount) { plan }
+    val daysArray = IntArray(itinerary.itinerary.daysCount)
+//    val finalListPlan = MutableList(itinerary.itinerary.daysCount) { plan }
 
+    val listCardPlan = itinerary.listPlanCard
 //    val finalListPlan = listCardPlan?.takeIf { it.isNotEmpty() }?.flatten() ?: listOf(plan)
 
     Column (
@@ -261,33 +269,38 @@ fun PlanSection(
             modifier = Modifier.heightIn(max = 2000.dp)
         ) {
 
-                itemsIndexed(finalListPlan) { index, plan ->
-                    if (listCardPlan?.isNotEmpty() == true){
+                itemsIndexed(
+//                    finalListPlan
+                    listCardPlan
+                ) { index, planCard ->
+//                    if (listCardPlan?.isNotEmpty() == true) {
                         CardExpand(
                             isNotes = false,
-                            plan = plan,
-                            listPlan = listCardPlan?.get(index),
+                            viewModel = viewModel,
+                            listPlan = planCard,
+//                            listCardPlan?.get(index),
+                            indexItem = index,
                             listCategoryPlan = listCategoryPlan,
                             itinerary = itinerary,
-                            dayNumber = index,
+//                            dayNumber = index,
                             onClick = {
                                 onClick()
                             }
                         )
-                    }
-                    else {
-                        CardExpand(
-                            isNotes = false,
-                            plan = plan,
-                            listPlan = listCardPlanDummy.get(index),
-                            listCategoryPlan = listCategoryPlan,
-                            itinerary = itinerary,
-                            dayNumber = index,
-                            onClick = {
-                                onClick()
-                            }
-                        )
-                    }
+//                    }
+//                    else {
+//                        CardExpand(
+//                            isNotes = false,
+//                            plan = plan,
+//                            listPlan = listCardPlanDummy.get(index),
+//                            listCategoryPlan = listCategoryPlan,
+//                            itinerary = itinerary,
+//                            dayNumber = index,
+//                            onClick = {
+//                                onClick()
+//                            }
+//                        )
+//                    }
 
                 }
 
@@ -426,21 +439,36 @@ fun PlanItem(
 @Composable
 fun CardExpand(
     modifier: Modifier = Modifier,
-    plan: Plan? = null,
-    itinerary: Itinerary? = null,
-    listPlan: List<Plan>? = null,
+    viewModel: ItineraryViewModel,
+    itinerary: ItineraryWithPlanCards? = null,
+    indexItem: Int? = null,
+    listPlan: PlanCardWithPlans? = null,
 //    listCategoryPlan: List<List<PlanCategory>>,
     listCategoryPlan: List<PlanCategory>,
     onClick: () -> Unit,
     notes: String? = null,
     isNotes: Boolean = false,
-    dayNumber: Int? = null
+//    dayNumber: Int? = null
 ) {
     var expandedState by rememberSaveable { mutableStateOf(false) }
     val rotationState by animateFloatAsState(targetValue = if (expandedState) 180f else 0f)
     var isVisible by rememberSaveable { mutableStateOf(false) }
     var showAlert by rememberSaveable {mutableStateOf(false)}
     var selectedMenu by rememberSaveable { mutableStateOf("") }
+
+    var title = rememberSaveable { mutableStateOf("") }
+    var time = rememberSaveable { mutableStateOf("") }
+    var cost = rememberSaveable { mutableStateOf(0) }
+    var category = rememberSaveable { mutableStateOf(0) }
+
+    var newPlan by rememberSaveable { mutableStateOf(Plan(
+        planCardDataId =  0,
+        title = "",
+        time = "",
+        cost = 0,
+        category = 0
+    )) }
+
 
 //    Log.d("CardExpand", "listCategoryPlan size: ${listCategoryPlan?.size ?: 0}")
 
@@ -515,14 +543,14 @@ fun CardExpand(
                         Spacer(modifier = Modifier.width(15.dp))
 
 
-                        if (dayNumber != null) {
+//                        if (dayNumber != null) {
                             Text(
-                                text = "Day ${dayNumber + 1}",
+                                text = indexItem?.let { itinerary?.listPlanCard?.get(it)?.planCardData?.title } ?: "",
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.SemiBold,
                                 color = MaterialTheme.colorScheme.onBackground
                             )
-                        }
+//                        }
 
                     }
 
@@ -539,68 +567,89 @@ fun CardExpand(
 
                 Box(modifier = Modifier.weight(2f))
 
+                if (isNotes) {
+                    Box(modifier = Modifier.weight(0.5f))
+                } else {
+                    val listAction = listOf("Add", "Delete")
 
-                val listAction = listOf("Add", "Delete")
+                    IconButton(
+                        onClick = {
+                            isVisible = true
 
-                IconButton(
-                    onClick = {
-//                        onClick()
-                        isVisible = true
+                        },
 
-                              },
-
-                    modifier = Modifier
-                        .weight(0.5f)
-                        .size(verySmallIcon)
-                        .align(Alignment.CenterVertically)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.MoreVert,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onBackground
-                    )
-                }
-
-                val context = LocalContext.current
-                DropdownMenu(
-                    offset = DpOffset(200.dp, 10.dp),
-                    expanded = isVisible,
-                    onDismissRequest = { isVisible = false },
-                ) {
-                    listAction.forEach { menu ->
-                        DropdownMenuItem(
-                            text = { Text(text = menu) },
-                            onClick = {
-//                                onClick()
-                                // logic nya disini cuy
-
-                                isVisible = false
-                                showAlert = true
-                                selectedMenu = menu
-
-                            }
+                        modifier = Modifier
+                            .weight(0.5f)
+                            .size(verySmallIcon)
+                            .align(Alignment.CenterVertically)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onBackground
                         )
                     }
-                }
 
-                if (showAlert) {
-                    when (selectedMenu) {
-                        "Add" -> {
-                            AlertDialogPlanInput(onDismiss = {showAlert = false})
-                        }
+                    val context = LocalContext.current
+                    DropdownMenu(
+                        offset = DpOffset(200.dp, 10.dp),
+                        expanded = isVisible,
+                        onDismissRequest = { isVisible = false },
+                    ) {
+                        listAction.forEach { menu ->
+                            DropdownMenuItem(
+                                text = { Text(text = menu) },
+                                onClick = {
 
-                        "Delete" -> {
-                            AlertDialogCore(
-                                negativeText = "No",
-                                positiveText = "Yes",
-                                onDismiss = { showAlert = false },
-                                message = "Are you sure to delete this plan?",
-                                actionNegative = {  },
-                                actionPositive = { }
+                                    isVisible = false
+                                    showAlert = true
+                                    selectedMenu = menu
+
+                                }
                             )
                         }
                     }
 
+                    if (showAlert) {
+                        when (selectedMenu) {
+                            "Add" -> {
+                                AlertDialogPlanInput(
+                                    alertTitle = "Add Your New Plan Now!",
+                                    title = title,
+                                    time = time,
+                                    cost = cost,
+                                    category = category,
+                                    onDismiss = { showAlert = false },
+                                    onSubmit = {
+                                        newPlan = Plan(
+                                            planCardDataId = indexItem?.let { itinerary?.listPlanCard?.get(it)?.planCardData?.id } ?: 0,
+                                            title = title.value,
+                                            time = time.value,
+                                            cost = cost.value,
+                                            category = category.value
+                                        )
+                                        viewModel.insertPlan(newPlan)
+                                        showAlert = false
+                                    }
+
+                                )
+                            }
+
+                            "Delete" -> {
+                                AlertDialogCore(
+                                    negativeText = "No",
+                                    positiveText = "Yes",
+                                    onDismiss = { showAlert = false },
+                                    message = "Are you sure to delete this plan?",
+                                    actionNegative = { },
+                                    actionPositive = {
+
+                                    }
+                                )
+                            }
+                        }
+
+                    }
                 }
 
 
@@ -623,9 +672,9 @@ fun CardExpand(
 
                 } else {
 
-                    if (listPlan != null) {
+                    if (listPlan?.listPlan != null) {
                         PlanColumn(
-                            listPlan = listPlan ?: emptyList(),
+                            listPlan = listPlan.listPlan ?: emptyList(),
                             modifier = Modifier.fillMaxWidth(),
                             listCategoryPlan = listCategoryPlan
 //                            plan?.category ?: emptyList()

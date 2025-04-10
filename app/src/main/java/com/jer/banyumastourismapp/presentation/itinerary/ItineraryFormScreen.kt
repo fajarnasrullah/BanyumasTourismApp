@@ -341,9 +341,9 @@ fun ItineraryFormScreen(
 
                 // total money spend
                 OutlinedTextField (
-                    value = totalMoneySpend.toString(),
+                    value = if (totalMoneySpend == 0) "" else totalMoneySpend.toString(),
                     onValueChange = {
-                        totalMoneySpend = it.toInt()
+                       if (it.isNotEmpty()) totalMoneySpend = it.toInt() else totalMoneySpend = 0
                     },
                     label = { Text(text = "Money Spend Amount") },
                     modifier = Modifier.fillMaxWidth(),
@@ -352,9 +352,9 @@ fun ItineraryFormScreen(
 
                 // total destinations
                 OutlinedTextField (
-                    value = totalDestinations.toString(),
+                    value = if (totalDestinations == 0) "" else totalDestinations.toString(),
                     onValueChange = {
-                        totalDestinations = it.toInt()
+                        if (it.isNotEmpty()) totalDestinations = it.toInt() else totalDestinations = 0
                     },
                     label = { Text(text = "Destination Amount") },
                     modifier = Modifier.fillMaxWidth(),
@@ -363,9 +363,9 @@ fun ItineraryFormScreen(
 
                 // total members
                 OutlinedTextField (
-                    value = totalMembers.toString(),
+                    value = if (totalMembers == 0) "" else totalMembers.toString(),
                     onValueChange = {
-                        totalMembers = it.toInt()
+                        if (it.isNotEmpty()) totalMembers = it.toInt() else totalMembers = 0
                     },
                     label = { Text(text = "Members Amount") },
                     modifier = Modifier.fillMaxWidth(),

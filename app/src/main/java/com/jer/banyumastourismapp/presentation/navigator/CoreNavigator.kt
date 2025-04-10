@@ -232,7 +232,6 @@ fun CoreNavigator() {
                 val viewModel: ItineraryViewModel = hiltViewModel()
                 ItineraryScreen(
                     user = user,
-                    plan = plan,
                     onClick = {},
                     navBack = {navController.navigateUp()},
                     viewModel = viewModel,

@@ -15,278 +15,278 @@ val listCity = listOf(
     City("Surabaya", ""),
     City("Semarang", ""),
 )
-val listPlan1 = listOf(
-    Plan(
-        category = 0 ,
-//                    PlanCategory("On The Way", R.drawable.caricon),
-        title = "Berangkat",
-        city = listCity,
-        time = "13.00",
-        cost = 0
-    ),
-
-    Plan(
-        category = 1,
-//                    PlanCategory("Resto", R.drawable.foodicon),
-        title = "Makan Heula",
-        city = listCity,
-        time = "20.00",
-        cost = 0
-    ),
-    Plan(
-        category = 3,
-//                    PlanCategory("Destination", R.drawable.placeicon),
-        title = "Sampai cuy",
-        city = listCity,
-        time = "21.00",
-        cost = 0
-    ),
-    Plan(
-        category = 1,
-//                    PlanCategory("Hotel", R.drawable.bedicon),
-        title = "Menginap di Hotel",
-        city = listCity,
-        time = "18.00",
-        cost = 0
-    ),
-
-    )
-val listPlan2 = listOf(
-    Plan(
-        category = 0,
-//                    PlanCategory("On The Way", R.drawable.caricon),
-        title = "Mangkat",
-        city = listCity,
-        time = "13.00",
-        cost = 0
-    ),
-
-
-    Plan(
-        category = 3,
-//                    PlanCategory("Destination", R.drawable.placeicon),
-        title = "sokin",
-        city = listCity,
-        time = "21.00",
-        cost = 0
-    ),
-
-    Plan(
-        category = 1,
-//                    PlanCategory("Hotel", R.drawable.bedicon),
-        title = "Rehat sejenak",
-        city = listCity,
-        time = "18.00",
-        cost = 0
-    ),
-
-    Plan(
-        category = 2,
-//                    PlanCategory("Resto", R.drawable.foodicon),
-        title = "Madang lurr",
-        city = listCity,
-        time = "20.00",
-        cost = 0
-    ),
-
-
-    )
-val listPlan3 = listOf(
-    Plan(
-        category = 0,
-//                    PlanCategory("On The Way", R.drawable.caricon),
-        title = "otw",
-        city = listCity,
-        time = "13.00",
-        cost = 0
-    ),
-    Plan(
-        category = 1,
-//                    PlanCategory("Hotel", R.drawable.bedicon),
-        title = "turu",
-        city = listCity,
-        time = "18.00",
-        cost = 0
-    ),
-    Plan(
-        category = 2,
-//                    PlanCategory("Resto", R.drawable.foodicon),
-        title = "mangan",
-        city = listCity,
-        time = "20.00",
-        cost = 0
-    ),
-    Plan(
-        category = 3,
-//                    PlanCategory("Destination", R.drawable.placeicon),
-        title = "sampai lokasi",
-        city = listCity,
-        time = "21.00",
-        cost = 0
-    ),
-    Plan(
-        category = 3,
-//                    PlanCategory("Destination", R.drawable.placeicon),
-        title = "sampai lokasi",
-        city = listCity,
-        time = "21.00",
-        cost = 0
-    ), Plan(
-        category = 3,
-//                    PlanCategory("Destination", R.drawable.placeicon),
-        title = "sampai lokasi",
-        city = listCity,
-        time = "21.00",
-        cost = 0
-    )
-)
-
-val listPlan4 = listOf(
-    Plan(
-        category = 0,
-//                    PlanCategory("On The Way", R.drawable.caricon),
-        title = "otw",
-        city = listCity,
-        time = "13.00",
-        cost = 0
-    ),
-    Plan(
-        category = 1,
-//                    PlanCategory("Hotel", R.drawable.bedicon),
-        title = "turu",
-        city = listCity,
-        time = "18.00",
-        cost = 0
-    ),
-    Plan(
-        category = 2,
-//                    PlanCategory("Resto", R.drawable.foodicon),
-        title = "mangan",
-        city = listCity,
-        time = "20.00",
-        cost = 0
-    ),
-    Plan(
-        category = 2,
-//                    PlanCategory("Destination", R.drawable.placeicon),
-        title = "sampai lokasi",
-        city = listCity,
-        time = "21.00",
-        cost = 0
-    )
-)
-
-val listPlan5 = listOf(
-    Plan(
-        category = 0,
-//                    PlanCategory("On The Way", R.drawable.caricon),
-        title = "otw",
-        city = listCity,
-        time = "13.00",
-        cost = 0
-    ),
-    Plan(
-        category = 1,
-//                    PlanCategory("Hotel", R.drawable.bedicon),
-        title = "turu",
-        city = listCity,
-        time = "18.00",
-        cost = 0
-    ),
-    Plan(
-        category = 2,
-//                    PlanCategory("Resto", R.drawable.foodicon),
-        title = "mangan",
-        city = listCity,
-        time = "20.00",
-        cost = 0
-    ),
-    Plan(
-        category = 3,
-//                    PlanCategory("Destination", R.drawable.placeicon),
-        title = "sampai lokasi",
-        city = listCity,
-        time = "21.00",
-        cost = 0
-    ),
-    Plan(
-        category = 0,
-//                    PlanCategory("On The Way", R.drawable.caricon),
-        title = "otw",
-        city = listCity,
-        time = "13.00",
-        cost = 0
-    ),
-    Plan(
-        category = 1,
-//                    PlanCategory("Hotel", R.drawable.bedicon),
-        title = "turu",
-        city = listCity,
-        time = "18.00",
-        cost = 0
-    ),
-    Plan(
-        category = 2,
-//                    PlanCategory("Resto", R.drawable.foodicon),
-        title = "mangan",
-        city = listCity,
-        time = "20.00",
-        cost = 0
-    ),
-    Plan(
-        category = 3,
-//                    PlanCategory("Destination", R.drawable.placeicon),
-        title = "sampai lokasi",
-        city = listCity,
-        time = "21.00",
-        cost = 0
-    ), Plan(
-        category = 0,
-//                    PlanCategory("On The Way", R.drawable.caricon),
-        title = "otw",
-        city = listCity,
-        time = "13.00",
-        cost = 0
-    ),
-    Plan(
-        category = 1,
-//                    PlanCategory("Hotel", R.drawable.bedicon),
-        title = "turu",
-        city = listCity,
-        time = "18.00",
-        cost = 0
-    ),
-    Plan(
-        category = 2,
-//                    PlanCategory("Resto", R.drawable.foodicon),
-        title = "mangan",
-        city = listCity,
-        time = "20.00",
-        cost = 0
-    ),
-    Plan(
-        category = 3,
-//                    PlanCategory("Destination", R.drawable.placeicon),
-        title = "sampai lokasi",
-        city = listCity,
-        time = "21.00",
-        cost = 0
-    )
-)
-
-val listPlan = listOf(
-    Plan(
-        category = 0,
-//                    PlanCategory("On The Way", R.drawable.caricon),
-        title = "",
-        city = listCity,
-        time = "",
-        cost = 0
-    ),
-)
+//val listPlan1 = listOf(
+//    Plan(
+//        category = 0 ,
+////                    PlanCategory("On The Way", R.drawable.caricon),
+//        title = "Berangkat",
+//        city = listCity,
+//        time = "13.00",
+//        cost = 0
+//    ),
+//
+//    Plan(
+//        category = 1,
+////                    PlanCategory("Resto", R.drawable.foodicon),
+//        title = "Makan Heula",
+//        city = listCity,
+//        time = "20.00",
+//        cost = 0
+//    ),
+//    Plan(
+//        category = 3,
+////                    PlanCategory("Destination", R.drawable.placeicon),
+//        title = "Sampai cuy",
+//        city = listCity,
+//        time = "21.00",
+//        cost = 0
+//    ),
+//    Plan(
+//        category = 1,
+////                    PlanCategory("Hotel", R.drawable.bedicon),
+//        title = "Menginap di Hotel",
+//        city = listCity,
+//        time = "18.00",
+//        cost = 0
+//    ),
+//
+//    )
+//val listPlan2 = listOf(
+//    Plan(
+//        category = 0,
+////                    PlanCategory("On The Way", R.drawable.caricon),
+//        title = "Mangkat",
+//        city = listCity,
+//        time = "13.00",
+//        cost = 0
+//    ),
+//
+//
+//    Plan(
+//        category = 3,
+////                    PlanCategory("Destination", R.drawable.placeicon),
+//        title = "sokin",
+//        city = listCity,
+//        time = "21.00",
+//        cost = 0
+//    ),
+//
+//    Plan(
+//        category = 1,
+////                    PlanCategory("Hotel", R.drawable.bedicon),
+//        title = "Rehat sejenak",
+//        city = listCity,
+//        time = "18.00",
+//        cost = 0
+//    ),
+//
+//    Plan(
+//        category = 2,
+////                    PlanCategory("Resto", R.drawable.foodicon),
+//        title = "Madang lurr",
+//        city = listCity,
+//        time = "20.00",
+//        cost = 0
+//    ),
+//
+//
+//    )
+//val listPlan3 = listOf(
+//    Plan(
+//        category = 0,
+////                    PlanCategory("On The Way", R.drawable.caricon),
+//        title = "otw",
+//        city = listCity,
+//        time = "13.00",
+//        cost = 0
+//    ),
+//    Plan(
+//        category = 1,
+////                    PlanCategory("Hotel", R.drawable.bedicon),
+//        title = "turu",
+//        city = listCity,
+//        time = "18.00",
+//        cost = 0
+//    ),
+//    Plan(
+//        category = 2,
+////                    PlanCategory("Resto", R.drawable.foodicon),
+//        title = "mangan",
+//        city = listCity,
+//        time = "20.00",
+//        cost = 0
+//    ),
+//    Plan(
+//        category = 3,
+////                    PlanCategory("Destination", R.drawable.placeicon),
+//        title = "sampai lokasi",
+//        city = listCity,
+//        time = "21.00",
+//        cost = 0
+//    ),
+//    Plan(
+//        category = 3,
+////                    PlanCategory("Destination", R.drawable.placeicon),
+//        title = "sampai lokasi",
+//        city = listCity,
+//        time = "21.00",
+//        cost = 0
+//    ), Plan(
+//        category = 3,
+////                    PlanCategory("Destination", R.drawable.placeicon),
+//        title = "sampai lokasi",
+//        city = listCity,
+//        time = "21.00",
+//        cost = 0
+//    )
+//)
+//
+//val listPlan4 = listOf(
+//    Plan(
+//        category = 0,
+////                    PlanCategory("On The Way", R.drawable.caricon),
+//        title = "otw",
+//        city = listCity,
+//        time = "13.00",
+//        cost = 0
+//    ),
+//    Plan(
+//        category = 1,
+////                    PlanCategory("Hotel", R.drawable.bedicon),
+//        title = "turu",
+//        city = listCity,
+//        time = "18.00",
+//        cost = 0
+//    ),
+//    Plan(
+//        category = 2,
+////                    PlanCategory("Resto", R.drawable.foodicon),
+//        title = "mangan",
+//        city = listCity,
+//        time = "20.00",
+//        cost = 0
+//    ),
+//    Plan(
+//        category = 2,
+////                    PlanCategory("Destination", R.drawable.placeicon),
+//        title = "sampai lokasi",
+//        city = listCity,
+//        time = "21.00",
+//        cost = 0
+//    )
+//)
+//
+//val listPlan5 = listOf(
+//    Plan(
+//        category = 0,
+////                    PlanCategory("On The Way", R.drawable.caricon),
+//        title = "otw",
+//        city = listCity,
+//        time = "13.00",
+//        cost = 0
+//    ),
+//    Plan(
+//        category = 1,
+////                    PlanCategory("Hotel", R.drawable.bedicon),
+//        title = "turu",
+//        city = listCity,
+//        time = "18.00",
+//        cost = 0
+//    ),
+//    Plan(
+//        category = 2,
+////                    PlanCategory("Resto", R.drawable.foodicon),
+//        title = "mangan",
+//        city = listCity,
+//        time = "20.00",
+//        cost = 0
+//    ),
+//    Plan(
+//        category = 3,
+////                    PlanCategory("Destination", R.drawable.placeicon),
+//        title = "sampai lokasi",
+//        city = listCity,
+//        time = "21.00",
+//        cost = 0
+//    ),
+//    Plan(
+//        category = 0,
+////                    PlanCategory("On The Way", R.drawable.caricon),
+//        title = "otw",
+//        city = listCity,
+//        time = "13.00",
+//        cost = 0
+//    ),
+//    Plan(
+//        category = 1,
+////                    PlanCategory("Hotel", R.drawable.bedicon),
+//        title = "turu",
+//        city = listCity,
+//        time = "18.00",
+//        cost = 0
+//    ),
+//    Plan(
+//        category = 2,
+////                    PlanCategory("Resto", R.drawable.foodicon),
+//        title = "mangan",
+//        city = listCity,
+//        time = "20.00",
+//        cost = 0
+//    ),
+//    Plan(
+//        category = 3,
+////                    PlanCategory("Destination", R.drawable.placeicon),
+//        title = "sampai lokasi",
+//        city = listCity,
+//        time = "21.00",
+//        cost = 0
+//    ), Plan(
+//        category = 0,
+////                    PlanCategory("On The Way", R.drawable.caricon),
+//        title = "otw",
+//        city = listCity,
+//        time = "13.00",
+//        cost = 0
+//    ),
+//    Plan(
+//        category = 1,
+////                    PlanCategory("Hotel", R.drawable.bedicon),
+//        title = "turu",
+//        city = listCity,
+//        time = "18.00",
+//        cost = 0
+//    ),
+//    Plan(
+//        category = 2,
+////                    PlanCategory("Resto", R.drawable.foodicon),
+//        title = "mangan",
+//        city = listCity,
+//        time = "20.00",
+//        cost = 0
+//    ),
+//    Plan(
+//        category = 3,
+////                    PlanCategory("Destination", R.drawable.placeicon),
+//        title = "sampai lokasi",
+//        city = listCity,
+//        time = "21.00",
+//        cost = 0
+//    )
+//)
+//
+//val listPlan = listOf(
+//    Plan(
+//        category = 0,
+////                    PlanCategory("On The Way", R.drawable.caricon),
+//        title = "",
+//        city = listCity,
+//        time = "",
+//        cost = 0
+//    ),
+//)
 
 //val listCardPlanDummy = listOf(emptyList(), emptyList(), listPlan3, listPlan4, listPlan5)
-val listCardPlanDummy = listOf(emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), listPlan)
+//val listCardPlanDummy = listOf(emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), listPlan)
 
 val listFacilityDummy: List<Facility> = listOf(
     Facility("Waterfall"),
@@ -327,18 +327,19 @@ val itinerary = Itinerary (
     title = "Seru-seruan di Jawa Tengah",
     description = "Libur semesteran 7 hari full di jawa tengah bareng sobat jawir sekontrakan. Bakal berkunjung ke 4 kota dengan 10 destinasi.",
     totalMembers = 5,
-    cityGoals = listCity,
     notes = "Libur semesteran 7 hari full di jawa tengah bareng sobat jawir sekontrakan. Bakal berkunjung ke 4 kota dengan 10 destinasi.",
-    listCardPlan = listCardPlanDummy
 
 )
 
 val plan = Plan(
+    id = 0,
+    planCardDataId = 0,
     category = 0,
     title = "Kumpul Sejenak",
-    city = listCity,
+//    city = listCity,
     time = "12.00",
-    cost = 0
+    cost = 0,
+
 )
 
 

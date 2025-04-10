@@ -5,6 +5,6 @@ import com.jer.banyumastourismapp.domain.repository.TourismRepository
 class UpdateUserData(private val repository: TourismRepository) {
 
     operator fun invoke(name: String, desc: String) {
-        repository.updateUserData(name, desc)
+        return repository.updateUserData(name, desc)
     }
 }

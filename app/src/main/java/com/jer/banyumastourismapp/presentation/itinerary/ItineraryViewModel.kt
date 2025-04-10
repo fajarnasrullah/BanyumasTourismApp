@@ -6,6 +6,9 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.jer.banyumastourismapp.domain.model.Itinerary
+import com.jer.banyumastourismapp.domain.model.ItineraryWithPlanCards
+import com.jer.banyumastourismapp.domain.model.Plan
+import com.jer.banyumastourismapp.domain.model.PlanCardData
 import com.jer.banyumastourismapp.domain.model.User
 import com.jer.banyumastourismapp.domain.usecase.tourism.TourismUseCase
 import com.jer.banyumastourismapp.presentation.itinerary.component.ItineraryEvent
@@ -29,6 +32,12 @@ class ItineraryViewModel @Inject constructor(private val useCase: TourismUseCase
     private val _itinerary = MutableStateFlow<Itinerary?>(null)
     val itinerary: StateFlow<Itinerary?> = _itinerary
 
+    private val _itineraryWithPlanCards = MutableStateFlow<ItineraryWithPlanCards?>(null)
+    val itineraryWithPlanCards: StateFlow<ItineraryWithPlanCards?> = _itineraryWithPlanCards
+
+//    private val _planCard = MutableStateFlow<PlanCardData?>(null)
+//    val planCard: StateFlow<PlanCardData?> = _planCard
+
     private val _eventFlow = MutableSharedFlow<ItineraryEvent>()
     val eventFlow: SharedFlow<ItineraryEvent> = _eventFlow
 
@@ -40,8 +49,10 @@ class ItineraryViewModel @Inject constructor(private val useCase: TourismUseCase
 
     suspend fun getItinerary(uid: String) {
         viewModelScope.launch {
-            val itinerary = useCase.getItinerary(uid)
-            _itinerary.value = itinerary
+//            val itinerary = useCase.getItinerary(uid)
+            val itinerary = useCase.getItineraryWithPlanCards(uid)
+//            _itinerary.value = itinerary
+            _itineraryWithPlanCards.value = itinerary
         }
     }
 
@@ -70,11 +81,56 @@ class ItineraryViewModel @Inject constructor(private val useCase: TourismUseCase
     fun insertItinerary(itinerary: Itinerary) {
         viewModelScope.launch {
             try {
-                useCase.insertItinerary(itinerary)
+                val itineraryId = useCase.insertItinerary(itinerary)
+
+                repeat(itinerary.daysCount) {index ->
+                    val planCard = PlanCardData(itineraryId = itineraryId.toInt(), title = "Day ${index + 1}")
+                    useCase.insertPlanCard(planCard)
+                }
                 _eventFlow.emit(ItineraryEvent.Success)
+
+
             } catch (e: Exception) {
                 _eventFlow.emit(ItineraryEvent.Error(e.message ?: "An unexpected error occurred"))
                 Log.e("ItineraryViewModel", "Error inserting itinerary", e)
+            }
+        }
+    }
+
+
+
+    fun insertPlan(plan: Plan) {
+        viewModelScope.launch {
+            try {
+                useCase.insertPlan(plan)
+                _eventFlow.emit(ItineraryEvent.Success)
+            } catch (e: Exception) {
+                _eventFlow.emit(ItineraryEvent.Error(e.message ?: "An unexpected error occurred"))
+                Log.e("ItineraryViewModel", "Error inserting plan", e)
+            }
+        }
+    }
+
+    fun deleteItinerary(itinerary: Itinerary) {
+        viewModelScope.launch {
+            try {
+                useCase.deleteItinerary(itinerary)
+                _eventFlow.emit(ItineraryEvent.Success)
+            } catch (e: Exception) {
+                _eventFlow.emit(ItineraryEvent.Error(e.message ?: "An unexpected error occurred"))
+                Log.e("ItineraryViewModel", "Error delete itinerary", e)
+            }
+        }
+    }
+
+    fun deletePlanCard(planCard: PlanCardData) {
+        viewModelScope.launch {
+            try {
+                useCase.deletePlanCard(planCard)
+                _eventFlow.emit(ItineraryEvent.Success)
+            } catch (e: Exception) {
+                _eventFlow.emit(ItineraryEvent.Error(e.message ?: "An unexpected error occurred"))
+                Log.e("ItineraryViewModel", "Error delete plan card", e)
             }
         }
     }

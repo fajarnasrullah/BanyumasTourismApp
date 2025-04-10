@@ -15,6 +15,9 @@ import com.jer.banyumastourismapp.data.local.DaoUser
 import com.jer.banyumastourismapp.data.remote.TourismPagingSource
 import com.jer.banyumastourismapp.domain.model.Destination
 import com.jer.banyumastourismapp.domain.model.Itinerary
+import com.jer.banyumastourismapp.domain.model.ItineraryWithPlanCards
+import com.jer.banyumastourismapp.domain.model.Plan
+import com.jer.banyumastourismapp.domain.model.PlanCardData
 import com.jer.banyumastourismapp.domain.model.User
 import com.jer.banyumastourismapp.domain.repository.TourismRepository
 import kotlinx.coroutines.flow.Flow
@@ -139,16 +142,32 @@ class TourismRepositoryImpl(
 
 
 
-    override suspend fun insertItinerary(itinerary: Itinerary) {
-        daoItinerary.insertItinerary(itinerary)
+    override suspend fun insertItinerary(itinerary: Itinerary): Long {
+        return daoItinerary.insertItinerary(itinerary)
+    }
+
+    override suspend fun insertPlanCard(planCard: PlanCardData): Long {
+        return daoItinerary.insertPlanCard(planCard)
+    }
+
+    override suspend fun insertPlan(plan: Plan) {
+        daoItinerary.insertPlan(plan)
     }
 
     override suspend fun deleteItinerary(itinerary: Itinerary) {
         daoItinerary.deleteItinerary(itinerary)
     }
 
+    override suspend fun deletePlanCard(planCard: PlanCardData) {
+        daoItinerary.deletePlanCard(planCard)
+    }
+
     override suspend fun getItinerary(uid: String): Itinerary? {
         return daoItinerary.getItinerary(uid)
+    }
+
+    override suspend fun getItineraryWithPlanCards(uid: String): ItineraryWithPlanCards? {
+        return daoItinerary.getItineraryWithPlanCards(uid)
     }
 
     override suspend fun insertUser(user: User) {

@@ -5,7 +5,7 @@ import com.jer.banyumastourismapp.domain.repository.TourismRepository
 
 class InsertItinerary (private val repository: TourismRepository) {
 
-    suspend operator fun invoke(itinerary: Itinerary) {
+    suspend operator fun invoke(itinerary: Itinerary): Long {
         return repository.insertItinerary(itinerary)
     }
 

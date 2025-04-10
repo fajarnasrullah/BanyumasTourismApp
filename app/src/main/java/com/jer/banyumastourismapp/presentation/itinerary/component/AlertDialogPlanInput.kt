@@ -24,6 +24,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,6 +36,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jer.banyumastourismapp.R
@@ -48,13 +50,19 @@ import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AlertDialogPlanInput(modifier: Modifier = Modifier, onDismiss: () -> Unit) {
+fun AlertDialogPlanInput(
+    modifier: Modifier = Modifier,
+    alertTitle: String,
+    category: MutableState<Int> = mutableStateOf(0),
+    title: MutableState<String> = mutableStateOf(""),
+    time: MutableState<String> = mutableStateOf(""),
+    cost: MutableState<Int> = mutableStateOf(0),
+    onDismiss: () -> Unit,
+    onSubmit: () -> Unit
+) {
 
     var showrequest by rememberSaveable { mutableStateOf(true) }
-    var category by rememberSaveable { mutableStateOf(0) }
-    var title by rememberSaveable { mutableStateOf("") }
-    var time by rememberSaveable { mutableStateOf("") }
-    var location by rememberSaveable { mutableStateOf("") }
+
 
     var timeRequest by rememberSaveable { mutableStateOf(false) }
     val timeState = rememberUseCaseState()
@@ -79,7 +87,7 @@ fun AlertDialogPlanInput(modifier: Modifier = Modifier, onDismiss: () -> Unit) {
                     modifier = Modifier.padding(30.dp)
                 ) {
                     Text(
-                        text = "Add Your New Plan Now!",
+                        text = alertTitle,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onBackground,
@@ -87,22 +95,37 @@ fun AlertDialogPlanInput(modifier: Modifier = Modifier, onDismiss: () -> Unit) {
 
                     Spacer(modifier = Modifier.height(10.dp))
 
+                    //category
+                    OutlinedTextField(
+                        value = if (category.value == 0) "" else category.value.toString(),
+                        onValueChange = {
+                            if (it.isNotEmpty()) category.value = it.toInt() else category.value = 0
+
+                                        },
+                        label = { Text(text = "Category") },
+                        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next, keyboardType = KeyboardType.Number),
+                        modifier = Modifier.width(300.dp)
+
+                    )
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
                     //title
                     OutlinedTextField(
-                        value = title,
-                        onValueChange = { title = it },
+                        value = title.value,
+                        onValueChange = { title.value = it },
                         label = { Text("Title") },
-                        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+                        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
                         modifier = Modifier.width(300.dp)
                     )
                     Spacer(modifier = Modifier.height(10.dp))
 
                     //time
                     OutlinedTextField(
-                        value = time,
-                        onValueChange = { time = it },
+                        value = time.value,
+                        onValueChange = { time.value = it },
                         label = { Text("Time") },
-                        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+                        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
                         trailingIcon = {
                             IconButton(
                                 modifier = Modifier.size(verySmallIcon),
@@ -128,7 +151,7 @@ fun AlertDialogPlanInput(modifier: Modifier = Modifier, onDismiss: () -> Unit) {
                                 state = timeState,
                                 selection = ClockSelection.HoursMinutes { hours, minutes ->
                                     selectedTime = LocalTime.of(hours, minutes, 0)
-                                    time = selectedTime.format(DateTimeFormatter.ofPattern("HH:mm"))
+                                    time.value = selectedTime.format(DateTimeFormatter.ofPattern("HH:mm"))
                                 },
                                 config = ClockConfig(
                                     defaultTime = selectedTime,
@@ -141,12 +164,12 @@ fun AlertDialogPlanInput(modifier: Modifier = Modifier, onDismiss: () -> Unit) {
                     }
                     Spacer(modifier = Modifier.height(10.dp))
 
-                    //location
+                    //cost
                     OutlinedTextField(
-                        value = location,
-                        onValueChange = { location = it },
-                        label = { Text(text = "Location") },
-                        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+                        value = if (cost.value == 0) "" else cost.value.toString(),
+                        onValueChange = { if (it.isNotEmpty()) cost.value = it.toInt() else cost.value = 0 },
+                        label = { Text(text = "Cost") },
+                        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next, keyboardType = KeyboardType.Number),
                         modifier = Modifier.width(300.dp)
 
                     )
@@ -175,8 +198,8 @@ fun AlertDialogPlanInput(modifier: Modifier = Modifier, onDismiss: () -> Unit) {
                             onClick = {
                                 showrequest = false
                                 onDismiss()
-                                Toast.makeText(context, "Request Sent: \n$title, \n$time, \n$location", Toast.LENGTH_SHORT).show()
-                                //Logic nya sini cuy
+                                Toast.makeText(context, "Request Sent: \n$title, \n$time, \n$cost", Toast.LENGTH_SHORT).show()
+                                onSubmit()
                             },
                             modifier = Modifier
                                 .weight(1f)
