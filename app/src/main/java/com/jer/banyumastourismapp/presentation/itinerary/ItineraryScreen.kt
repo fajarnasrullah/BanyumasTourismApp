@@ -629,6 +629,7 @@ fun CardExpand(
                                             category = category.value
                                         )
                                         viewModel.insertPlan(newPlan)
+                                        viewModel.loadItinerary()
                                         showAlert = false
                                     }
 

@@ -3,6 +3,7 @@ package com.jer.banyumastourismapp.presentation.itinerary
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.jer.banyumastourismapp.domain.model.Itinerary
@@ -43,9 +44,18 @@ class ItineraryViewModel @Inject constructor(private val useCase: TourismUseCase
 
 
 
+
 //    var message =  mutableStateOf("")
 //    var status =  mutableStateOf(false)
 
+    fun loadItinerary() {
+        viewModelScope.launch {
+            val firebaseUser = auth.currentUser
+            firebaseUser?.let {
+                getItinerary(it.uid)
+            }
+        }
+    }
 
     suspend fun getItinerary(uid: String) {
         viewModelScope.launch {

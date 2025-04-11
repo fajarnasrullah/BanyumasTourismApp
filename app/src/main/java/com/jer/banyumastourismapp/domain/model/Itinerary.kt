@@ -100,16 +100,17 @@ data class ItineraryWithPlanCards(
 
 val categoryPlan = listOf(
     PlanCategory("On The Way", R.drawable.caricon),
-    PlanCategory("Hotel", R.drawable.bedicon),
-    PlanCategory("Resto", R.drawable.foodicon),
+    PlanCategory("Rest/Sleep", R.drawable.bedicon),
+    PlanCategory("Eat", R.drawable.foodicon),
+    PlanCategory("Play", R.drawable.playicon),
     PlanCategory("Destination", R.drawable.placeicon),
     )
 
-
+@Parcelize
 data class PlanCategory(
-    val name: String,
-    val icon:  Int,
-)
+    var name: String,
+    var icon:  Int,
+): Parcelable
 
 object allAboutList {
     var listPlan: MutableList<Plan> = mutableListOf()

@@ -2,19 +2,28 @@ package com.jer.banyumastourismapp.presentation.itinerary.component
 
 import android.os.Build
 import android.widget.Toast
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -32,15 +41,22 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jer.banyumastourismapp.R
 import com.jer.banyumastourismapp.core.verySmallIcon
+import com.jer.banyumastourismapp.domain.model.PlanCategory
+import com.jer.banyumastourismapp.domain.model.categoryPlan
+import com.jer.banyumastourismapp.presentation.component.Category
 import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
 import com.maxkeppeler.sheets.clock.ClockDialog
 import com.maxkeppeler.sheets.clock.models.ClockConfig
@@ -63,6 +79,11 @@ fun AlertDialogPlanInput(
 
     var showrequest by rememberSaveable { mutableStateOf(true) }
 
+    var isVisible by rememberSaveable { mutableStateOf(false) }
+    var showAlert by rememberSaveable {mutableStateOf(false)}
+    var selectedMenu = rememberSaveable { mutableStateOf(PlanCategory("", 0)) }
+    var expandedState by rememberSaveable { mutableStateOf(false) }
+    val rotationState by animateFloatAsState(targetValue = if (expandedState) 180f else 0f)
 
     var timeRequest by rememberSaveable { mutableStateOf(false) }
     val timeState = rememberUseCaseState()
@@ -95,20 +116,97 @@ fun AlertDialogPlanInput(
 
                     Spacer(modifier = Modifier.height(10.dp))
 
-                    //category
-                    OutlinedTextField(
-                        value = if (category.value == 0) "" else category.value.toString(),
-                        onValueChange = {
-                            if (it.isNotEmpty()) category.value = it.toInt() else category.value = 0
+                    Column {
+                        //category
+                        OutlinedTextField(
+                            value = "${category.value + 1} " + selectedMenu.value.name,
+                            onValueChange = {
+                                if (it.isNotEmpty()) category.value =
+                                    it.toInt() else category.value = 0
+                            },
+                            readOnly = true,
+                            label = { Text(text = "Category") },
+                            trailingIcon = {
+                                IconButton(
+                                    onClick = {
+                                        expandedState = !expandedState
+                                        isVisible = true
+                                    },
+                                    modifier = Modifier
+                                        .size(verySmallIcon)
+                                        .rotate(rotationState)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.KeyboardArrowDown,
+                                        contentDescription = null
+                                    )
+                                }
+                            },
+                            keyboardOptions = KeyboardOptions.Default.copy(
+                                imeAction = ImeAction.Next,
+                                keyboardType = KeyboardType.Number
+                            ),
+                            modifier = Modifier.width(300.dp)
 
-                                        },
-                        label = { Text(text = "Category") },
-                        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next, keyboardType = KeyboardType.Number),
-                        modifier = Modifier.width(300.dp)
+                        )
 
-                    )
+                        if (!isVisible) expandedState = false
+
+                        DropdownMenu(
+                            offset = DpOffset(200.dp, 10.dp),
+                            expanded = isVisible,
+                            onDismissRequest = { isVisible = false },
+                        ) {
+                            categoryPlan.forEach { menu ->
+                                DropdownMenuItem(
+                                    text = { Text(text = menu.name) },
+                                    leadingIcon = {
+                                        Icon(
+                                            painter = painterResource(id = menu.icon),
+                                            contentDescription = null,
+                                            modifier = Modifier.size(verySmallIcon),
+                                            tint = MaterialTheme.colorScheme.primaryContainer,
+                                        )
+                                    },
+                                    onClick = {
+
+                                        isVisible = false
+                                        showAlert = true
+                                        selectedMenu.value.name = menu.name
+
+                                    }
+                                )
+                            }
+                        }
+                    }
 
                     Spacer(modifier = Modifier.height(10.dp))
+
+
+                    if (showAlert) {
+                        when (selectedMenu.value.name) {
+                            "On The Way" -> {
+                                category.value = 0
+                                showAlert = false
+                            }
+                            "Rest/Sleep" -> {
+                                category.value = 1
+                                showAlert = false
+                            }
+                            "Eat" -> {
+                                category.value = 2
+                                showAlert = false
+                            }
+                            "Play" -> {
+                                category.value = 3
+                                showAlert = false
+                            }
+                            "Destination" -> {
+                                category.value = 4
+                                showAlert = false
+                            }
+                        }
+                    }
 
                     //title
                     OutlinedTextField(
