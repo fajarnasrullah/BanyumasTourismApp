@@ -11,6 +11,7 @@ class TourismUseCase(
     val insertPlanCard: InsertPlanCard,
     val insertPlan: InsertPlan,
     val deletePlanCard: DeletePlanCard,
+    val deleteListPlan: DeleteListPlan,
     val deleteItinerary: DeleteItinerary,
     val getItinerary: GetItinerary,
     val getItineraryWithPlanCards: GetItineraryWithPlanCards,

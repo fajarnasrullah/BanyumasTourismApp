@@ -101,6 +101,7 @@ data class ItineraryWithPlanCards(
 val categoryPlan = listOf(
     PlanCategory("On The Way", R.drawable.caricon),
     PlanCategory("Rest/Sleep", R.drawable.bedicon),
+    PlanCategory("Pray", R.drawable.masjidicon),
     PlanCategory("Eat", R.drawable.foodicon),
     PlanCategory("Play", R.drawable.playicon),
     PlanCategory("Destination", R.drawable.placeicon),

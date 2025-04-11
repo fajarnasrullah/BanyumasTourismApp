@@ -162,6 +162,10 @@ class TourismRepositoryImpl(
         daoItinerary.deletePlanCard(planCard)
     }
 
+    override suspend fun deleteListPlan(planCardDataId: Int) {
+        daoItinerary.deleteListPlan(planCardDataId)
+    }
+
     override suspend fun getItinerary(uid: String): Itinerary? {
         return daoItinerary.getItinerary(uid)
     }

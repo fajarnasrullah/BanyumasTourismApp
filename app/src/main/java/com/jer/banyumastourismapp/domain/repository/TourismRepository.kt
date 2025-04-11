@@ -30,6 +30,7 @@ interface TourismRepository {
     suspend fun insertPlan(plan: Plan)
     suspend fun deleteItinerary(itinerary: Itinerary)
     suspend fun deletePlanCard(planCard: PlanCardData)
+    suspend fun deleteListPlan(planCardDataId: Int)
     suspend fun getItinerary(uid: String): Itinerary?
     suspend fun getItineraryWithPlanCards(uid: String): ItineraryWithPlanCards?
 

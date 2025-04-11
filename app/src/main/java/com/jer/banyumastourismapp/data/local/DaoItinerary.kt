@@ -29,6 +29,9 @@ interface DaoItinerary {
     @Delete
     suspend fun deletePlanCard(planCard: PlanCardData)
 
+    @Query("DELETE FROM `Plan` WHERE planCardDataId =:planCardDataId")
+    suspend fun deleteListPlan(planCardDataId: Int)
+
     @Query("SELECT * FROM Itinerary WHERE uid =:uid ")
     suspend fun getItinerary(uid: String): Itinerary
 

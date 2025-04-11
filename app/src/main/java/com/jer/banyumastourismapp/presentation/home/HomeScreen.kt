@@ -20,6 +20,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.Card
@@ -34,7 +35,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -68,6 +72,7 @@ import com.jer.banyumastourismapp.domain.model.User
 import com.jer.banyumastourismapp.presentation.component.CategoryRow
 import com.jer.banyumastourismapp.presentation.component.DestinationCardStandRow
 import com.jer.banyumastourismapp.presentation.itinerary.ItineraryViewModel
+import com.jer.banyumastourismapp.presentation.itinerary.component.AlertDialogCore
 import com.jer.banyumastourismapp.presentation.profile.ProfileViewModel
 import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
 import kotlinx.coroutines.launch
@@ -168,6 +173,7 @@ fun HomeScreen(
                 
             }
             ItineraryCard(
+                viewModel = viewModel,
                 itinerary = itinerary?.itinerary,
                 onClick = {
                     if (itinerary?.itinerary?.uid != "" && firebaseUser?.uid == itinerary?.itinerary?.uid && itinerary?.itinerary?.title != null) navigateToItinerary() else navigateToItineraryForm()
@@ -259,9 +265,13 @@ fun HomeScreen(
 @Composable
 fun ItineraryCard(
     modifier: Modifier = Modifier,
+    viewModel: ItineraryViewModel,
     itinerary: Itinerary? = null,
     onClick: () -> Unit
 ) {
+
+    var showAlert by rememberSaveable { mutableStateOf(false) }
+
     Card(
         onClick = onClick,
         shape = MaterialTheme.shapes.large,
@@ -290,11 +300,13 @@ fun ItineraryCard(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 IconButton(
-                    onClick = { /*TODO*/ },
+                    onClick = {
+                        showAlert = true
+                    },
                     content = {
                         Icon(
                             modifier = Modifier.size(verySmallIcon),
-                            imageVector = Icons.Default.Edit,
+                            imageVector = Icons.Default.Delete,
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -302,6 +314,24 @@ fun ItineraryCard(
                 )
             }
             HorizontalDivider(thickness = 1.dp, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f))
+
+            if (showAlert) {
+                AlertDialogCore(
+                    negativeText = "No",
+                    positiveText = "Yes",
+                    onDismiss = { showAlert = false },
+                    message = "Are you sure to delete your Itinerary?",
+                    actionNegative = { showAlert = false },
+                    actionPositive = {
+                        showAlert = false
+                        if (itinerary != null) {
+                            viewModel.deleteItinerary(itinerary)
+                        }
+                        viewModel.loadItinerary()
+
+                    }
+                )
+            }
 
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,

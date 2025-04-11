@@ -126,6 +126,8 @@ class ItineraryViewModel @Inject constructor(private val useCase: TourismUseCase
             try {
                 useCase.deleteItinerary(itinerary)
                 _eventFlow.emit(ItineraryEvent.Success)
+                Log.e("ItineraryViewModel", "Succeed delete itinerary")
+
             } catch (e: Exception) {
                 _eventFlow.emit(ItineraryEvent.Error(e.message ?: "An unexpected error occurred"))
                 Log.e("ItineraryViewModel", "Error delete itinerary", e)
@@ -141,6 +143,19 @@ class ItineraryViewModel @Inject constructor(private val useCase: TourismUseCase
             } catch (e: Exception) {
                 _eventFlow.emit(ItineraryEvent.Error(e.message ?: "An unexpected error occurred"))
                 Log.e("ItineraryViewModel", "Error delete plan card", e)
+            }
+        }
+    }
+
+    fun deleteListPlan(planCardDataId: Int) {
+        viewModelScope.launch {
+            try {
+                useCase.deleteListPlan(planCardDataId)
+                _eventFlow.emit(ItineraryEvent.Success)
+                Log.e("ItineraryViewModel", "Succeed delete list plan")
+            } catch (e: Exception) {
+                _eventFlow.emit(ItineraryEvent.Error(e.message ?: "An unexpected error occurred"))
+                Log.e("ItineraryViewModel", "Error delete list plan", e)
             }
         }
     }

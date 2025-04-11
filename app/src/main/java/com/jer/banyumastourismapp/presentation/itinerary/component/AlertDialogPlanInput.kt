@@ -119,7 +119,7 @@ fun AlertDialogPlanInput(
                     Column {
                         //category
                         OutlinedTextField(
-                            value = "${category.value + 1} " + selectedMenu.value.name,
+                            value = "${category.value + 1}. " + selectedMenu.value.name,
                             onValueChange = {
                                 if (it.isNotEmpty()) category.value =
                                     it.toInt() else category.value = 0
@@ -193,16 +193,20 @@ fun AlertDialogPlanInput(
                                 category.value = 1
                                 showAlert = false
                             }
-                            "Eat" -> {
+                            "Pray" -> {
                                 category.value = 2
                                 showAlert = false
                             }
-                            "Play" -> {
+                            "Eat" -> {
                                 category.value = 3
                                 showAlert = false
                             }
-                            "Destination" -> {
+                            "Play" -> {
                                 category.value = 4
+                                showAlert = false
+                            }
+                            "Destination" -> {
+                                category.value = 5
                                 showAlert = false
                             }
                         }

@@ -642,8 +642,14 @@ fun CardExpand(
                                     positiveText = "Yes",
                                     onDismiss = { showAlert = false },
                                     message = "Are you sure to delete this plan?",
-                                    actionNegative = { },
+                                    actionNegative = { showAlert = false },
                                     actionPositive = {
+                                        showAlert = false
+                                        if (listPlan != null) {
+                                            viewModel.deleteListPlan(listPlan.planCardData.id)
+//                                            viewModel.deletePlanCard(listPlan.planCardData)
+                                        }
+                                        viewModel.loadItinerary()
 
                                     }
                                 )

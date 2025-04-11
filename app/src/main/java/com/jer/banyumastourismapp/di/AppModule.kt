@@ -13,6 +13,7 @@ import com.jer.banyumastourismapp.data.local.ItsTypeConverter
 import com.jer.banyumastourismapp.data.repository.TourismRepositoryImpl
 import com.jer.banyumastourismapp.domain.repository.TourismRepository
 import com.jer.banyumastourismapp.domain.usecase.tourism.DeleteItinerary
+import com.jer.banyumastourismapp.domain.usecase.tourism.DeleteListPlan
 import com.jer.banyumastourismapp.domain.usecase.tourism.DeletePlanCard
 import com.jer.banyumastourismapp.domain.usecase.tourism.DeleteUser
 import com.jer.banyumastourismapp.domain.usecase.tourism.GetCurrentUser
@@ -105,6 +106,7 @@ object AppModule {
             insertPlan = InsertPlan(repository),
             deleteItinerary = DeleteItinerary(repository),
             deletePlanCard = DeletePlanCard(repository),
+            deleteListPlan = DeleteListPlan(repository),
             getItinerary = GetItinerary(repository),
             getItineraryWithPlanCards = GetItineraryWithPlanCards(repository),
             insertUser = InsertUser(repository),
