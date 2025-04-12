@@ -2,6 +2,7 @@ package com.jer.banyumastourismapp.presentation.maps
 
 import android.content.Context
 import android.content.pm.PackageManager
+import android.location.Geocoder
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -14,10 +15,12 @@ import com.google.android.gms.maps.model.LatLng
 import com.jer.banyumastourismapp.domain.model.Destination
 import com.jer.banyumastourismapp.domain.usecase.tourism.TourismUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -31,6 +34,10 @@ class MapsViewModel @Inject constructor(val useCase: TourismUseCase): ViewModel(
     val destinationForMaps: StateFlow<List<Destination>> = _destinationForMaps.asStateFlow()
 
     val destinations = useCase.getDestinations().cachedIn(viewModelScope)
+
+
+    private val _selectedLocation = mutableStateOf<LatLng?>(null)
+    val selectedLocation: State<LatLng?> = _selectedLocation
 
     fun fetchUserLocation(context: Context, fusedLocationProviderClient: FusedLocationProviderClient) {
         if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -61,6 +68,21 @@ class MapsViewModel @Inject constructor(val useCase: TourismUseCase): ViewModel(
     }
 
 
+    fun selectLocation(selectedPlace: String, context: Context) {
+        viewModelScope.launch {
+            val geocoder = Geocoder(context)
+            val addresses = withContext(Dispatchers.IO) {
+                geocoder.getFromLocationName(selectedPlace, 1)
+            }
+            if (!addresses.isNullOrEmpty()) {
+                val address = addresses[0]
+                val latLng = LatLng(address.latitude, address.longitude)
+                _selectedLocation.value = latLng
+            } else {
+                Timber.tag("MapScreen").e("No location found for the selected place.")
+            }
+        }
+    }
 
 
 }

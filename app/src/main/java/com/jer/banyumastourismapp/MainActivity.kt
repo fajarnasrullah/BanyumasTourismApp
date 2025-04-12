@@ -7,10 +7,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.google.android.libraries.places.api.Places
 import com.jer.banyumastourismapp.domain.model.City
 import com.jer.banyumastourismapp.domain.model.Plan
 import com.jer.banyumastourismapp.domain.model.PlanCategory
 import com.jer.banyumastourismapp.domain.model.categoryPlan
+import com.jer.banyumastourismapp.presentation.maps.MapsUtils
 import com.jer.banyumastourismapp.presentation.navgraph.NavGraph
 import com.jer.banyumastourismapp.presentation.navgraph.Route
 import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
@@ -20,6 +22,12 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val apiKey = MapsUtils.getApiKeyFromManifest(this)
+        if (!Places.isInitialized() && apiKey != null) {
+            Places.initialize(applicationContext, apiKey)
+        }
+
 //        enableEdgeToEdge()
         setContent {
 

@@ -1,13 +1,12 @@
 package com.jer.banyumastourismapp.presentation.maps
 
 import android.content.pm.PackageManager
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,7 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -25,7 +23,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -33,7 +30,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -47,12 +43,10 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.core.content.ContextCompat
-import androidx.paging.compose.LazyPagingItems
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapType
@@ -65,8 +59,7 @@ import com.jer.banyumastourismapp.R
 import com.jer.banyumastourismapp.domain.model.Destination
 import com.jer.banyumastourismapp.presentation.component.CategoryRow
 import com.jer.banyumastourismapp.presentation.component.DestinationCardLandscape
-import com.jer.banyumastourismapp.presentation.component.SearchBarForAll
-import com.jer.banyumastourismapp.presentation.listDestination
+import com.jer.banyumastourismapp.presentation.maps.component.SearchBarForMaps
 import com.jer.banyumastourismapp.presentation.utils.BitmapParameters
 import com.jer.banyumastourismapp.presentation.utils.vectorToBitmap
 import timber.log.Timber
@@ -97,6 +90,8 @@ fun MapsScreen(
     val context = LocalContext.current
     val userLocation by mapsViewModel.userLocation
     val fusedLocationClient = remember { LocationServices.getFusedLocationProviderClient(context) }
+
+
 
 
     val permissionLauncher = rememberLauncherForActivityResult(
@@ -210,6 +205,12 @@ fun MapsScreen(
              var iconSelected by rememberSaveable { mutableIntStateOf(-1) }
 
 
+             val selectedLocationBySearch by mapsViewModel.selectedLocation
+             var selectedPlaceState by remember { mutableStateOf("") }
+
+
+
+
              GoogleMap(
                  modifier = Modifier
                      .constrainAs(maps) {
@@ -232,6 +233,22 @@ fun MapsScreen(
                          val latLng: LatLng = LatLng(destination.latitude, destination.longitude)
                          val markerState  = remember(destination.id) { MarkerState(position = latLng) }
 
+                         val markerStateBySearch = selectedLocationBySearch?.let { MarkerState(position = it) }
+                         val newMarkerState = markerStateBySearch ?: markerState
+                         val newTitle =
+                             if (markerStateBySearch != null) {
+                                 "Selected Location"
+                             } else {
+                                 destination.title
+                             }
+
+                         var newLocation =
+                             if (markerStateBySearch != null) {
+                                 destination.location
+                             } else {
+                                 selectedPlaceState
+                             }
+
                          val mountainIcon = vectorToBitmap(
                              context,
                              BitmapParameters(
@@ -241,10 +258,35 @@ fun MapsScreen(
                              )
                          )
 
+                         selectedLocationBySearch?.let {
+                             Marker(
+                                 state = MarkerState(position = it), // Place the marker at the selected location
+                                 title = "Selected Location ", // Set the title for the marker
+                                 snippet = selectedPlaceState,
+
+                                 onInfoWindowClose = {
+                                     selectedPlaceState = ""
+
+                                 },
+
+                                 onClick = {
+                                     selectedPlaceState = ""
+                                     false
+                                 }
+                             )
+//                             cameraPositionState.position = CameraPosition.fromLatLngZoom(it, 15f)
+                         }
+
                          MarkerInfoWindowContent(
-                             state = markerState,
-                             title = destination.title,
-                             snippet = destination.location,
+                             state =
+//                             newMarkerState,
+                             markerState,
+                             title =
+//                             newTitle,
+                             destination.title,
+                             snippet =
+//                             newLocation,
+                             destination.location,
                              icon = if (iconSelected == index) {
                                  null
                              } else mountainIcon,
@@ -300,15 +342,27 @@ fun MapsScreen(
                              }
                          }
 
+                         val newLatLngZoom =
+                             if (selectedPlaceState != "") {
+                                 selectedLocationBySearch?.let { CameraPosition.fromLatLngZoom(it, 15f) }
+                             } else if (markerState.position != null && selectedPlaceState == "") {
+                                 CameraPosition.fromLatLngZoom(LatLng(-7.4333,109.2333), 10f)
+                             } else {
+                                 userLocation?.let { CameraPosition.fromLatLngZoom(it, 10f) }
+                             }
 
+                         if (newLatLngZoom != null) {
+                             cameraPositionState.position = newLatLngZoom
+                         }
 
                      }
                  }
 
 
-                 userLocation?.let {
-                     cameraPositionState.position = CameraPosition.fromLatLngZoom(it, 10f)
-                 }
+//                 userLocation?.let {
+//                     cameraPositionState.position = CameraPosition.fromLatLngZoom(it, 10f)
+//                 }
+
 
              }
 
@@ -320,19 +374,28 @@ fun MapsScreen(
                  }
              }
 
-             SearchBarForAll(
-                 hint = "Search Destination",
-                 trailingIsVisible = false,
+
+             Column(
                  modifier = Modifier
                      .constrainAs(searchBar) {
                          top.linkTo(parent.top)
                      }
                      .padding(30.dp)
-             )
+                     .fillMaxSize(),
+             ){
+                 SearchBarForMaps(
+                     hint = " Search Destination",
+                     onPlaceSelected = { place ->
+                         selectedPlaceState = place
+                         mapsViewModel.selectLocation(place, context)
+                         Log.d("SearchBarForMaps", "Selected Place: $place")
+                     }
+                 )
+             }
+
 
              CategoryRow(
                  modifier = Modifier.constrainAs(category) {
-
                      bottom.linkTo(listSection.top)
                  }
              )
