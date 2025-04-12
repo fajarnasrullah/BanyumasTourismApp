@@ -46,7 +46,7 @@ fun AppBarCustom(
     var customPadding2 = 0.dp
 
     if (title != null) {
-        customColor = MaterialTheme.colorScheme.onPrimary
+//        customColor = MaterialTheme.colorScheme.onPrimary
         customPadding = 5.dp
         customPadding2 = 15.dp
     }
@@ -126,7 +126,7 @@ fun IconButtonAppBar(
 private fun PreviewAppBarCustom() {
     BanyumasTourismAppTheme {
         AppBarCustom(
-            actionIcon = painterResource(id = R.drawable.bookmarkbordericon),
+            actionIcon = painterResource(id = R.drawable.exportpdficon),
             action = {},
             backgroundColor = MaterialTheme.colorScheme.onPrimary,
             title = "ABcd efg",

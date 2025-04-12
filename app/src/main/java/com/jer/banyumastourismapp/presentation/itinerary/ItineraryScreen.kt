@@ -117,7 +117,7 @@ fun ItineraryScreen(
     }
 
     val scrollState = rememberScrollState()
-
+    val context = LocalContext.current
 
     Scaffold (
         modifier = modifier,
@@ -126,8 +126,10 @@ fun ItineraryScreen(
                 navigateBack = { navBack() },
                 title = "Your Itinerary",
                 backgroundColor = MaterialTheme.colorScheme.onPrimary,
-//                actionIcon = painterResource(id = R.drawable.bookmarkbordericon),
-//                action = { },
+                actionIcon = painterResource(id = R.drawable.exportpdficon),
+                action = {
+                    itinerary?.let { viewModel.generatePdf(context, it) }
+                },
                 modifier = Modifier.shadow(8.dp)
             ) }
     ) { innerPadding ->

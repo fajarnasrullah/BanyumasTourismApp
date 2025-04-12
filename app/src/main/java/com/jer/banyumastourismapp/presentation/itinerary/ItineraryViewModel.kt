@@ -1,9 +1,14 @@
 package com.jer.banyumastourismapp.presentation.itinerary
 
+import android.content.Context
+import android.graphics.Paint
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
+import android.graphics.pdf.PdfDocument
+import android.text.TextPaint
+import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.jer.banyumastourismapp.domain.model.Itinerary
@@ -19,6 +24,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileOutputStream
 import javax.inject.Inject
 
 @HiltViewModel
@@ -159,6 +166,88 @@ class ItineraryViewModel @Inject constructor(private val useCase: TourismUseCase
             }
         }
     }
+
+    fun generatePdf(context: Context, itineraryData: ItineraryWithPlanCards) {
+        val pdfDocument = PdfDocument()
+        val paint = Paint()
+
+        val pageInfo = PdfDocument.PageInfo.Builder(595, 842, 1).create()
+        val page = pdfDocument.startPage(pageInfo)
+        val canvas = page.canvas
+
+        var yPosition = 30
+
+        paint.textSize = 20f
+        canvas.drawText("Itinerary: ${itineraryData.itinerary.title}", 20f, yPosition.toFloat(), paint)
+
+        yPosition += 40
+        paint.textSize = 14f
+        canvas.drawText("Date: ${itineraryData.itinerary.date}", 20f, yPosition.toFloat(), paint)
+
+//        val textPaint = TextPaint().apply {
+//            color = Color.BLACK
+//            textSize = 14f
+//        }
+//
+//        val marginStart = 40f
+//        val marginEnd = 40f
+//        val textWidth = pageInfo.pageWidth - marginStart - marginEnd
+//
+//        var yPosition = 100f
+//
+//// Title
+//        canvas.drawText("Itinerary: ${itinerary.title}", marginStart, yPosition, textPaint)
+//        yPosition += 30f
+//
+//// Description (Justified)
+//        yPosition += drawJustifiedText(
+//            canvas = canvas,
+//            text = "Description: ${itinerary.description.orEmpty()}",
+//            x = marginStart,
+//            y = yPosition,
+//            paint = textPaint,
+//            width = textWidth.toInt()
+//        ) + 20f
+//
+//// Notes (Justified)
+//        yPosition += drawJustifiedText(
+//            canvas = canvas,
+//            text = "Notes: ${itinerary.notes.orEmpty()}",
+//            x = marginStart,
+//            y = yPosition,
+//            paint = textPaint,
+//            width = textWidth.toInt()
+//        ) + 20f
+
+        yPosition += 30
+        canvas.drawText("Description: ${itineraryData.itinerary.description}", 20f, yPosition.toFloat(), paint)
+
+        yPosition += 30
+        canvas.drawText("Notes: ${itineraryData.itinerary.notes}", 20f, yPosition.toFloat(), paint)
+
+        yPosition += 30
+        canvas.drawText("Days Amount: ${itineraryData.itinerary.daysCount}", 20f, yPosition.toFloat(), paint)
+
+        itineraryData.listPlanCard.forEachIndexed { index, planCard ->
+            yPosition += 40
+            canvas.drawText("Day ${index + 1}: ${planCard.planCardData.title}", 20f, yPosition.toFloat(), paint)
+
+            planCard.listPlan.forEach { plan ->
+                yPosition += 20
+                canvas.drawText("• ${plan.title} (${plan.time}) - Rp${plan.cost}", 40f, yPosition.toFloat(), paint)
+            }
+        }
+
+        pdfDocument.finishPage(page)
+
+        val file = File(context.getExternalFilesDir(null), "Itinerary-${System.currentTimeMillis()}.pdf")
+        pdfDocument.writeTo(FileOutputStream(file))
+        pdfDocument.close()
+
+        Toast.makeText(context, "PDF saved in: ${file.absolutePath}", Toast.LENGTH_LONG).show()
+        Log.d("ItineraryViewModel", "PDF saved in: ${file.absolutePath}")
+    }
+
 
 
 //    fun onEvent(event: ItineraryEvent) {
