@@ -175,6 +175,7 @@ fun ItineraryScreen(
                     .padding(horizontal = 30.dp, vertical = 30.dp)
             ) {
                 UserSection(user = user, userData = userData)
+                Spacer(modifier = Modifier.width(15.dp))
                 DatePeriodSection(onClick = { /*TODO*/ }, date = itinerary?.itinerary?.date)
             }
 
@@ -854,10 +855,10 @@ fun DatePeriodSection(modifier: Modifier = Modifier, onClick: () -> Unit, date: 
             color = MaterialTheme.colorScheme.primaryContainer,
             border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.outline),
             shape = CircleShape,
-            onClick = {
-                calendarState.show()
-//                onClick()
-            }
+//            onClick = {
+////                calendarState.show()
+////                onClick()
+//            }
         ) {
             Box(modifier = Modifier.size(40.dp), contentAlignment = Alignment.Center) {
                 Icon(

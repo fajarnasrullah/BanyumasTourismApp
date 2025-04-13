@@ -5,16 +5,19 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -38,6 +41,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -46,6 +51,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import coil.compose.AsyncImage
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -54,6 +60,7 @@ import com.google.firebase.auth.ktx.auth
 import com.jer.banyumastourismapp.R
 import com.jer.banyumastourismapp.core.verySmallIcon
 import com.jer.banyumastourismapp.domain.model.Itinerary
+import com.jer.banyumastourismapp.domain.model.urlPictures
 import com.jer.banyumastourismapp.presentation.component.AppBarCustom
 import com.jer.banyumastourismapp.presentation.itinerary.component.ItineraryEvent
 import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
@@ -98,6 +105,9 @@ fun ItineraryFormScreen(
     var totalDaysRange by rememberSaveable { mutableStateOf(0) }
     var startDay by rememberSaveable { mutableStateOf("") }
     var endDay by rememberSaveable { mutableStateOf("") }
+
+    val randomUrlPicture = rememberSaveable { mutableStateOf(urlPictures.random()) }
+
 
     val context = LocalContext.current
     val snackbarState = remember {SnackbarHostState()}
@@ -182,58 +192,68 @@ fun ItineraryFormScreen(
                     .verticalScroll(scrollState)
             ) {
 
-                Spacer(modifier = Modifier.height(30.dp))
+                Spacer(modifier = Modifier.height(15.dp))
 
-                Text(
-                    text = "Title:",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onBackground
+//                Text(
+//                    text = "Title:",
+//                    fontSize = 16.sp,
+//                    fontWeight = FontWeight.Bold,
+//                    color = MaterialTheme.colorScheme.onBackground
+//                )
+//
+//
+//                itinerary?.title.let{
+//                    Text(
+//                        text = it ?: "empty",
+//                        fontSize = 14.sp,
+//                        color = MaterialTheme.colorScheme.onBackground,
+//                        modifier = Modifier.fillMaxWidth()
+//                    )
+//                }
+//
+//                Text(
+//                    text = "Description:",
+//                    fontSize = 16.sp,
+//                    fontWeight = FontWeight.Bold,
+//                    color = MaterialTheme.colorScheme.onBackground
+//                )
+//
+//
+//                itinerary?.description.let{
+//                    Text(
+//                        text = it ?: "empty",
+//                        fontSize = 14.sp,
+//                        color = MaterialTheme.colorScheme.onBackground,
+//                        modifier = Modifier.fillMaxWidth()
+//                    )
+//                }
+//
+//                Text(
+//                    text = "Notes:",
+//                    fontSize = 16.sp,
+//                    fontWeight = FontWeight.Bold,
+//                    color = MaterialTheme.colorScheme.onBackground
+//                )
+//
+//
+//                itinerary?.notes.let{
+//                    Text(
+//                        text = it ?: "empty",
+//                        fontSize = 14.sp,
+//                        color = MaterialTheme.colorScheme.onBackground,
+//                        modifier = Modifier.fillMaxWidth()
+//                    )
+//                }
+
+                AsyncImage(
+                    model = randomUrlPicture.value,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(250.dp)
+                        .clip(MaterialTheme.shapes.large)
                 )
-
-
-                itinerary?.title.let{
-                    Text(
-                        text = it ?: "empty",
-                        fontSize = 14.sp,
-                        color = MaterialTheme.colorScheme.onBackground,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
-
-                Text(
-                    text = "Description:",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-
-
-                itinerary?.description.let{
-                    Text(
-                        text = it ?: "empty",
-                        fontSize = 14.sp,
-                        color = MaterialTheme.colorScheme.onBackground,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
-
-                Text(
-                    text = "Notes:",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-
-
-                itinerary?.notes.let{
-                    Text(
-                        text = it ?: "empty",
-                        fontSize = 14.sp,
-                        color = MaterialTheme.colorScheme.onBackground,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
 
 
                 OutlinedTextField (
@@ -255,6 +275,7 @@ fun ItineraryFormScreen(
                         date = it
                                     },
                     label = { Text(text = "Date") },
+                    readOnly = true,
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     shape = MaterialTheme.shapes.medium,
@@ -324,6 +345,7 @@ fun ItineraryFormScreen(
                     label = { Text(text = "Description") },
                     modifier = Modifier.fillMaxWidth(),
                     shape = MaterialTheme.shapes.medium,
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
                 )
 
                 // notes
@@ -335,6 +357,8 @@ fun ItineraryFormScreen(
                     label = { Text(text = "Notes") },
                     modifier = Modifier.fillMaxWidth(),
                     shape = MaterialTheme.shapes.medium,
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
+
                 )
 
                 totalMoneySpend.toString()
@@ -348,6 +372,8 @@ fun ItineraryFormScreen(
                     label = { Text(text = "Money Spend Amount") },
                     modifier = Modifier.fillMaxWidth(),
                     shape = MaterialTheme.shapes.medium,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
+
                 )
 
                 // total destinations
@@ -359,6 +385,7 @@ fun ItineraryFormScreen(
                     label = { Text(text = "Destination Amount") },
                     modifier = Modifier.fillMaxWidth(),
                     shape = MaterialTheme.shapes.medium,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
                 )
 
                 // total members
@@ -370,6 +397,7 @@ fun ItineraryFormScreen(
                     label = { Text(text = "Members Amount") },
                     modifier = Modifier.fillMaxWidth(),
                     shape = MaterialTheme.shapes.medium,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done)
                 )
 
                 Button(
@@ -385,15 +413,32 @@ fun ItineraryFormScreen(
                     },
                     shape = MaterialTheme.shapes.medium,
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp)
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Check,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.background,
-                        modifier = Modifier.size(25.dp)
-                    )
+                    Row {
+
+                        Text(
+                            text = "Create Itinerary",
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.background
+                        )
+
+                        Spacer(modifier = Modifier.width(10.dp))
+
+                        Icon(
+                            imageVector = Icons.Default.ArrowForward,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.background,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
                 }
+
+                Spacer(modifier = Modifier.height(15.dp))
+
 
             }
 

@@ -72,6 +72,7 @@ fun DestinationListScreen(
             )
 
             CategoryRow(
+                isDelay = false,
                 modifier = Modifier
                     .constrainAs(category) {
                         top.linkTo(bg.bottom)

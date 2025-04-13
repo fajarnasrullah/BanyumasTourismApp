@@ -76,7 +76,7 @@ import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
 fun DetailDestinationScreen(
     modifier: Modifier = Modifier,
     detailDestination: Destination,
-    navToOrders: () -> Unit,
+    navToOrders: (Destination) -> Unit,
     navBack: () -> Unit
 ) {
 
@@ -88,7 +88,7 @@ fun DetailDestinationScreen(
             BottomBarDetail(
                 price = detailDestination.cost.toString(),
                 textButton = "Book",
-                onClick = {navToOrders()} )
+                onClick = {navToOrders(detailDestination)} )
                     },
         modifier = Modifier
     ) { innerPadding ->
@@ -198,7 +198,7 @@ fun RouteAndAccessibility(modifier: Modifier = Modifier, detailDestination: Dest
 
         CardExpanded(
             icon = painterResource(id = R.drawable.caricon),
-            title = "Private Vehicle",
+            title = "Route",
             content = detailDestination.route
         )
 
@@ -345,7 +345,7 @@ fun PlaceDetailContent(
                 if (showReadMoreButtonState) {
                     Text(
                         text = if (expandedState) "Read Less" else "Read More",
-                        color = MaterialTheme.colorScheme.outline,
+                        color = MaterialTheme.colorScheme.primaryContainer,
 
                         modifier = Modifier.clickable {
                             expandedState = !expandedState

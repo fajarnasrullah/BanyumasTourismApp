@@ -116,6 +116,7 @@ fun CategoryCard(
 @Composable
 fun CategoryRow(
     modifier: Modifier = Modifier,
+    isDelay: Boolean
 ) {
 
     val categories = listOf(
@@ -133,7 +134,7 @@ fun CategoryRow(
     val selectedIndex = remember { mutableStateOf(-1) }
 
     LaunchedEffect(key1 = Unit) {
-        while (true) {
+        while (true && isDelay) {
             listState.animateScrollToItem(index = (listState.firstVisibleItemIndex + 1) % categories.size)
             delay(2000)
         }

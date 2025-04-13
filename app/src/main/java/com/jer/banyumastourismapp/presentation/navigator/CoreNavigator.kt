@@ -194,7 +194,8 @@ fun CoreNavigator() {
                 MapsScreen(
                     mapsViewModel = mapsViewModel,
 //                    listDestination = destinations,
-                    navigateToDetail = { navigateToDetail(navController, it) }
+                    navigateToDetail = { navigateToDetail(navController, it) },
+                    navigateToOrders = {navigateToOrders(navController, it)}
                 )
             }
 
@@ -215,7 +216,7 @@ fun CoreNavigator() {
                 navController.previousBackStackEntry?.savedStateHandle?.get<Destination>("destination")?.let {destination ->
                     DetailDestinationScreen(
                         detailDestination = destination,
-                        navToOrders = {navController.navigate(Route.OrdersFormScreen.route)},
+                        navToOrders = { navigateToOrders(navController, destination) },
                         navBack = {navController.navigateUp()}
                     )
                 }
@@ -250,9 +251,12 @@ fun CoreNavigator() {
             }
 
             composable(Route.OrdersFormScreen.route) {
-                OrdersFormScreen (
-                    navBack = {navController.navigateUp()}
-                )
+                navController.previousBackStackEntry?.savedStateHandle?.get<Destination>("destinationForOrders")?.let { destination ->
+                    OrdersFormScreen(
+                        destination = destination,
+                        navBack = { navController.navigateUp() }
+                    )
+                }
             }
         }
 
@@ -280,6 +284,11 @@ private fun navigateToDetail(navController: NavController, destination: Destinat
     navController.navigate(Route.DetailDestinationScreen.route)
 }
 
+
+private fun navigateToOrders(navController: NavController, destination: Destination) {
+    navController.currentBackStackEntry?.savedStateHandle?.set("destinationForOrders", destination)
+    navController.navigate(Route.OrdersFormScreen.route)
+}
 
 
 

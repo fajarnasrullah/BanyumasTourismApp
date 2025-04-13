@@ -53,6 +53,7 @@ fun DestinationCardLandscape(
     destination: Destination,
     buttonVisibility: Boolean,
     onClick: (Destination) -> Unit,
+    navigateToOrders: ((Destination) -> Unit)? = null
 ) {
 
 
@@ -182,7 +183,9 @@ fun DestinationCardLandscape(
                 if (buttonVisibility) {
                     Button(
                         onClick = {
-
+                            if (navigateToOrders != null) {
+                                navigateToOrders(destination)
+                            }
                         },
                         colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primaryContainer),
                         shape = MaterialTheme.shapes.small,

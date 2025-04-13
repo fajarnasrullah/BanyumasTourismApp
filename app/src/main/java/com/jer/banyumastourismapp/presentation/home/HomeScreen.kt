@@ -69,6 +69,7 @@ import com.jer.banyumastourismapp.core.verySmallIcon
 import com.jer.banyumastourismapp.domain.model.Destination
 import com.jer.banyumastourismapp.domain.model.Itinerary
 import com.jer.banyumastourismapp.domain.model.User
+import com.jer.banyumastourismapp.domain.model.urlPictures
 import com.jer.banyumastourismapp.presentation.component.CategoryRow
 import com.jer.banyumastourismapp.presentation.component.DestinationCardStandRow
 import com.jer.banyumastourismapp.presentation.itinerary.ItineraryViewModel
@@ -190,6 +191,7 @@ fun HomeScreen(
             )
 
             CategoryRow(
+                isDelay = true,
                 modifier = Modifier
                     .constrainAs(category1) {
                         top.linkTo(itinerarySection.bottom)
@@ -199,6 +201,7 @@ fun HomeScreen(
             )
 
             CategoryRow(
+                isDelay = false,
                 modifier = Modifier
                     .constrainAs(category2) {
                         top.linkTo(category1.bottom)
@@ -271,22 +274,7 @@ fun ItineraryCard(
 ) {
 
     var showAlert by rememberSaveable { mutableStateOf(false) }
-    val urlPictures = listOf(
-        "https://eventdaerah.kemenparekraf.go.id/storage/app/uploads/public/669/0cd/153/6690cd153a162349133709.jpg",
-        "https://asset.kompas.com/crops/latfHWvJG4gfdlgQn5mC4rUHHe0=/0x0:750x500/1200x800/data/photo/2022/02/08/6201d8090b7c8.jpg",
-        "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh7mkQaTFMxTnOVsNdoZYuYnV3N2m99uDL8e9Bmd4AnNjjS7BgIFPQ_-kZ8AgUeopM9xY-Sv-gqgDGni2SYsiGsfE9rMzJHBURF5ZGAq7gl1DoLgP_2meVPnhn4OYCGcxtQjZYOBIlEa9U/s640/infobacktravel.blogspot.com-panduan-wisata-baturaden.jpg",
-        "https://assets.promediateknologi.id/crop/0x0:0x0/750x500/webp/photo/2023/01/17/3087847889.jpg",
-        "https://camerawisata.com/wp-content/uploads/2018/03/Telaga-Sunyi-Baturraden.png",
-        "https://suarabanyumas.com/wp-content/uploads/2023/12/Desa-Ketenger-Baturraden.jpg",
-        "https://travelspromo.com/wp-content/uploads/2019/05/area-kebun-raya-baturraden-Avuk-Jimmy.jpg",
-        "https://cdn.wisata.app/diary/46a7b2f6-aea6-457b-b514-3c0e8a1c8c79_sm.jpg",
-        "https://assetd.kompas.id/kLMSW6oxTMCrCzjA_hWbgPD0qRo=/1024x683/filters:watermark(https://cdn-content.kompas.id/umum/kompas_main_logo.png,-16p,-13p,0)/https%3A%2F%2Fasset.kgnewsroom.com%2Fphoto%2Fpre%2F2022%2F12%2F14%2F047b6bd8-7a4b-4bb6-bf7c-b846712858f8_jpg.jpg",
-        "https://assets.promediateknologi.id/crop/0x0:0x0/750x500/webp/photo/2022/10/13/2192877490.jpg",
-        "https://superlive.id/storage/superadventure/2020/12/09/0a0eba2eb1e4.jpg",
-        "https://muncak.id/storage/0d0eef11-6742-4044-9851-f9fb20707007/rute-gallery-675b2bdb5e94e6.png",
-        "https://www.explore-grandest.com/wp-content/uploads/2021/11/paintball-0x870.jpg"
 
-    )
     val randomUrlPicture = rememberSaveable { mutableStateOf(urlPictures.random()) }
 
     Card(
@@ -358,23 +346,26 @@ fun ItineraryCard(
                     .padding(15.dp)
             ) {
 
-//                if (user.photoUrl == null) {
-//                    Image(
-//                        painter = painterResource(id = R.drawable.picturedummy),
-//                        contentDescription = null,
-//                        contentScale = ContentScale.Crop,
-//                        modifier = Modifier
-//                            .size(102.dp)
-//                            .clip(MaterialTheme.shapes.large)
-//                    )
-                AsyncImage(
-                    model = randomUrlPicture.value,
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(102.dp)
-                        .clip(MaterialTheme.shapes.large)
-                )
+                if (itinerary?.uid != "" && itinerary?.title != null) {
+                    AsyncImage(
+                        model = randomUrlPicture.value,
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(102.dp)
+                            .clip(MaterialTheme.shapes.large)
+                    )
+                } else {
+                    Image(
+                        painter = painterResource(id = R.drawable.picturedummy),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(102.dp)
+                            .clip(MaterialTheme.shapes.large)
+                    )
+                }
+
 
                 Spacer(modifier = Modifier.width(15.dp))
 
@@ -413,10 +404,10 @@ fun ItineraryCard(
                     .fillMaxWidth()
                     .padding(start = 15.dp, end = 15.dp, bottom = 15.dp)
             ) {
-                IconAndText(painter = painterResource(id = R.drawable.moneyicon), text = "Rp. ${itinerary?.totalMoneySpend}" ?: "Rp. 500.000")
-                IconAndText(painter = painterResource(id = R.drawable.destinationicon), text = itinerary?.totalDestinations.toString() ?: "8")
-                IconAndText(painter = painterResource(id = R.drawable.peopleicon), text = itinerary?.totalMembers.toString() ?: "12")
-                IconAndText(painter = painterResource(id = R.drawable.calendaricon), text = itinerary?.date ?: "22 - 27 August")
+                IconAndText(painter = painterResource(id = R.drawable.moneyicon), text = "Rp. ${itinerary?.totalMoneySpend}" ?: "Rp. -")
+                IconAndText(painter = painterResource(id = R.drawable.destinationicon), text = itinerary?.totalDestinations.toString() ?: "-")
+                IconAndText(painter = painterResource(id = R.drawable.peopleicon), text = itinerary?.totalMembers.toString() ?: "-")
+                IconAndText(painter = painterResource(id = R.drawable.calendaricon), text = itinerary?.date ?: "-")
             }
         }
 

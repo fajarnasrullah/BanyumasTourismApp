@@ -63,6 +63,7 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.jer.banyumastourismapp.R
 import com.jer.banyumastourismapp.core.verySmallIcon
+import com.jer.banyumastourismapp.domain.model.Destination
 import com.jer.banyumastourismapp.presentation.component.AppBarCustom
 import com.jer.banyumastourismapp.presentation.component.BottomBarDetail
 import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
@@ -74,12 +75,16 @@ import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun OrdersFormScreen(modifier: Modifier = Modifier, navBack: () -> Unit) {
+fun OrdersFormScreen(
+    modifier: Modifier = Modifier,
+    destination: Destination,
+    navBack: () -> Unit
+) {
 
     val scrollState = rememberScrollState()
 
     var qty by rememberSaveable { mutableIntStateOf(0) }
-    var price by rememberSaveable { mutableIntStateOf(0) }
+//    var price by rememberSaveable { mutableIntStateOf(0) }
     var date by rememberSaveable { mutableStateOf("") }
     var dateRequest by rememberSaveable { mutableStateOf(false) }
     val calendarState = rememberUseCaseState()
@@ -92,8 +97,8 @@ fun OrdersFormScreen(modifier: Modifier = Modifier, navBack: () -> Unit) {
     var isFixed by rememberSaveable { mutableStateOf(false) }
 
     // dummy
-    price = 100000
-    totalPrice = price * qty
+//    price = 100000
+    totalPrice = destination.cost * qty
     var promoCode by rememberSaveable { mutableStateOf("") }
 
 
@@ -134,7 +139,7 @@ fun OrdersFormScreen(modifier: Modifier = Modifier, navBack: () -> Unit) {
                     .verticalScroll(scrollState)
             ) {
 
-                Spacer(modifier = Modifier.height(30.dp))
+                Spacer(modifier = Modifier.height(15.dp))
 
                 Text(
                     text = "Booking Data:",
@@ -155,7 +160,7 @@ fun OrdersFormScreen(modifier: Modifier = Modifier, navBack: () -> Unit) {
                     )
 
                     Text(
-                        text = "Curug Bayan",
+                        text = destination.title,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onBackground
@@ -176,7 +181,7 @@ fun OrdersFormScreen(modifier: Modifier = Modifier, navBack: () -> Unit) {
                     )
 
                     Text(
-                        text = "Rp. ${ price.toString() }",
+                        text = "Rp. ${ destination.cost.toString() }",
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onBackground
@@ -283,7 +288,7 @@ fun OrdersFormScreen(modifier: Modifier = Modifier, navBack: () -> Unit) {
                     OutlinedButton(
                         onClick = {
                             qty = 0
-                            price = 0
+//                            price = 0
                             date = ""
                             name = ""
                             email = ""
@@ -346,9 +351,9 @@ fun OrdersFormScreen(modifier: Modifier = Modifier, navBack: () -> Unit) {
                             color = MaterialTheme.colorScheme.onBackground
                         )
 
-                        TextSection(title = "Product:", text = "Curug Bayan", isFixed = isFixed)
+                        TextSection(title = "Product:", text = destination.title, isFixed = isFixed)
                         TextSection(title = "Qty:", text = qty.toString(), isFixed = isFixed)
-                        TextSection(title = "Price:", text = price.toString(), isFixed = isFixed)
+                        TextSection(title = "Price:", text = destination.cost.toString(), isFixed = isFixed)
                         TextSection(title = "Date:", text = date, isFixed = isFixed)
 
                     }
@@ -418,6 +423,7 @@ fun OrdersFormScreen(modifier: Modifier = Modifier, navBack: () -> Unit) {
                         onClick = {
                             if (promoCode.lowercase() == "qwerty") {
                                 totalPrice = (totalPrice * 50/100).toInt()
+                                Toast.makeText(context, "Promo Code Applied", Toast.LENGTH_SHORT).show()
                             } else {
                                 Toast.makeText(context, "Invalid Promo Code", Toast.LENGTH_SHORT).show()
                             }
@@ -432,7 +438,7 @@ fun OrdersFormScreen(modifier: Modifier = Modifier, navBack: () -> Unit) {
                     }
                 }
 
-                Spacer(modifier = Modifier.height(30.dp))
+                Spacer(modifier = Modifier.height(15.dp))
 
 
             }
@@ -479,15 +485,17 @@ fun TextSection(modifier: Modifier = Modifier, title: String, text: String, isFi
     }
 }
 
-
-@Preview(showBackground = true)
-@Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
-@Composable
-private fun PrevOrdersForm() {
-    BanyumasTourismAppTheme {
-        OrdersFormScreen(
-            navBack = {}
-        )
-    }
-
-}
+//
+//@Preview(showBackground = true)
+//@Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
+//@Composable
+//private fun PrevOrdersForm() {
+//    BanyumasTourismAppTheme {
+//        OrdersFormScreen(
+//            price = 100000,
+//            destiTitle = "Curug Bayan",
+//            navBack = {}
+//        )
+//    }
+//
+//}

@@ -70,7 +70,8 @@ fun MapsScreen(
     modifier: Modifier = Modifier,
     mapsViewModel: MapsViewModel,
 //    listDestination: LazyPagingItems<Destination>,
-    navigateToDetail: (Destination) -> Unit
+    navigateToDetail: (Destination) -> Unit,
+    navigateToOrders: (Destination) -> Unit,
 ) {
 
     val jakarta = LatLng(-6.200000, 106.816666)
@@ -395,6 +396,7 @@ fun MapsScreen(
 
 
              CategoryRow(
+                 isDelay = false,
                  modifier = Modifier.constrainAs(category) {
                      bottom.linkTo(listSection.top)
                  }
@@ -419,6 +421,7 @@ fun MapsScreen(
                              destination = it,
                              modifier = Modifier.fillMaxWidth(),
                              onClick = navigateToDetail,
+                             navigateToOrders = navigateToOrders,
                              buttonVisibility = true,
                          )
 
