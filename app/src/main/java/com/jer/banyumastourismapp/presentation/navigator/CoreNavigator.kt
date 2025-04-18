@@ -29,6 +29,7 @@ import com.jer.banyumastourismapp.domain.usecase.tourism.GetCurrentUser
 import com.jer.banyumastourismapp.presentation.auth.AuthViewModel
 import com.jer.banyumastourismapp.presentation.auth.login.LoginScreen
 import com.jer.banyumastourismapp.presentation.destination.DestinationListScreen
+import com.jer.banyumastourismapp.presentation.destination.DestinationListViewModel
 import com.jer.banyumastourismapp.presentation.detailDestination
 import com.jer.banyumastourismapp.presentation.detaildestination.DetailDestinationScreen
 import com.jer.banyumastourismapp.presentation.home.HomeScreen
@@ -177,9 +178,11 @@ fun CoreNavigator() {
             }
             composable(Route.DestinationListScreen.route) {
                 val viewModel: HomeViewModel = hiltViewModel()
+                val viewModelDesti: DestinationListViewModel  = hiltViewModel()
                 val destinations = viewModel.destinations.collectAsLazyPagingItems()
                 DestinationListScreen(
                     destination = destinations,
+                    viewModel = viewModelDesti,
                     navigateToDetail = { navigateToDetail(navController, it) }
                 )
             }

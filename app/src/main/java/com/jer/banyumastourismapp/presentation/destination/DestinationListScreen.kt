@@ -1,5 +1,6 @@
 package com.jer.banyumastourismapp.presentation.destination
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,9 +14,18 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.paging.compose.LazyPagingItems
@@ -28,13 +38,30 @@ import dev.chrisbanes.haze.HazeState
 @Composable
 fun DestinationListScreen(
     modifier: Modifier = Modifier,
+    viewModel: DestinationListViewModel,
     destination: LazyPagingItems<Destination>,
     navigateToDetail: (Destination) -> Unit
 ) {
 
-    val scrollState = rememberScrollState()
+    val resultListDestination by viewModel.destination.collectAsState()
+    var isLoading by rememberSaveable {
+        mutableStateOf(true)
+    }
+    val query = rememberSaveable {
+        mutableStateOf("")
+    }
+    var isOnSearch = rememberSaveable {
+        mutableStateOf(false)
+    }
 
-    val hazeState = remember { HazeState() }
+//    LaunchedEffect(Unit) {
+//        viewModel.destination.observeForever{
+//            resultListDestination.clear()
+//            resultListDestination.addAll(it)
+//            Log.d("DestinationListScreen", "Cek resultListDestination: $resultListDestination")
+//            isLoading = false
+//        }
+//    }
 
     Scaffold (
         modifier = modifier,
@@ -60,8 +87,16 @@ fun DestinationListScreen(
             )
 
             SearchBarForAll(
+                query = query,
                 hint = "Search Destination",
                 trailingIsVisible = true,
+                isOnSearch = isOnSearch,
+                onSearchAction = {
+                    isOnSearch.value = true
+                    viewModel.destinationByTitle(query.value)
+                    isLoading = false
+                    Log.d("DestinationListScreen", "resultListDestination: ${resultListDestination}")
+                },
                 modifier = Modifier
                     .constrainAs(searchbar) {
                         top.linkTo(parent.top)
@@ -84,7 +119,9 @@ fun DestinationListScreen(
 
             DestinationCardLandscapeColumn(
                 destination = destination,
+                destinationFromSearch = resultListDestination,
                 onClick = { navigateToDetail(it) },
+                isOnSearch = isOnSearch.value,
                 modifier = Modifier
                     .constrainAs(destinationList) {
                         top.linkTo(category.bottom)
@@ -105,6 +142,8 @@ fun DestinationListScreen(
 fun DestinationCardLandscapeColumn(
     modifier: Modifier = Modifier,
     destination: LazyPagingItems<Destination>,
+    destinationFromSearch: List<Destination>,
+    isOnSearch: Boolean,
     onClick: (Destination) -> Unit
 ) {
     LazyColumn(
@@ -114,16 +153,27 @@ fun DestinationCardLandscapeColumn(
 
         modifier = modifier
     ) {
-        items(count = destination.itemCount) { index ->
-
-            destination[index]?.let {
+        if (isOnSearch) {
+            items(count = destinationFromSearch.size) { index ->
                 DestinationCardLandscape(
-                    destination = it,
+                    destination = destinationFromSearch[index],
                     onClick = { onClick(it) },
                     buttonVisibility = false
                 )
             }
-        }
+        } else {
+                items(count = destination.itemCount) { index ->
+
+                    destination[index]?.let {
+                        DestinationCardLandscape(
+                            destination = it,
+                            onClick = { onClick(it) },
+                            buttonVisibility = false
+                        )
+                    }
+                }
+            }
+
 
     }
 }

@@ -23,6 +23,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -69,9 +71,18 @@ fun SosmedListScreen(
             )
 
 
+            val searchResult = remember {
+                mutableStateOf("")
+            }
+            val isOnSearch = remember {
+                mutableStateOf(true)
+            }
             SearchBarForAll (
                 hint = "Search Story",
                 trailingIsVisible = true,
+                query = searchResult,
+                isOnSearch = isOnSearch,
+                onSearchAction = {},
                 modifier = Modifier
                     .constrainAs(searchbar) {
                         top.linkTo(parent.top)

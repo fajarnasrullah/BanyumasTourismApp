@@ -18,6 +18,7 @@ import com.jer.banyumastourismapp.domain.usecase.tourism.DeletePlanCard
 import com.jer.banyumastourismapp.domain.usecase.tourism.DeleteUser
 import com.jer.banyumastourismapp.domain.usecase.tourism.GetCurrentUser
 import com.jer.banyumastourismapp.domain.usecase.tourism.GetDestination
+import com.jer.banyumastourismapp.domain.usecase.tourism.GetDestinationByTitle
 import com.jer.banyumastourismapp.domain.usecase.tourism.GetDestinations
 import com.jer.banyumastourismapp.domain.usecase.tourism.GetDestinationsForMaps
 import com.jer.banyumastourismapp.domain.usecase.tourism.GetItinerary
@@ -97,6 +98,7 @@ object AppModule {
         return TourismUseCase(
             getDestinations = GetDestinations(repository),
             getDestination = GetDestination(repository),
+            getDestinationByTitle = GetDestinationByTitle(repository),
             getCurrentUser = GetCurrentUser(repository),
             signinWithGoogle = SigninWithGoogle(repository),
             updateUserData = UpdateUserData(repository),

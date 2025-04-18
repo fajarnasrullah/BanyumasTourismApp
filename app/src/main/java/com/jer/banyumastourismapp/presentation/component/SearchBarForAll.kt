@@ -29,6 +29,7 @@ import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,11 +46,18 @@ import com.jer.banyumastourismapp.core.verySmallIcon
 import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
 
 @Composable
-fun SearchBarForAll(modifier: Modifier = Modifier, hint: String, trailingIsVisible: Boolean) {
+fun SearchBarForAll(
+    modifier: Modifier = Modifier,
+    query: MutableState<String>,
+    hint: String,
+    trailingIsVisible: Boolean,
+    isOnSearch: MutableState<Boolean>,
+    onSearchAction: () -> Unit
+) {
 
-    var query by remember {
-        mutableStateOf("")
-    }
+//    var query by remember {
+//        mutableStateOf("")
+//    }
 
     var active by remember {
         mutableStateOf(false)
@@ -64,12 +72,13 @@ fun SearchBarForAll(modifier: Modifier = Modifier, hint: String, trailingIsVisib
 
         DockedSearchBar(
             modifier = modifier.fillMaxWidth(),
-            query = query,
-            onQueryChange = { query = it },
+            query = query.value,
+            onQueryChange = { query.value = it },
             onSearch = { newQuery ->
                 listHistory.add(newQuery)
                 active = false
-
+                isOnSearch.value = true
+                onSearchAction()
 
                        },
             active = active,
@@ -77,6 +86,7 @@ fun SearchBarForAll(modifier: Modifier = Modifier, hint: String, trailingIsVisib
             leadingIcon = {
                 Icon(imageVector = Icons.Default.Search, contentDescription = null )
             },
+
             colors = SearchBarDefaults.colors(containerColor =  MaterialTheme.colorScheme.onPrimary),
             placeholder = { Text(text = hint, color = MaterialTheme.colorScheme.outline) },
             trailingIcon = {
@@ -86,8 +96,9 @@ fun SearchBarForAll(modifier: Modifier = Modifier, hint: String, trailingIsVisib
                     if (active) {
                         IconButton(
                             onClick = {
-                                if (query.isNotEmpty()) {
-                                    query = ""
+                                if (query.value.isNotEmpty()) {
+                                    query.value = ""
+                                    isOnSearch.value = false
 //                                    Toast.makeText(context, query, Toast.LENGTH_SHORT).show()
                                 } else active = false
                             }
@@ -184,7 +195,7 @@ fun SearchBarForAll(modifier: Modifier = Modifier, hint: String, trailingIsVisib
                     colors = ListItemDefaults.colors(containerColor = Color.Transparent),
                     modifier = Modifier
                         .padding(horizontal = 10.dp)
-                        .clickable { query = item }
+                        .clickable { query.value = item }
 
                 )
             }
@@ -198,12 +209,12 @@ fun SearchBarForAll(modifier: Modifier = Modifier, hint: String, trailingIsVisib
 
 }
 
-@Preview(showBackground = true)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun PrevSearchBar() {
-    BanyumasTourismAppTheme {
-        SearchBarForAll(hint = "Search Destination", trailingIsVisible = true)
-    }
-
-}
+//@Preview(showBackground = true)
+//@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+//@Composable
+//private fun PrevSearchBar() {
+//    BanyumasTourismAppTheme {
+//        SearchBarForAll( hint = "Search Destination", trailingIsVisible = true)
+//    }
+//
+//}

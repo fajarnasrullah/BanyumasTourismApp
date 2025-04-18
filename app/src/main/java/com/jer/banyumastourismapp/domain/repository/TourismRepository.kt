@@ -1,5 +1,6 @@
 package com.jer.banyumastourismapp.domain.repository
 
+import androidx.lifecycle.LiveData
 import androidx.paging.PagingData
 import com.google.firebase.auth.FirebaseUser
 import com.jer.banyumastourismapp.domain.model.Destination
@@ -14,6 +15,7 @@ interface TourismRepository {
 
     fun getDestinations(): Flow<PagingData<Destination>>
     suspend fun getDestination(id: Int): Destination?
+    suspend fun getDestinationByTitle(title: String): List<Destination>
     suspend fun insertDestination(destination: Destination)
     suspend fun deleteDestination(destination: Destination)
     fun selectDestinations(): Flow<List<Destination>>

@@ -1,6 +1,9 @@
 package com.jer.banyumastourismapp.data.repository
 
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -8,7 +11,11 @@ import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.Query
+import com.google.firebase.database.ValueEventListener
 import com.jer.banyumastourismapp.data.local.DaoDestination
 import com.jer.banyumastourismapp.data.local.DaoItinerary
 import com.jer.banyumastourismapp.data.local.DaoUser
@@ -22,6 +29,9 @@ import com.jer.banyumastourismapp.domain.model.User
 import com.jer.banyumastourismapp.domain.repository.TourismRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.tasks.await
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 class TourismRepositoryImpl(
     private val db: FirebaseDatabase,
@@ -41,6 +51,37 @@ class TourismRepositoryImpl(
 
     override suspend fun getDestination(id: Int): Destination? {
         return daoDestination.getDestination(id)
+    }
+
+    override suspend fun getDestinationByTitle(title: String): List<Destination> = suspendCoroutine { continuation ->
+        val listData = mutableListOf<Destination>()
+        val ref = db.getReference("destinations")
+        val query: Query = ref.orderByChild("title").equalTo(title)
+        query.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (childSnapshot in snapshot.children) {
+                    val destination = childSnapshot.getValue(Destination::class.java)
+                    val lists = mutableListOf<Destination>()
+                    if (destination != null) {
+                        lists.add(destination)
+                    }
+                    listData.addAll(lists)
+                }
+                Log.d("TourismRepositoryImpl", "Success get Destination By Title: $listData")
+
+                continuation.resume(listData)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("TourismRepositoryImpl", "Error fetching data Destination By Title: ${error.message}")
+                continuation.resume(emptyList())
+            }
+
+        })
+
+
+
+
     }
 
     override suspend fun insertDestination(destination: Destination) {
