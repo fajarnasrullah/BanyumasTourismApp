@@ -2,9 +2,19 @@
 
 package com.jer.banyumastourismapp.presentation.orders
 
+import android.app.Activity
+import android.content.Intent
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.net.Uri
 import android.os.Build
+import android.util.Log
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity.RESULT_OK
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -42,6 +52,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -60,16 +72,31 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.core.os.LocaleListCompat
+import androidx.lifecycle.asLiveData
+import androidx.navigation.compose.rememberNavController
+import com.jer.banyumastourismapp.BuildConfig
 import com.jer.banyumastourismapp.R
 import com.jer.banyumastourismapp.core.verySmallIcon
 import com.jer.banyumastourismapp.domain.model.Destination
+import com.jer.banyumastourismapp.domain.model.Ticket
+import com.jer.banyumastourismapp.domain.model.TransactionRequest
 import com.jer.banyumastourismapp.presentation.component.AppBarCustom
 import com.jer.banyumastourismapp.presentation.component.BottomBarDetail
+import com.jer.banyumastourismapp.presentation.navgraph.Route
+import com.jer.banyumastourismapp.presentation.payment.PaymentViewModel
+import com.jer.banyumastourismapp.presentation.ticket.TicketViewModel
 import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
 import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarSelection
+import com.midtrans.sdk.uikit.api.model.CustomColorTheme
+import com.midtrans.sdk.uikit.api.model.TransactionResult
+import com.midtrans.sdk.uikit.external.UiKitApi
+import com.midtrans.sdk.uikit.internal.util.UiKitConstants
+import java.net.URLEncoder
 import java.time.LocalDate
 
 
@@ -77,8 +104,10 @@ import java.time.LocalDate
 @Composable
 fun OrdersFormScreen(
     modifier: Modifier = Modifier,
+    viewModel: PaymentViewModel,
+    ticketViewModel: TicketViewModel,
     destination: Destination,
-    navBack: () -> Unit
+    navBack: () -> Unit,
 ) {
 
     val scrollState = rememberScrollState()
@@ -101,6 +130,89 @@ fun OrdersFormScreen(
     totalPrice = destination.cost * qty
     var promoCode by rememberSaveable { mutableStateOf("") }
 
+    val context = LocalContext.current
+    val activity = context as? Activity
+
+    val responseThx by viewModel.response.collectAsState()
+    val message = viewModel.message.collectAsState()
+
+
+    val navController = rememberNavController()
+
+    val baseUrl = BuildConfig.MIDTRANS_SANDBOX_BASE_URL
+    val clientKey = BuildConfig.MIDTRANS_SANDBOX_CLIENT_KEY
+
+    val userData by ticketViewModel.userData.collectAsState()
+    var ticketNew by rememberSaveable {
+        mutableStateOf(
+            Ticket(
+                uid = "",
+                title = "",
+                image = "",
+                category = "",
+                name = "",
+                date = "",
+                location = "",
+                price = 0,
+                qty = 0,
+            )
+        )
+    }
+
+    var webViewIsActive by rememberSaveable { mutableStateOf(false) }
+
+    UiKitApi.Builder()
+        .withMerchantClientKey(clientKey)
+        .withContext(context)
+        .withMerchantUrl(baseUrl)
+        .enableLog(true)
+        .withColorTheme(CustomColorTheme("#FFE51255", "#B61548", "#FFE51255")) // set theme. it will replace theme on snap theme on MAP ( optional)
+        .build()
+
+    setLocaleNew("id")
+
+
+
+
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+
+        if (result?.resultCode == RESULT_OK) {
+            result.data?.let {
+                val transactionResult = it.getParcelableExtra<TransactionResult>(UiKitConstants.KEY_TRANSACTION_RESULT)
+                Toast.makeText(context,"${transactionResult?.transactionId}", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+
+    LaunchedEffect(Unit) {
+        ticketViewModel.getUserData()
+    }
+//
+//    LaunchedEffect(Unit) {
+//        viewModel.loadTransaction()
+//        if (!responseThx.value?.token.isNullOrEmpty()){
+//            responseThx.let { response ->
+//                activity?.let {
+//                    UiKitApi.getDefaultInstance().startPaymentUiFlow(
+//                        it,
+//                        launcher,
+//                        response.value?.token
+//                    )
+//                }
+//                Log.d("OrdersFormScreen", "snap token: ${response.value?.token}")
+//            }
+//        }
+//    }
+
+
+//    var newUrl by rememberSaveable {
+//        mutableStateOf("")
+//    }
+//    if (responseThx?.redirect_url != null) {
+//        val encodedUrl = URLEncoder.encode(responseThx?.redirect_url, "UTF-8")
+//        newUrl = encodedUrl
+//    }
 
     Scaffold (
         topBar = { AppBarCustom(
@@ -115,7 +227,35 @@ fun OrdersFormScreen(
             price = "Rp. ${totalPrice.toString() }",
             textButton = "Pay Now",
             headline = "Total Price",
-            onClick = { }
+            onClick = {
+//                if (!responseThx?.token.isNullOrEmpty()) {
+//                    navController.navigate("${ Route.PaymentLoadingScreen.route }/${responseThx?.token}")
+//
+//                }
+
+                ticketNew = ticketNew.copy(uid = userData?.uid ?: "", title = destination.title, image = destination.imageUrl, category = destination.category, name = name, price = totalPrice, qty = qty, location = destination.location, date = date)
+                ticketViewModel.insertTicket(ticketNew)
+
+                Log.d("OrdersFormScreen", "new ticket: $ticketNew")
+                Log.d("OrdersFormScreen", "redirect_url: ${responseThx?.redirect_url}")
+//                webViewIsActive = true
+//                navController.navigate("${Route.PaymentWebViewScreen.route}/{$newUrl}")
+
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(responseThx?.redirect_url))
+                context.startActivity(intent)
+
+//                activity?.let {
+//                    UiKitApi.getDefaultInstance()?.startPaymentUiFlow(
+//                        it,
+//                        launcher,
+//                        responseThx?.token
+//                    )
+//                }
+
+
+
+
+            }
         ) }
     ) { innerPadding ->
 
@@ -125,7 +265,39 @@ fun OrdersFormScreen(
                 .fillMaxSize(),
             ) {
 
-            val content = createRef()
+            val (content, webview) = createRefs()
+
+            if (webViewIsActive){
+                Column(
+                    modifier = Modifier
+                        .constrainAs(webview) {
+                            top.linkTo(parent.top)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+
+                        }
+                        .fillMaxSize()
+                ) {
+
+                    AndroidView(
+                        factory = { itsContext ->
+                            WebView(itsContext).apply {
+                                settings.javaScriptEnabled = true
+                                webViewClient = WebViewClient()
+                                settings.loadWithOverviewMode = true
+                                settings.useWideViewPort = true
+                                settings.setSupportZoom(true)
+                            }
+                        },
+                        update = { webView ->
+                            responseThx?.let { webView.loadUrl(it.redirect_url) }
+
+                        }
+
+                    )
+
+                }
+            }
 
             Column (
                 verticalArrangement = Arrangement.spacedBy(15.dp),
@@ -135,7 +307,7 @@ fun OrdersFormScreen(
                         start.linkTo(parent.start,)
                         end.linkTo(parent.end,)
                     }
-                    .padding( start = 30.dp, end = 30.dp)
+                    .padding(start = 30.dp, end = 30.dp)
                     .verticalScroll(scrollState)
             ) {
 
@@ -310,6 +482,17 @@ fun OrdersFormScreen(
                     Button(
                         onClick = {
                             isFixed = true
+
+                            viewModel.createTransaction(
+                                TransactionRequest(
+                                    orderId = "order-${System.currentTimeMillis()}",
+                                    grossAmount = 100000,
+//                        totalPrice,
+                                    customerName = name,
+                                    customerEmail = email
+                                )
+                            )
+
                         },
                         shape = MaterialTheme.shapes.medium,
                         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
@@ -427,6 +610,8 @@ fun OrdersFormScreen(
                             } else {
                                 Toast.makeText(context, "Invalid Promo Code", Toast.LENGTH_SHORT).show()
                             }
+
+
                         },
                         colors = ButtonDefaults.buttonColors(containerColor = Color.Green),
                         shape = RoundedCornerShape(topStart = 0.dp, bottomStart = 0.dp, topEnd = 15.dp, bottomEnd = 15.dp),
@@ -483,6 +668,11 @@ fun TextSection(modifier: Modifier = Modifier, title: String, text: String, isFi
 
 
     }
+}
+
+private fun setLocaleNew(languageCode: String?) {
+    val locales = LocaleListCompat.forLanguageTags(languageCode)
+    AppCompatDelegate.setApplicationLocales(locales)
 }
 
 //

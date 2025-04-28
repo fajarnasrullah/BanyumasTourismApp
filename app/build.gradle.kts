@@ -26,6 +26,11 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+
+        buildConfigField(type = "String", name = "MIDTRANS_SANDBOX_CLIENT_KEY", value = "\"SB-Mid-client-2nbc7P3NpjFmlDaU\"")
+        buildConfigField(type = "String", name = "MIDTRANS_SANDBOX_BASE_URL", value = "\"https://merchant-server-midtrans-sandbox.vercel.app/api/transaction/\"")
+
     }
 
     buildTypes {
@@ -47,6 +52,7 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
+        viewBinding = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -65,6 +71,13 @@ android {
 
 dependencies {
 
+    //barcode
+    implementation("com.simonsickle:composed-barcodes:1.3.0")
+
+
+    //midtrans
+    implementation("com.midtrans:uikit:2.0.0-SANDBOX")
+    implementation("com.midtrans:uikit:2.0.0")
 
     //coroutine
     implementation(libs.kotlinx.coroutines.android)
@@ -89,6 +102,12 @@ dependencies {
     //hilt
     implementation(libs.hilt.android)
     implementation(libs.androidx.runtime.livedata)
+    implementation(libs.material)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.androidx.activity)
     ksp(libs.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
 

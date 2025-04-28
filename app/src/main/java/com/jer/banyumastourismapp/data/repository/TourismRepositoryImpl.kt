@@ -18,17 +18,24 @@ import com.google.firebase.database.Query
 import com.google.firebase.database.ValueEventListener
 import com.jer.banyumastourismapp.data.local.DaoDestination
 import com.jer.banyumastourismapp.data.local.DaoItinerary
+import com.jer.banyumastourismapp.data.local.DaoTicket
 import com.jer.banyumastourismapp.data.local.DaoUser
 import com.jer.banyumastourismapp.data.remote.TourismPagingSource
+import com.jer.banyumastourismapp.data.remote.retrofit.MidtransApiService
+import com.jer.banyumastourismapp.data.remote.retrofit.RetrofitClient
 import com.jer.banyumastourismapp.domain.model.Destination
 import com.jer.banyumastourismapp.domain.model.Itinerary
 import com.jer.banyumastourismapp.domain.model.ItineraryWithPlanCards
 import com.jer.banyumastourismapp.domain.model.Plan
 import com.jer.banyumastourismapp.domain.model.PlanCardData
+import com.jer.banyumastourismapp.domain.model.Ticket
+import com.jer.banyumastourismapp.domain.model.TransactionRequest
+import com.jer.banyumastourismapp.domain.model.TransactionResponse
 import com.jer.banyumastourismapp.domain.model.User
 import com.jer.banyumastourismapp.domain.repository.TourismRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.tasks.await
+import retrofit2.Response
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -38,7 +45,8 @@ class TourismRepositoryImpl(
     private val daoDestination: DaoDestination,
     private val daoItinerary: DaoItinerary,
     private val daoUser: DaoUser,
-    private val auth: FirebaseAuth
+    private val daoTicket: DaoTicket,
+    private val auth: FirebaseAuth,
 ): TourismRepository {
     override fun getDestinations(): Flow<PagingData<Destination>> {
         return Pager(
@@ -226,5 +234,23 @@ class TourismRepositoryImpl(
     override suspend fun getUser(uid: String): User? {
         return daoUser.getUser(uid)
     }
+
+    override suspend fun createTransaction(request: TransactionRequest): Response<TransactionResponse> {
+        val response = RetrofitClient.instance.createTransaction(request)
+        return response
+    }
+
+    override suspend fun insertTicket(ticket: Ticket) {
+        return daoTicket.insertTicket(ticket)
+    }
+
+    override suspend fun deleteTicket(ticket: Ticket) {
+        return daoTicket.deleteTicket(ticket)
+    }
+
+    override suspend fun getTicket(uid: String): Ticket {
+        return daoTicket.getTicket(uid)
+    }
+
 
 }

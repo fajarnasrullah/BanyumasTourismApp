@@ -7,14 +7,17 @@ import com.google.firebase.database.FirebaseDatabase
 import com.jer.banyumastourismapp.core.Const.DB_NAME_ROOM
 import com.jer.banyumastourismapp.data.local.DaoDestination
 import com.jer.banyumastourismapp.data.local.DaoItinerary
+import com.jer.banyumastourismapp.data.local.DaoTicket
 import com.jer.banyumastourismapp.data.local.DaoUser
 import com.jer.banyumastourismapp.data.local.DatabaseTourism
 import com.jer.banyumastourismapp.data.local.ItsTypeConverter
 import com.jer.banyumastourismapp.data.repository.TourismRepositoryImpl
 import com.jer.banyumastourismapp.domain.repository.TourismRepository
+import com.jer.banyumastourismapp.domain.usecase.tourism.CreateTransaction
 import com.jer.banyumastourismapp.domain.usecase.tourism.DeleteItinerary
 import com.jer.banyumastourismapp.domain.usecase.tourism.DeleteListPlan
 import com.jer.banyumastourismapp.domain.usecase.tourism.DeletePlanCard
+import com.jer.banyumastourismapp.domain.usecase.tourism.DeleteTicket
 import com.jer.banyumastourismapp.domain.usecase.tourism.DeleteUser
 import com.jer.banyumastourismapp.domain.usecase.tourism.GetCurrentUser
 import com.jer.banyumastourismapp.domain.usecase.tourism.GetDestination
@@ -23,10 +26,12 @@ import com.jer.banyumastourismapp.domain.usecase.tourism.GetDestinations
 import com.jer.banyumastourismapp.domain.usecase.tourism.GetDestinationsForMaps
 import com.jer.banyumastourismapp.domain.usecase.tourism.GetItinerary
 import com.jer.banyumastourismapp.domain.usecase.tourism.GetItineraryWithPlanCards
+import com.jer.banyumastourismapp.domain.usecase.tourism.GetTicket
 import com.jer.banyumastourismapp.domain.usecase.tourism.GetUser
 import com.jer.banyumastourismapp.domain.usecase.tourism.InsertItinerary
 import com.jer.banyumastourismapp.domain.usecase.tourism.InsertPlan
 import com.jer.banyumastourismapp.domain.usecase.tourism.InsertPlanCard
+import com.jer.banyumastourismapp.domain.usecase.tourism.InsertTicket
 import com.jer.banyumastourismapp.domain.usecase.tourism.InsertUser
 import com.jer.banyumastourismapp.domain.usecase.tourism.SigninWithGoogle
 import com.jer.banyumastourismapp.domain.usecase.tourism.TourismUseCase
@@ -87,9 +92,10 @@ object AppModule {
         daoDestination: DaoDestination,
         daoItinerary: DaoItinerary,
         daoUser: DaoUser,
+        daoTicket: DaoTicket,
         auth: FirebaseAuth
     ): TourismRepository {
-        return TourismRepositoryImpl(db, daoDestination, daoItinerary, daoUser, auth)
+        return TourismRepositoryImpl(db, daoDestination, daoItinerary, daoUser, daoTicket, auth,)
     }
 
     @Provides
@@ -113,7 +119,11 @@ object AppModule {
             getItineraryWithPlanCards = GetItineraryWithPlanCards(repository),
             insertUser = InsertUser(repository),
             deleteUser = DeleteUser(repository),
-            getUser = GetUser(repository)
+            getUser = GetUser(repository),
+            createTransaction = CreateTransaction(repository),
+            insertTicket = InsertTicket(repository),
+            deleteTicket = DeleteTicket(repository),
+            getTicket = GetTicket(repository)
         )
     }
 

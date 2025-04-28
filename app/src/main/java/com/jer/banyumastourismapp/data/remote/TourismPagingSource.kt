@@ -37,6 +37,7 @@ class TourismPagingSource(
                         title = it.title,
                         imageUrl = it.imageUrl,
                         imageList = it.imageList,
+                        category = it.category,
                         description = it.description,
                         location = it.location,
                         latitude = it.latitude,

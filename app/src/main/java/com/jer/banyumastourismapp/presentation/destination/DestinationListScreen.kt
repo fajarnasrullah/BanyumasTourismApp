@@ -10,22 +10,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.paging.compose.LazyPagingItems
@@ -33,7 +28,8 @@ import com.jer.banyumastourismapp.domain.model.Destination
 import com.jer.banyumastourismapp.presentation.component.CategoryRow
 import com.jer.banyumastourismapp.presentation.component.DestinationCardLandscape
 import com.jer.banyumastourismapp.presentation.component.SearchBarForAll
-import dev.chrisbanes.haze.HazeState
+
+enum class SortType { ASC, DESC, NONE }
 
 @Composable
 fun DestinationListScreen(
@@ -54,6 +50,11 @@ fun DestinationListScreen(
         mutableStateOf(false)
     }
 
+    var isOnSorted by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+
 //    LaunchedEffect(Unit) {
 //        viewModel.destination.observeForever{
 //            resultListDestination.clear()
@@ -62,6 +63,14 @@ fun DestinationListScreen(
 //            isLoading = false
 //        }
 //    }
+
+    var searchQuery by rememberSaveable { mutableStateOf("") }
+    var sortType by rememberSaveable {
+        mutableStateOf(SortType.NONE)
+    }
+
+    var sortedList = getFilteredAndSortedList(destination, searchQuery, sortType)
+
 
     Scaffold (
         modifier = modifier,
@@ -97,11 +106,21 @@ fun DestinationListScreen(
                     isLoading = false
                     Log.d("DestinationListScreen", "resultListDestination: ${resultListDestination}")
                 },
+                onSortedAsc = {
+                    sortType = SortType.ASC
+                    isOnSorted = true
+                },
+                onSortedDesc = {
+                    sortType = SortType.DESC
+                    isOnSorted = true
+                },
+                resetSort = {
+                    sortType = SortType.NONE
+                    isOnSorted = false
+                },
                 modifier = Modifier
                     .constrainAs(searchbar) {
                         top.linkTo(parent.top)
-
-
                     }
                     .padding(30.dp)
             )
@@ -119,9 +138,12 @@ fun DestinationListScreen(
 
             DestinationCardLandscapeColumn(
                 destination = destination,
+                destinationFromFilter = sortedList,
                 destinationFromSearch = resultListDestination,
                 onClick = { navigateToDetail(it) },
                 isOnSearch = isOnSearch.value,
+                isOnSorted = isOnSorted,
+//                isOnSortedDesc = isOnSortedDesc,
                 modifier = Modifier
                     .constrainAs(destinationList) {
                         top.linkTo(category.bottom)
@@ -142,10 +164,14 @@ fun DestinationListScreen(
 fun DestinationCardLandscapeColumn(
     modifier: Modifier = Modifier,
     destination: LazyPagingItems<Destination>,
+    destinationFromFilter: List<Destination>,
     destinationFromSearch: List<Destination>,
     isOnSearch: Boolean,
-    onClick: (Destination) -> Unit
+    isOnSorted: Boolean,
+    onClick: (Destination) -> Unit,
 ) {
+
+
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(15.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -161,7 +187,23 @@ fun DestinationCardLandscapeColumn(
                     buttonVisibility = false
                 )
             }
-        } else {
+        }
+
+        else if (isOnSorted) {
+            items(destinationFromFilter) { item ->
+
+                    DestinationCardLandscape(
+                        destination = item,
+                        onClick = { onClick(it) },
+                        buttonVisibility = false
+                    )
+            }
+        }
+
+
+        else {
+
+
                 items(count = destination.itemCount) { index ->
 
                     destination[index]?.let {
@@ -175,6 +217,18 @@ fun DestinationCardLandscapeColumn(
             }
 
 
+    }
+}
+
+fun getFilteredAndSortedList(destination: LazyPagingItems<Destination>, searchQuery: String, sortType: SortType): List<Destination> {
+    val filtered = destination.itemSnapshotList.items.filter {
+        it.title.contains(searchQuery, ignoreCase = true)
+    }
+
+    return when (sortType) {
+        SortType.ASC -> filtered.sortedBy { it.title }
+        SortType.DESC -> filtered.sortedByDescending { it.title }
+        else -> filtered
     }
 }
 

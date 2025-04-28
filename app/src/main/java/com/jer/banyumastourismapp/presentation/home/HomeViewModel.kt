@@ -10,4 +10,6 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(val useCase: TourismUseCase) : ViewModel()  {
     val destinations = useCase.getDestinations().cachedIn(viewModelScope)
+
+
 }

@@ -1,6 +1,8 @@
 package com.jer.banyumastourismapp.presentation.detaildestination
 
+import android.content.Intent
 import android.content.res.Configuration
+import android.net.Uri
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
@@ -35,6 +37,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -53,6 +56,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.font.FontWeight
@@ -70,6 +74,7 @@ import com.jer.banyumastourismapp.domain.model.Destination
 import com.jer.banyumastourismapp.domain.model.Facility
 import com.jer.banyumastourismapp.presentation.component.AppBarCustom
 import com.jer.banyumastourismapp.presentation.component.BottomBarDetail
+import com.jer.banyumastourismapp.presentation.itinerary
 import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
 
 @Composable
@@ -82,6 +87,7 @@ fun DetailDestinationScreen(
 
     val scrollState = rememberScrollState()
     val imgSelected = rememberSaveable { mutableStateOf("") }
+    val context = LocalContext.current
 
     Scaffold (
         bottomBar = {
@@ -147,7 +153,11 @@ fun DetailDestinationScreen(
 
             PlaceCard(
                 detailDestination = detailDestination,
-                onClickLocation = {},
+                onClickLocation = {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(detailDestination.location))
+                    context.startActivity(intent)
+
+                },
                 modifier = Modifier
                     .constrainAs(placeCard) {
                         centerAround(content.top)

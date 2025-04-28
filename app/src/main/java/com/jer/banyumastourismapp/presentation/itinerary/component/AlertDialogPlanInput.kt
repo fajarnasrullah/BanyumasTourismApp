@@ -300,7 +300,6 @@ fun AlertDialogPlanInput(
                             onClick = {
                                 showrequest = false
                                 onDismiss()
-                                Toast.makeText(context, "Request Sent: \n$title, \n$time, \n$cost", Toast.LENGTH_SHORT).show()
                                 onSubmit()
                             },
                             modifier = Modifier

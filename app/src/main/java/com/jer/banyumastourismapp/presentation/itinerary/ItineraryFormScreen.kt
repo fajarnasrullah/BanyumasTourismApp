@@ -18,7 +18,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -53,16 +52,13 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.AsyncImage
 import com.google.firebase.Firebase
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.auth
-import com.google.firebase.auth.ktx.auth
 import com.jer.banyumastourismapp.R
 import com.jer.banyumastourismapp.core.verySmallIcon
 import com.jer.banyumastourismapp.domain.model.Itinerary
 import com.jer.banyumastourismapp.domain.model.urlPictures
 import com.jer.banyumastourismapp.presentation.component.AppBarCustom
-import com.jer.banyumastourismapp.presentation.itinerary.component.ItineraryEvent
+import com.jer.banyumastourismapp.presentation.itinerary.component.EventForAll
 import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarConfig
@@ -144,10 +140,10 @@ fun ItineraryFormScreen(
 
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
-                is ItineraryEvent.Success -> {
+                is EventForAll.Success -> {
                     navToItinerary()
                 }
-                is ItineraryEvent.Error  -> {
+                is EventForAll.Error  -> {
                     snackbarState.showSnackbar(event.message)
                 }
             }
@@ -262,6 +258,7 @@ fun ItineraryFormScreen(
                         title = it
                                     },
                     label = { Text(text = "Title") },
+
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     shape = MaterialTheme.shapes.medium,
@@ -404,7 +401,17 @@ fun ItineraryFormScreen(
                     onClick = {
 
                         newItinerary = newItinerary.copy(uid = userData?.uid ?: "", daysCount = totalDaysRange, title = title, date = date, description = description, notes = notes, totalMoneySpend = totalMoneySpend, totalDestinations = totalDestinations, totalMembers = totalMembers)
-                        viewModel.insertItinerary(newItinerary)
+                        newItinerary.apply {
+                            when {
+                                title == "" || daysCount == 0 || date == "" || description == "" || notes == "" || totalDestinations == 0 || totalMembers == 0
+                                -> Toast.makeText(context, "Please fill all the fields", Toast.LENGTH_SHORT).show()
+                                else -> {
+                                    Toast.makeText(context, "Success to Create Itinerary", Toast.LENGTH_SHORT).show()
+                                    viewModel.insertItinerary(newItinerary)
+                                }
+                            }
+                        }
+//                        viewModel.insertItinerary(newItinerary)
 
                         newItinerary.let {
                             Log.d("ItineraryFormScreen", "Insert new Itinerary -> uid: ${it.uid}, title: ${it.title}, date: ${it.date}")

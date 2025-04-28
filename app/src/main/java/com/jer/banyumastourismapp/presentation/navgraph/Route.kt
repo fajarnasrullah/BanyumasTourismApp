@@ -15,8 +15,10 @@ sealed class Route(
     object DetailSosmedScreen: Route(route = "detailSosmedScreen")
     object ItineraryScreen: Route(route = "itineraryScreen")
     object ItineraryFormScreen: Route(route = "itineraryFormScreen")
-    object TicketHistoryScreen: Route(route = "ticketHistoryScreen")
+    object TicketScreen: Route(route = "ticketHistoryScreen")
     object ProfileScreen: Route(route = "profileScreen")
     object BookmarkScreen: Route(route = "bookmarkScreen")
     object OrdersFormScreen: Route(route = "transactionScreen")
+    object PaymentLoadingScreen: Route(route = "paymentLoadingScreen")
+    object PaymentWebViewScreen: Route(route = "paymentWebViewScreen")
 }

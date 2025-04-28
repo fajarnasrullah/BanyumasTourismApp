@@ -3,6 +3,7 @@ package com.jer.banyumastourismapp.presentation.itinerary
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.os.Build
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
@@ -151,7 +152,7 @@ fun ItineraryScreen(
                         fontSize = 24.sp,
                         color = MaterialTheme.colorScheme.onBackground,
                         fontWeight = FontWeight.Bold,
-                        maxLines = 2,
+                        maxLines = 3,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -165,7 +166,6 @@ fun ItineraryScreen(
             }
 
             Row (
-                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -174,9 +174,10 @@ fun ItineraryScreen(
                     }
                     .padding(horizontal = 30.dp, vertical = 30.dp)
             ) {
-                UserSection(user = user, userData = userData)
+
+                UserSection(user = user, userData = userData, modifier = Modifier.weight(1f))
                 Spacer(modifier = Modifier.width(15.dp))
-                DatePeriodSection(onClick = { /*TODO*/ }, date = itinerary?.itinerary?.date)
+                DatePeriodSection(onClick = {  }, date = itinerary?.itinerary?.date, modifier = Modifier.weight(1f))
             }
 
 
@@ -420,7 +421,15 @@ fun PlanItem(
                 modifier = Modifier.weight(1f)
             )
 
-            Box(modifier = Modifier.weight(1f))
+            Text(
+                text = "Rp. ${ plan?.cost.toString() }" ?: "",
+                fontSize = 12.sp,
+                textAlign = TextAlign.End,
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.weight(1f)
+            )
+
+//            Box(modifier = Modifier.weight(1f))
 
         }
 
@@ -633,6 +642,7 @@ fun CardExpand(
                                         )
                                         viewModel.insertPlan(newPlan)
                                         viewModel.loadItinerary()
+                                        Toast.makeText(context, "New Plan Added", Toast.LENGTH_SHORT).show()
                                         showAlert = false
                                     }
 
@@ -674,7 +684,7 @@ fun CardExpand(
 
                     Text(
                         text = notes ?: "" ,
-                        fontSize = 10.sp,
+                        fontSize = 12.sp,
                         color = MaterialTheme.colorScheme.onBackground,
                         textAlign = TextAlign.Justify
                     )
@@ -741,6 +751,7 @@ fun DescriptionSection(modifier: Modifier = Modifier, description: String) {
 @Composable
 fun UserSection(modifier: Modifier = Modifier, user: FirebaseUser?, userData: User?) {
     Row (
+        modifier = modifier,
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -776,7 +787,7 @@ fun UserSection(modifier: Modifier = Modifier, user: FirebaseUser?, userData: Us
         Spacer(modifier = Modifier.width(5.dp))
 
         Column (
-            horizontalAlignment = Alignment.Start
+            horizontalAlignment = Alignment.Start,
         ) {
             Text(
                 text = "Chief",
@@ -848,6 +859,7 @@ fun DatePeriodSection(modifier: Modifier = Modifier, onClick: () -> Unit, date: 
     Row (
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
     ) {
 
 

@@ -8,8 +8,14 @@ import com.jer.banyumastourismapp.domain.model.Itinerary
 import com.jer.banyumastourismapp.domain.model.ItineraryWithPlanCards
 import com.jer.banyumastourismapp.domain.model.Plan
 import com.jer.banyumastourismapp.domain.model.PlanCardData
+import com.jer.banyumastourismapp.domain.model.Ticket
+import com.jer.banyumastourismapp.domain.model.TransactionRequest
+import com.jer.banyumastourismapp.domain.model.TransactionResponse
 import com.jer.banyumastourismapp.domain.model.User
 import kotlinx.coroutines.flow.Flow
+import retrofit2.Response
+import retrofit2.http.Body
+import retrofit2.http.POST
 
 interface TourismRepository {
 
@@ -40,5 +46,11 @@ interface TourismRepository {
     suspend fun insertUser(user: User)
     suspend fun deleteUser(user: User)
     suspend fun getUser(uid: String): User?
+
+    suspend fun createTransaction(request: TransactionRequest): Response<TransactionResponse>
+
+    suspend fun insertTicket(ticket: Ticket)
+    suspend fun deleteTicket(ticket: Ticket)
+    suspend fun getTicket(uid: String): Ticket
 
 }

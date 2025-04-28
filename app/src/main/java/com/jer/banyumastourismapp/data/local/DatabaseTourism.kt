@@ -8,12 +8,13 @@ import com.jer.banyumastourismapp.domain.model.Destination
 import com.jer.banyumastourismapp.domain.model.Itinerary
 import com.jer.banyumastourismapp.domain.model.Plan
 import com.jer.banyumastourismapp.domain.model.PlanCardData
+import com.jer.banyumastourismapp.domain.model.Ticket
 import com.jer.banyumastourismapp.domain.model.User
 
 
 @Database(
-    entities = [Destination::class, Itinerary::class, User::class, PlanCardData::class, Plan::class],
-    version = 11,
+    entities = [Destination::class, Itinerary::class, User::class, PlanCardData::class, Plan::class, Ticket::class],
+    version = 13,
     exportSchema = false
 )
 @TypeConverters(ItsTypeConverter::class)
@@ -22,4 +23,5 @@ abstract class DatabaseTourism: RoomDatabase() {
     abstract val daoDestination: DaoDestination
     abstract val daoItinerary: DaoItinerary
     abstract val daoUser: DaoUser
+    abstract val daoTicket: DaoTicket
 }

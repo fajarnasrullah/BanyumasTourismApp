@@ -45,6 +45,7 @@ import com.jer.banyumastourismapp.R
 import com.jer.banyumastourismapp.core.verySmallIcon
 import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchBarForAll(
     modifier: Modifier = Modifier,
@@ -52,7 +53,10 @@ fun SearchBarForAll(
     hint: String,
     trailingIsVisible: Boolean,
     isOnSearch: MutableState<Boolean>,
-    onSearchAction: () -> Unit
+    onSearchAction: () -> Unit,
+    onSortedAsc: (() -> Unit)? = null,
+    onSortedDesc: (() -> Unit)? = null,
+    resetSort: (() -> Unit)? = null,
 ) {
 
 //    var query by remember {
@@ -148,9 +152,16 @@ fun SearchBarForAll(
                                             )
                                         },
                                         onClick = {
-                                            isVisible = false
-
                                             // sini cuy logic nya
+                                            isVisible = false
+                                            if (menuItem == "A - Z") {
+                                                if (onSortedAsc != null) onSortedAsc()
+
+                                            } else if (menuItem == "Z - A") {
+                                                if (onSortedDesc != null) onSortedDesc()
+                                            } else {
+                                                if (resetSort != null) resetSort()
+                                            }
                                         }
                                     )
                                 }

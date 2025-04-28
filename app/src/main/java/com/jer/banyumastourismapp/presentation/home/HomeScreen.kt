@@ -416,7 +416,7 @@ fun ItineraryCard(
 
 
 @Composable
-fun IconAndText(modifier: Modifier = Modifier, painter: Painter, text: String) {
+fun IconAndText(modifier: Modifier = Modifier, painter: Painter, text: String?) {
     Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
         Icon(
             painter = painter,
@@ -426,7 +426,7 @@ fun IconAndText(modifier: Modifier = Modifier, painter: Painter, text: String) {
         )
         Spacer(modifier = Modifier.width(5.dp))
         Text(
-            text = text,
+            text = text ?: "-",
             fontSize = TextUnit(10f, TextUnitType.Sp),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             style = MaterialTheme.typography.bodySmall

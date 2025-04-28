@@ -12,6 +12,7 @@ data class Destination(
     val title: String = "",
     val imageUrl: String = "",
     val imageList: List<String> = emptyList(),
+    val category: String = "",
     val description: String = "",
     val location: String = "",
     val latitude: Double = 0.0,

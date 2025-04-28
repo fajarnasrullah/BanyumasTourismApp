@@ -18,6 +18,10 @@ class TourismUseCase(
     val getItineraryWithPlanCards: GetItineraryWithPlanCards,
     val insertUser: InsertUser,
     val deleteUser: DeleteUser,
-    val getUser: GetUser
+    val getUser: GetUser,
+    val createTransaction: CreateTransaction,
+    val insertTicket: InsertTicket,
+    val deleteTicket: DeleteTicket,
+    val getTicket: GetTicket
 ) {
 }

@@ -5,6 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.jer.banyumastourismapp.domain.model.Destination
 import com.jer.banyumastourismapp.domain.usecase.tourism.TourismUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,6 +22,8 @@ class DestinationListViewModel @Inject constructor(private val useCase: TourismU
     private val _destination = MutableStateFlow<List<Destination>>(emptyList())
     val destination: StateFlow<List<Destination>> = _destination.asStateFlow()
 
+
+
     fun destinationByTitle(title: String) {
         viewModelScope.launch {
             try {
@@ -32,4 +36,11 @@ class DestinationListViewModel @Inject constructor(private val useCase: TourismU
             }
         }
     }
+
+
+
+
+
+
+
 }
