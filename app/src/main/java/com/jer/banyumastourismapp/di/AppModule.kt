@@ -81,6 +81,10 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun providedaoTicket(databaseTourism: DatabaseTourism) = databaseTourism.daoTicket
+
+    @Provides
+    @Singleton
     fun provideFirebaseRealtimeDatabase(): FirebaseDatabase {
         return FirebaseDatabase.getInstance()
     }

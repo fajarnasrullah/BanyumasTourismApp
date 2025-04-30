@@ -30,6 +30,9 @@ class PaymentViewModel @Inject constructor(private val usecase: TourismUseCase) 
     private val _snapToken = MutableStateFlow<String?>(null)
     val snapToken: StateFlow<String?> = _snapToken
 
+    private val _transferDone = MutableStateFlow(false)
+    val transferDone: StateFlow<Boolean> = _transferDone
+
     private val _message = MutableStateFlow<String?>(null)
     val message: StateFlow<String?> = _message
 
@@ -49,16 +52,20 @@ class PaymentViewModel @Inject constructor(private val usecase: TourismUseCase) 
                    _response.value = midtransResponse.body()
                    _snapToken.value = midtransResponse.body()?.token
                    _message.value = midtransResponse.body()?.message
+                   _transferDone.value = true
 
                    Log.d("PaymentViewModel", "Succeed to Transaction: ${_response.value}")
                    Log.d("PaymentViewModel", "Succeed to Transaction: ${response.value}")
                    Log.d("PaymentViewModel", "TOKENNNNN: ${snapToken.value}")
 
                } else {
+                   _transferDone.value = false
                    _message.value = "Transaksi Gagal"
                    Log.e("PaymentViewModel", "Failed to Transaction: ${midtransResponse.body()?.message}")
                }
            } catch (e: Exception) {
+               _transferDone.value = false
+               _message.value = "Transaksi Gagal"
                Log.e("PaymentViewModel", "Error: ${e.message}")
            }
 

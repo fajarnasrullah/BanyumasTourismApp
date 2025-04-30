@@ -23,6 +23,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -116,22 +117,39 @@ fun CategoryCard(
 @Composable
 fun CategoryRow(
     modifier: Modifier = Modifier,
-    isDelay: Boolean
+    isDelay: Boolean,
+    isDummy: Boolean = false,
+    selectedCategory: MutableState<String>? = null,
+    isOnClassified: MutableState<Boolean>? = null,
 ) {
 
     val categories = listOf(
+        Category("All", painterResource(id = R.drawable.allicon)),
         Category("Mountain", painterResource(id = R.drawable.mountainicon)),
-        Category("Beach", painterResource(id = R.drawable.beachicon)),
+        Category("Play Ground", painterResource(id = R.drawable.beachicon)),
         Category("Waterfall", painterResource(id = R.drawable.waterfallicon)),
         Category("Temple", painterResource(id = R.drawable.tampleiconsvg)),
-        Category("Mountain", painterResource(id = R.drawable.mountainicon)),
-        Category("Beach", painterResource(id = R.drawable.beachicon)),
-        Category("Waterfall", painterResource(id = R.drawable.waterfallicon)),
-        Category("Temple", painterResource(id = R.drawable.tampleiconsvg)),
+        Category("Park", painterResource(id = R.drawable.parkicon)),
+        Category("Museum", painterResource(id = R.drawable.museumicon)),
+        Category("Forest", painterResource(id = R.drawable.foresticon)),
+        Category("Lake", painterResource(id = R.drawable.lakeicon)),
 
     )
+
+    val forDummy = listOf(
+        Category("Mountain", painterResource(id = R.drawable.mountainicon)),
+        Category("Play Ground", painterResource(id = R.drawable.beachicon)),
+        Category("Waterfall", painterResource(id = R.drawable.waterfallicon)),
+        Category("Temple", painterResource(id = R.drawable.tampleiconsvg)),
+        Category("Park", painterResource(id = R.drawable.parkicon)),
+        Category("Museum", painterResource(id = R.drawable.museumicon)),
+        Category("Forest", painterResource(id = R.drawable.foresticon)),
+        Category("Lake", painterResource(id = R.drawable.lakeicon)),
+        )
+
     val listState = rememberLazyListState()
     val selectedIndex = remember { mutableStateOf(-1) }
+
 
     LaunchedEffect(key1 = Unit) {
         while (true && isDelay) {
@@ -149,12 +167,26 @@ fun CategoryRow(
         modifier = modifier
             .fillMaxWidth()
     ) {
-        itemsIndexed(categories) { index, category ->
+        itemsIndexed(
+            if (isDummy) forDummy else categories
+        ) { index, category ->
             CategoryCard(
                 text = category.text,
                 icon = category.icon,
                 isSelected = selectedIndex.value == index,
-                onClick = {selectedIndex.value = index}
+                onClick = {
+                    selectedIndex.value = index
+
+                    if (isOnClassified != null) {
+                        isOnClassified.value = true
+                        if (selectedIndex.value == -1 || selectedIndex.value == 0) {
+                            isOnClassified.value = false
+                        }
+                    }
+                    if (selectedCategory != null) {
+                        selectedCategory.value = category.text
+                    }
+                }
             )
         }
     }

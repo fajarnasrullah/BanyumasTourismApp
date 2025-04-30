@@ -34,14 +34,22 @@ class TicketViewModel @Inject constructor(val useCase: TourismUseCase): ViewMode
     private val _eventFlow = MutableSharedFlow<EventForAll>()
     val eventFlow: SharedFlow<EventForAll> = _eventFlow
 
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading
+
+
+
 
     fun insertTicket(ticket: Ticket) {
+        _isLoading.value = true
         viewModelScope.launch {
             try {
                 useCase.insertTicket(ticket)
                 _eventFlow.emit(EventForAll.Success)
+                _isLoading.value = false
                 Log.d("TicketViewModel", "Success to Insert New Ticket")
             } catch (e: Exception) {
+                _isLoading.value = false
                 _eventFlow.emit(EventForAll.Error(e.message ?: "An unexpected error occurred"))
                 Log.e("TicketViewModel", "Error Insert Ticket", e)
             }

@@ -16,7 +16,8 @@ interface DaoTicket {
     @Delete
     suspend fun deleteTicket(ticket: Ticket)
 
-    @Query("SELECT * FROM Ticket WHERE uid =:uid")
+    @Query("SELECT * FROM Ticket WHERE uid =:uid ORDER BY createdAt DESC LIMIT 1")
     suspend fun getTicket(uid: String): Ticket
+
 
 }

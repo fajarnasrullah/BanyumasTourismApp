@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -54,6 +55,9 @@ fun DestinationListScreen(
         mutableStateOf(false)
     }
 
+    var isOnClassified = rememberSaveable {
+        mutableStateOf(false)
+    }
 
 //    LaunchedEffect(Unit) {
 //        viewModel.destination.observeForever{
@@ -70,6 +74,10 @@ fun DestinationListScreen(
     }
 
     var sortedList = getFilteredAndSortedList(destination, searchQuery, sortType)
+    var selectedCategory = rememberSaveable {
+        mutableStateOf("")
+    }
+    var destinationByCategory = getDestinationListByCategory(destination, selectedCategory.value)
 
 
     Scaffold (
@@ -127,6 +135,8 @@ fun DestinationListScreen(
 
             CategoryRow(
                 isDelay = false,
+                selectedCategory = selectedCategory,
+                isOnClassified = isOnClassified,
                 modifier = Modifier
                     .constrainAs(category) {
                         top.linkTo(bg.bottom)
@@ -134,16 +144,18 @@ fun DestinationListScreen(
                     }
                     .padding(top = 30.dp, bottom = 15.dp),
 
+
             )
 
             DestinationCardLandscapeColumn(
                 destination = destination,
+                destinationFromCategory = destinationByCategory,
                 destinationFromFilter = sortedList,
                 destinationFromSearch = resultListDestination,
                 onClick = { navigateToDetail(it) },
                 isOnSearch = isOnSearch.value,
                 isOnSorted = isOnSorted,
-//                isOnSortedDesc = isOnSortedDesc,
+                isOnClassified = isOnClassified.value,
                 modifier = Modifier
                     .constrainAs(destinationList) {
                         top.linkTo(category.bottom)
@@ -153,6 +165,12 @@ fun DestinationListScreen(
             )
             
 
+            DisposableEffect(key1 = Unit) {
+                onDispose {
+                    isOnClassified.value = false
+                }
+
+            }
         }
     }
 
@@ -164,10 +182,12 @@ fun DestinationListScreen(
 fun DestinationCardLandscapeColumn(
     modifier: Modifier = Modifier,
     destination: LazyPagingItems<Destination>,
+    destinationFromCategory: List<Destination>,
     destinationFromFilter: List<Destination>,
     destinationFromSearch: List<Destination>,
     isOnSearch: Boolean,
     isOnSorted: Boolean,
+    isOnClassified: Boolean,
     onClick: (Destination) -> Unit,
 ) {
 
@@ -200,10 +220,19 @@ fun DestinationCardLandscapeColumn(
             }
         }
 
+        else if (isOnClassified) {
+            items(destinationFromCategory) { item ->
+
+                DestinationCardLandscape(
+                    destination = item,
+                    onClick = { onClick(it) },
+                    buttonVisibility = false
+                )
+            }
+        }
+
 
         else {
-
-
                 items(count = destination.itemCount) { index ->
 
                     destination[index]?.let {
@@ -230,6 +259,13 @@ fun getFilteredAndSortedList(destination: LazyPagingItems<Destination>, searchQu
         SortType.DESC -> filtered.sortedByDescending { it.title }
         else -> filtered
     }
+}
+
+fun getDestinationListByCategory(destination: LazyPagingItems<Destination>, category: String): List<Destination> {
+    val filtered = destination.itemSnapshotList.items.filter {
+        it.category.contains(category, ignoreCase = true)
+    }
+    return filtered
 }
 
 //@Preview(showBackground = true)

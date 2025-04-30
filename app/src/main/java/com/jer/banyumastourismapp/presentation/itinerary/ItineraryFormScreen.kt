@@ -190,56 +190,6 @@ fun ItineraryFormScreen(
 
                 Spacer(modifier = Modifier.height(15.dp))
 
-//                Text(
-//                    text = "Title:",
-//                    fontSize = 16.sp,
-//                    fontWeight = FontWeight.Bold,
-//                    color = MaterialTheme.colorScheme.onBackground
-//                )
-//
-//
-//                itinerary?.title.let{
-//                    Text(
-//                        text = it ?: "empty",
-//                        fontSize = 14.sp,
-//                        color = MaterialTheme.colorScheme.onBackground,
-//                        modifier = Modifier.fillMaxWidth()
-//                    )
-//                }
-//
-//                Text(
-//                    text = "Description:",
-//                    fontSize = 16.sp,
-//                    fontWeight = FontWeight.Bold,
-//                    color = MaterialTheme.colorScheme.onBackground
-//                )
-//
-//
-//                itinerary?.description.let{
-//                    Text(
-//                        text = it ?: "empty",
-//                        fontSize = 14.sp,
-//                        color = MaterialTheme.colorScheme.onBackground,
-//                        modifier = Modifier.fillMaxWidth()
-//                    )
-//                }
-//
-//                Text(
-//                    text = "Notes:",
-//                    fontSize = 16.sp,
-//                    fontWeight = FontWeight.Bold,
-//                    color = MaterialTheme.colorScheme.onBackground
-//                )
-//
-//
-//                itinerary?.notes.let{
-//                    Text(
-//                        text = it ?: "empty",
-//                        fontSize = 14.sp,
-//                        color = MaterialTheme.colorScheme.onBackground,
-//                        modifier = Modifier.fillMaxWidth()
-//                    )
-//                }
 
                 AsyncImage(
                     model = randomUrlPicture.value,

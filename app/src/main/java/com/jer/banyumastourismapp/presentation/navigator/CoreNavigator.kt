@@ -44,6 +44,7 @@ import com.jer.banyumastourismapp.presentation.payment.PaymentWebViewScreen
 import com.jer.banyumastourismapp.presentation.profile.ProfileScreen
 import com.jer.banyumastourismapp.presentation.profile.ProfileViewModel
 import com.jer.banyumastourismapp.presentation.profile.bookmark.BookmarkState
+import com.jer.banyumastourismapp.presentation.ticket.TicketScreen
 import com.jer.banyumastourismapp.presentation.ticket.TicketViewModel
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.haze
@@ -199,6 +200,10 @@ fun CoreNavigator() {
             }
 
             composable(Route.TicketScreen.route) {
+                val viewModel: TicketViewModel = hiltViewModel()
+                TicketScreen(
+                    viewModel = viewModel
+                )
             }
 
             composable (Route.ProfileScreen.route) {
@@ -258,6 +263,7 @@ fun CoreNavigator() {
                         viewModel = viewModel,
                         ticketViewModel = ticketViewModel,
                         navBack = { navController.navigateUp() },
+                        navToTicket = { navController.navigate(Route.TicketScreen.route) }
                     )
                 }
             }

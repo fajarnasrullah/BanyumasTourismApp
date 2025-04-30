@@ -94,7 +94,9 @@ fun DetailDestinationScreen(
             BottomBarDetail(
                 price = detailDestination.cost.toString(),
                 textButton = "Book",
-                onClick = {navToOrders(detailDestination)} )
+                onClick = {navToOrders(detailDestination)},
+                isActiveButton = true
+            )
                     },
         modifier = Modifier
     ) { innerPadding ->

@@ -29,4 +29,5 @@ data class Ticket(
     val location: String? = null,
     val price: Int = 0,
     val qty: Int = 0,
+    val createdAt: Long
 ): Parcelable

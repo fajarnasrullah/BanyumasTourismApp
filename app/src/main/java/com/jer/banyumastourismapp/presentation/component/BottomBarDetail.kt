@@ -34,7 +34,8 @@ fun BottomBarDetail(
     headline: String? = null,
     price: String,
     textButton: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    isActiveButton: Boolean,
 ) {
 
     Card(
@@ -58,6 +59,7 @@ fun BottomBarDetail(
                     contentDescription = null,
                     modifier = Modifier.size(25.dp)
                 )
+
                 Spacer(modifier = Modifier.width(10.dp))
 
                 Column (
@@ -78,6 +80,7 @@ fun BottomBarDetail(
             }
 
             Button(
+                enabled = isActiveButton,
                 modifier = Modifier.size(width = 130.dp, height = 40.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer

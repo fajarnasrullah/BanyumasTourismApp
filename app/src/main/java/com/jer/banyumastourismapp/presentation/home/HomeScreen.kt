@@ -21,7 +21,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -62,7 +61,6 @@ import androidx.credentials.CredentialManager
 import androidx.paging.compose.LazyPagingItems
 import coil.compose.AsyncImage
 import com.google.firebase.Firebase
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.jer.banyumastourismapp.R
 import com.jer.banyumastourismapp.core.verySmallIcon
@@ -74,7 +72,6 @@ import com.jer.banyumastourismapp.presentation.component.CategoryRow
 import com.jer.banyumastourismapp.presentation.component.DestinationCardStandRow
 import com.jer.banyumastourismapp.presentation.itinerary.ItineraryViewModel
 import com.jer.banyumastourismapp.presentation.itinerary.component.AlertDialogCore
-import com.jer.banyumastourismapp.presentation.profile.ProfileViewModel
 import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
 import kotlinx.coroutines.launch
 
@@ -192,6 +189,7 @@ fun HomeScreen(
 
             CategoryRow(
                 isDelay = true,
+                isDummy = true,
                 modifier = Modifier
                     .constrainAs(category1) {
                         top.linkTo(itinerarySection.bottom)
@@ -202,6 +200,7 @@ fun HomeScreen(
 
             CategoryRow(
                 isDelay = false,
+                isDummy = true,
                 modifier = Modifier
                     .constrainAs(category2) {
                         top.linkTo(category1.bottom)

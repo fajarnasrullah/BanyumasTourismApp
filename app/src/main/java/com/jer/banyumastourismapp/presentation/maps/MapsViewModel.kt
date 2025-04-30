@@ -33,6 +33,9 @@ class MapsViewModel @Inject constructor(val useCase: TourismUseCase): ViewModel(
     private val _destinationForMaps = MutableStateFlow<List<Destination>>(emptyList())
     val destinationForMaps: StateFlow<List<Destination>> = _destinationForMaps.asStateFlow()
 
+    private val _destinationForMapsSecond = MutableStateFlow<List<Destination>>(emptyList())
+    val destinationForMapsSecond: StateFlow<List<Destination>> = _destinationForMapsSecond.asStateFlow()
+
     val destinations = useCase.getDestinations().cachedIn(viewModelScope)
 
 
@@ -59,7 +62,9 @@ class MapsViewModel @Inject constructor(val useCase: TourismUseCase): ViewModel(
         viewModelScope.launch {
             try {
                 val destinations = useCase.getDestinationsForMaps()
+                val destinationssecond = useCase.getDestinationsForMaps()
                 _destinationForMaps.value = destinations
+                _destinationForMapsSecond.value = destinationssecond
             } catch (e: Exception) {
                 Log.e("MapsViewModel", "Error fetching destinations: ${e.message}")
             }

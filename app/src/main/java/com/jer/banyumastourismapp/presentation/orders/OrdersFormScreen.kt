@@ -41,6 +41,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -52,6 +53,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -63,6 +65,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -108,6 +111,7 @@ fun OrdersFormScreen(
     ticketViewModel: TicketViewModel,
     destination: Destination,
     navBack: () -> Unit,
+    navToTicket: () -> Unit,
 ) {
 
     val scrollState = rememberScrollState()
@@ -124,6 +128,8 @@ fun OrdersFormScreen(
 
     var totalPrice by rememberSaveable { mutableIntStateOf(0) }
     var isFixed by rememberSaveable { mutableStateOf(false) }
+
+    var isActiveCheckButton by rememberSaveable { mutableStateOf(false) }
 
     // dummy
 //    price = 100000
@@ -142,6 +148,8 @@ fun OrdersFormScreen(
     val baseUrl = BuildConfig.MIDTRANS_SANDBOX_BASE_URL
     val clientKey = BuildConfig.MIDTRANS_SANDBOX_CLIENT_KEY
 
+    val transferDone by viewModel.transferDone.collectAsState()
+    val isLoading by ticketViewModel.isLoading.collectAsState()
     val userData by ticketViewModel.userData.collectAsState()
     var ticketNew by rememberSaveable {
         mutableStateOf(
@@ -155,6 +163,7 @@ fun OrdersFormScreen(
                 location = "",
                 price = 0,
                 qty = 0,
+                createdAt = System.currentTimeMillis()
             )
         )
     }
@@ -170,8 +179,6 @@ fun OrdersFormScreen(
         .build()
 
     setLocaleNew("id")
-
-
 
 
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -224,6 +231,7 @@ fun OrdersFormScreen(
         )
         },
         bottomBar = { BottomBarDetail(
+            isActiveButton = transferDone,
             price = "Rp. ${totalPrice.toString() }",
             textButton = "Pay Now",
             headline = "Total Price",
@@ -235,6 +243,9 @@ fun OrdersFormScreen(
 
                 ticketNew = ticketNew.copy(uid = userData?.uid ?: "", title = destination.title, image = destination.imageUrl, category = destination.category, name = name, price = totalPrice, qty = qty, location = destination.location, date = date)
                 ticketViewModel.insertTicket(ticketNew)
+//                navToTicket()
+                navController.popBackStack()
+                Toast.makeText(context, message.value, Toast.LENGTH_SHORT).show()
 
                 Log.d("OrdersFormScreen", "new ticket: $ticketNew")
                 Log.d("OrdersFormScreen", "redirect_url: ${responseThx?.redirect_url}")
@@ -447,7 +458,7 @@ fun OrdersFormScreen(
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     shape = MaterialTheme.shapes.medium,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone, imeAction = ImeAction.Next)
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone, imeAction = ImeAction.Done)
                 )
                 
                 Row (
@@ -479,15 +490,22 @@ fun OrdersFormScreen(
                     }
 
                     Spacer(modifier = Modifier.width(15.dp))
+                    when {
+                        name == "" || email == "" || date == "" || qty == 0 || hp == ""
+                        -> isActiveCheckButton = false
+                        else -> {
+                            isActiveCheckButton = true
+
+                        }
+                    }
                     Button(
+                        enabled = isActiveCheckButton,
                         onClick = {
                             isFixed = true
-
                             viewModel.createTransaction(
                                 TransactionRequest(
                                     orderId = "order-${System.currentTimeMillis()}",
-                                    grossAmount = 100000,
-//                        totalPrice,
+                                    grossAmount = if(totalPrice == 0) 1 else totalPrice,
                                     customerName = name,
                                     customerEmail = email
                                 )
@@ -527,6 +545,18 @@ fun OrdersFormScreen(
                         modifier = Modifier.padding(15.dp)
                     ) {
 
+                        if (isLoading) {
+                            CircularProgressIndicator(
+                                color = MaterialTheme.colorScheme.primaryContainer,
+                                trackColor = Color.Gray,
+                                strokeCap = StrokeCap.Round,
+                                strokeWidth = 8.dp,
+                                modifier = Modifier
+                                    .size(100.dp)
+                                    .padding(15.dp)
+                            )
+                        }
+
                         Text(
                             text = "Booking Data",
                             fontSize = 16.sp,
@@ -558,6 +588,18 @@ fun OrdersFormScreen(
                         horizontalAlignment = Alignment.Start,
                         modifier = Modifier.padding(15.dp)
                     ) {
+
+                        if (isLoading) {
+                            CircularProgressIndicator(
+                                color = MaterialTheme.colorScheme.primaryContainer,
+                                trackColor = Color.Gray,
+                                strokeCap = StrokeCap.Round,
+                                strokeWidth = 8.dp,
+                                modifier = Modifier
+                                    .size(100.dp)
+                                    .padding(15.dp)
+                            )
+                        }
 
                         Text(
                             text = "Booker Data",

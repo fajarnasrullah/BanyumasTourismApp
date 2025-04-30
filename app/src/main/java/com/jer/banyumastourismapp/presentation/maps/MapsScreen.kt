@@ -4,6 +4,7 @@ import android.content.pm.PackageManager
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -81,6 +82,8 @@ fun MapsScreen(
 
     }
     val listDestination by mapsViewModel.destinationForMaps.collectAsState()
+    val listDestinationSecond by mapsViewModel.destinationForMapsSecond.collectAsState()
+
     var cardIsActive by rememberSaveable { mutableStateOf(false) }
     var cardSelected: Destination? by rememberSaveable {
         mutableStateOf(null)
@@ -92,7 +95,12 @@ fun MapsScreen(
     val userLocation by mapsViewModel.userLocation
     val fusedLocationClient = remember { LocationServices.getFusedLocationProviderClient(context) }
 
-
+    var selectedCategory = rememberSaveable {
+        mutableStateOf("")
+    }
+    var isClassified = rememberSaveable {
+        mutableStateOf(false)
+    }
 
 
     val permissionLauncher = rememberLauncherForActivityResult(
@@ -189,7 +197,7 @@ fun MapsScreen(
 //                     }
                      )
                  }
-                 Spacer(modifier = Modifier.height( if (cardIsActive) 350.dp else 110.dp))
+                 Spacer(modifier = Modifier.height( if (cardIsActive) 350.dp else 170.dp))
              }
          },
          modifier = Modifier.fillMaxSize()
@@ -206,9 +214,30 @@ fun MapsScreen(
              var iconSelected by rememberSaveable { mutableIntStateOf(-1) }
 
 
-             val selectedLocationBySearch by mapsViewModel.selectedLocation
              var selectedPlaceState by remember { mutableStateOf("") }
+             val selectedLocationBySearch by mapsViewModel.selectedLocation
 
+             val isSearch = selectedLocationBySearch != null
+             val isCategory = isClassified.value
+             var destinationByCategory by rememberSaveable {
+                 mutableStateOf<List<Destination>>(emptyList())
+             }
+//             val destinationByCategory = getDestinationsByCategory(selectedCategory.value, listDestination)
+
+//             val listToShow = when {
+//                 isSearch -> listDestination
+//                 isCategory -> destinationByCategory
+//                 else -> listDestination
+//
+//             }
+             if (isCategory) {
+                 destinationByCategory = getDestinationsByCategory(selectedCategory.value, listDestination)
+                 Log.d("MapsScreen", "Cek listToShow by Category (${selectedCategory.value}): ${destinationByCategory}")
+             } else if (isSearch) {
+                 Log.d("MapsScreen", "Cek listToShow by Search: ${listDestination}")
+             }
+
+             val listToShow = showList(isCategory, isSearch, listDestination, destinationByCategory)
 
 
 
@@ -228,135 +257,175 @@ fun MapsScreen(
              ) {
 
 
-                 for ( index in 0 until listDestination.size) {
-                     val destination = listDestination[index]
-                     if (destination != null) {
-                         val latLng: LatLng = LatLng(destination.latitude, destination.longitude)
-                         val markerState  = remember(destination.id) { MarkerState(position = latLng) }
 
-                         val markerStateBySearch = selectedLocationBySearch?.let { MarkerState(position = it) }
-                         val newMarkerState = markerStateBySearch ?: markerState
-                         val newTitle =
-                             if (markerStateBySearch != null) {
-                                 "Selected Location"
-                             } else {
-                                 destination.title
-                             }
+                 for ( (index, destination) in listToShow.withIndex()) {
+//                     val destination = listDestination[index]
+//
+//                     val listDestinationByCategory =
+//                         getDestinationsByCategory(selectedCategory.value, listDestination)
+//                     val destinationByCategory = listDestinationByCategory[index]
+//                     val latLngByCategory: LatLng = LatLng(destinationByCategory.latitude, destinationByCategory.longitude)
+//                     val markerStateByCategory = remember(destinationByCategory.id) { MarkerState(position = latLngByCategory) }
 
-                         var newLocation =
-                             if (markerStateBySearch != null) {
-                                 destination.location
-                             } else {
-                                 selectedPlaceState
-                             }
+                     val latLng: LatLng = LatLng(destination.latitude, destination.longitude)
+                     val markerState  = remember(destination.id) { MarkerState(position = latLng) }
 
-                         val mountainIcon = vectorToBitmap(
-                             context,
-                             BitmapParameters(
-                                 id = R.drawable.mountain_icon_vector,
-                                 iconColor = MaterialTheme.colorScheme.onPrimary.toArgb(),
-                                 backgroundColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
-                             )
-                         )
+                     val markerStateBySearch = selectedLocationBySearch?.let { MarkerState(position = it) }
 
-                         selectedLocationBySearch?.let {
-                             Marker(
-                                 state = MarkerState(position = it), // Place the marker at the selected location
-                                 title = "Selected Location ", // Set the title for the marker
-                                 snippet = selectedPlaceState,
-
-                                 onInfoWindowClose = {
-                                     selectedPlaceState = ""
-
-                                 },
-
-                                 onClick = {
-                                     selectedPlaceState = ""
-                                     false
-                                 }
-                             )
-//                             cameraPositionState.position = CameraPosition.fromLatLngZoom(it, 15f)
+                     val newMarkerState = markerStateBySearch ?: markerState
+                     val newTitle =
+                         if (markerStateBySearch != null) {
+                             "Selected Location"
+                         } else {
+                             destination.title
                          }
 
-                         MarkerInfoWindowContent(
-                             state =
-//                             newMarkerState,
-                             markerState,
-                             title =
-//                             newTitle,
-                             destination.title,
-                             snippet =
-//                             newLocation,
-                             destination.location,
-                             icon = if (iconSelected == index) {
-                                 null
-                             } else mountainIcon,
-                             anchor = Offset(0.5f, 0.5f),
+                     var newLocation =
+                         if (markerStateBySearch != null) {
+                             destination.location
+                         } else {
+                             selectedPlaceState
+                         }
 
-                             onInfoWindowClick = {
-                                 navigateToDetail(destination)
-                                 iconSelected = -1
-                                                 },
+                     val mountainIcon = vectorToBitmap(
+                         context,
+                         BitmapParameters(
+                             id = R.drawable.mountain_icon_vector,
+                             iconColor = MaterialTheme.colorScheme.onPrimary.toArgb(),
+                             backgroundColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
+                         )
+                     )
+
+                     val iconByCategory = vectorToBitmap(
+                         context,
+                         BitmapParameters(
+                             id =
+
+
+                             if (selectedCategory.value == "Mountain") {
+                                 R.drawable.mountainicon
+                             } else if (selectedCategory.value == "Play Ground") {
+                                 R.drawable.beachicon
+                             } else if (selectedCategory.value == "Waterfall") {
+                                 R.drawable.waterfallicon
+                             } else if (selectedCategory.value == "Temple") {
+                                 R.drawable.tampleicon
+                             } else if (selectedCategory.value == "Park") {
+                                 R.drawable.parkicon
+                             } else if (selectedCategory.value == "Forest") {
+                                 R.drawable.foresticon
+                             } else if (selectedCategory.value == "Museum") {
+                                 R.drawable.museumicon
+                             } else if (selectedCategory.value == "Lake") {
+                                 R.drawable.lakeicon
+                             } else {
+                                 R.drawable.mountain_icon_vector
+                             },
+                             iconColor = if (isClassified.value) {
+                                 MaterialTheme.colorScheme.primaryContainer.toArgb()
+                             } else Color.White.toArgb(),
+                             backgroundColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
+                         )
+                     )
+
+                     val icon = if (isCategory) iconByCategory else mountainIcon
+
+
+                     selectedLocationBySearch?.let {
+                         Marker(
+                             state = MarkerState(position = it),
+                             title = "Selected Location ",
+                             snippet = selectedPlaceState,
 
                              onInfoWindowClose = {
-                                 iconSelected = -1
+                                 selectedPlaceState = ""
+
                              },
 
                              onClick = {
-                                 cardIsActive = true
-                                 cardSelected = destination
-                                 iconSelected = index
-
+                                 selectedPlaceState = ""
                                  false
                              }
-
-                         ) {
-
-
-                             Column(
-                                 modifier = Modifier
-                                     .width(200.dp)
-                                     .border(
-                                         2.dp,
-                                         shape = MaterialTheme.shapes.medium,
-                                         color = MaterialTheme.colorScheme.primaryContainer
-                                     )
-                                     .padding(15.dp)
-                             ) {
-                                 Text(
-                                     text = destination.title,
-                                     fontSize = 12.sp,
-                                     fontWeight = FontWeight.Bold,
-                                     color = Color.Black
-                                 )
-
-                                 Spacer(modifier = Modifier.height(15.dp))
-
-                                 Text(
-                                     text = destination.location,
-                                     fontSize = 10.sp,
-                                     color = Color.DarkGray,
-                                     maxLines = 2,
-                                     overflow = TextOverflow.Ellipsis
-
-                                 )
-                             }
-                         }
-
-                         val newLatLngZoom =
-                             if (selectedPlaceState != "") {
-                                 selectedLocationBySearch?.let { CameraPosition.fromLatLngZoom(it, 15f) }
-                             } else if (markerState.position != null && selectedPlaceState == "") {
-                                 CameraPosition.fromLatLngZoom(LatLng(-7.4333,109.2333), 10f)
-                             } else {
-                                 userLocation?.let { CameraPosition.fromLatLngZoom(it, 10f) }
-                             }
-
-                         if (newLatLngZoom != null) {
-                             cameraPositionState.position = newLatLngZoom
-                         }
-
+                         )
+//                             cameraPositionState.position = CameraPosition.fromLatLngZoom(it, 15f)
                      }
+
+                     MarkerInfoWindowContent(
+                         state =
+//                             newMarkerState,
+                         markerState,
+                         title =
+//                             newTitle,
+                         destination.title,
+                         snippet =
+//                             newLocation,
+                         destination.location,
+                         icon = if (iconSelected == index) null else icon,
+                         anchor = Offset(0.5f, 0.5f),
+
+                         onInfoWindowClick = {
+                             navigateToDetail(destination)
+                             iconSelected = -1
+                                             },
+
+                         onInfoWindowClose = {
+                             iconSelected = -1
+                             cardIsActive = false
+                         },
+
+                         onClick = {
+                             cardIsActive = true
+                             cardSelected = destination
+                             iconSelected = index
+                             false
+                         }
+
+                     ) {
+
+
+                         Column(
+                             modifier = Modifier
+                                 .width(200.dp)
+                                 .border(
+                                     2.dp,
+                                     shape = MaterialTheme.shapes.medium,
+                                     color = MaterialTheme.colorScheme.primaryContainer
+                                 )
+                                 .padding(15.dp)
+                         ) {
+                             Text(
+                                 text = destination.title,
+                                 fontSize = 12.sp,
+                                 fontWeight = FontWeight.Bold,
+                                 color = Color.Black
+                             )
+
+                             Spacer(modifier = Modifier.height(15.dp))
+
+                             Text(
+                                 text = destination.location,
+                                 fontSize = 10.sp,
+                                 color = Color.DarkGray,
+                                 maxLines = 2,
+                                 overflow = TextOverflow.Ellipsis
+
+                             )
+                         }
+                     }
+
+                     val newLatLngZoom =
+                         if (selectedPlaceState != "") {
+                             selectedLocationBySearch?.let { CameraPosition.fromLatLngZoom(it, 15f) }
+                         } else if (markerState.position != null && selectedPlaceState == "") {
+                             CameraPosition.fromLatLngZoom(LatLng(-7.4333,109.2333), 10f)
+                         } else {
+                             userLocation?.let { CameraPosition.fromLatLngZoom(it, 10f) }
+                         }
+
+                     if (newLatLngZoom != null) {
+                         cameraPositionState.position = newLatLngZoom
+                     }
+
                  }
 
 
@@ -397,9 +466,13 @@ fun MapsScreen(
 
              CategoryRow(
                  isDelay = false,
-                 modifier = Modifier.constrainAs(category) {
-                     bottom.linkTo(listSection.top)
-                 }
+                 isOnClassified = isClassified,
+                 selectedCategory = selectedCategory,
+                 modifier = Modifier
+                     .constrainAs(category) {
+                         bottom.linkTo(parent.bottom)
+                     }
+                     .padding(bottom = if (cardIsActive) 310.dp else 130.dp)
              )
 
              if (cardIsActive) {
@@ -421,7 +494,7 @@ fun MapsScreen(
                              destination = it,
                              modifier = Modifier.fillMaxWidth(),
                              onClick = navigateToDetail,
-                             navigateToOrders = navigateToOrders,
+                             navigateToOrders = { navigateToOrders(it) },
                              buttonVisibility = true,
                          )
 
@@ -436,6 +509,30 @@ fun MapsScreen(
          }
 
 
+    }
+}
+
+//@Composable
+//fun newIcon (icon: Int): DrawableRes {
+//    val item = Icon(painter = painterResource(id = icon), contentDescription = null, modifier = Modifier.size(24.dp))
+//    return item.to
+//}
+
+fun showList(isClassified: Boolean, isSearch: Boolean, allDestination: List<Destination>, listByCategory: List<Destination>): List<Destination> {
+    return when {
+        isClassified -> listByCategory
+        isSearch -> allDestination
+        else -> allDestination
+    }
+}
+
+fun getDestinationsByCategory(category: String, destinations: List<Destination>): List<Destination> {
+    return if (category.isEmpty()) {
+        destinations
+    } else {
+        destinations.filter {
+            it.category.trim().equals(category.trim(), ignoreCase = true)
+        }
     }
 }
 
