@@ -1,9 +1,6 @@
 package com.jer.banyumastourismapp.data.repository
 
 import android.util.Log
-import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -21,11 +18,11 @@ import com.jer.banyumastourismapp.data.local.DaoItinerary
 import com.jer.banyumastourismapp.data.local.DaoTicket
 import com.jer.banyumastourismapp.data.local.DaoUser
 import com.jer.banyumastourismapp.data.remote.TourismPagingSource
-import com.jer.banyumastourismapp.data.remote.retrofit.MidtransApiService
 import com.jer.banyumastourismapp.data.remote.retrofit.RetrofitClient
 import com.jer.banyumastourismapp.domain.model.Destination
 import com.jer.banyumastourismapp.domain.model.Itinerary
 import com.jer.banyumastourismapp.domain.model.ItineraryWithPlanCards
+import com.jer.banyumastourismapp.domain.model.Story
 import com.jer.banyumastourismapp.domain.model.Plan
 import com.jer.banyumastourismapp.domain.model.PlanCardData
 import com.jer.banyumastourismapp.domain.model.Ticket
@@ -37,7 +34,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.tasks.await
 import retrofit2.Response
 import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 class TourismRepositoryImpl(
@@ -250,6 +246,28 @@ class TourismRepositoryImpl(
 
     override suspend fun getTicket(uid: String): Ticket {
         return daoTicket.getTicket(uid)
+    }
+
+    override suspend fun insertStory(story: Story) {
+
+        val dbStoryRef = db.reference.child("stories")
+        dbStoryRef.push().setValue(story)
+    }
+
+    override suspend fun getStory(): List<Story> {
+        val snapshot = db.getReference("stories").get().await()
+        val listStories = mutableListOf<Story>()
+
+        for (storySnapshot in snapshot.children) {
+            val story = storySnapshot.getValue(Story::class.java)
+            val lists = mutableListOf<Story>()
+            if (story != null ) {
+                lists.add(story)
+            }
+            listStories.addAll(lists)
+        }
+
+        return listStories
     }
 
 

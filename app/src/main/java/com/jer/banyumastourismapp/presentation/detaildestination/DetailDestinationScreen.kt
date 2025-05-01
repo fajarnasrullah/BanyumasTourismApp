@@ -3,6 +3,7 @@ package com.jer.banyumastourismapp.presentation.detaildestination
 import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
@@ -24,7 +25,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -37,13 +37,14 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -68,13 +69,17 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import coil.compose.AsyncImage
+import com.google.firebase.auth.FirebaseAuth
 import com.jer.banyumastourismapp.R
 import com.jer.banyumastourismapp.core.verySmallIcon
 import com.jer.banyumastourismapp.domain.model.Destination
 import com.jer.banyumastourismapp.domain.model.Facility
+import com.jer.banyumastourismapp.domain.model.Story
 import com.jer.banyumastourismapp.presentation.component.AppBarCustom
 import com.jer.banyumastourismapp.presentation.component.BottomBarDetail
-import com.jer.banyumastourismapp.presentation.itinerary
+import com.jer.banyumastourismapp.presentation.sosmed.AddPostButton
+import com.jer.banyumastourismapp.presentation.sosmed.StoryViewModel
+import com.jer.banyumastourismapp.presentation.sosmed.component.AlertDialogStoryInput
 import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
 
 @Composable
@@ -736,52 +741,52 @@ data class RouteDestination(
     val desc: String
 )
 
-
-@Preview(showBackground = true)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun PrevDetailDestination() {
-
-    val listFacilityDummy: List<Facility> = listOf(
-        Facility("Waterfall"),
-        Facility("Restaurant"),
-        Facility("Villa"),
-        Facility("Waterfall"),
-        Facility("Waterfall"),
-        Facility("Waterfall"),
-    )
-    BanyumasTourismAppTheme {
-        DetailDestinationScreen(detailDestination =
-            Destination(
-                title = "Curug Bayan",
-                description = "Curug Bayan merupakan salah satu objek wisata yang berada di desa Ketengger, kecamatan Baturaden, kabupaten Banyumas. Curug Bayan memiliki keunikan tersendiri karena terletak dibawah lereng gunung slamet dan memiliki suasana yang sejuk dan dingin",
-                location = "Desa Ketengger, Baturraden, Banyumas",
-                cost = 150000,
-                timeOpen = "08.00 - 17.00",
-                rating = 5.0,
-                ig = "curug_bayan",
-                facility = listFacilityDummy,
-                route = "Curug Bayan merupakan salah satu objek wisata yang berada di desa Ketengger, kecamatan Baturaden, kabupaten Banyumas. Curug Bayan memiliki keunikan tersendiri karena terletak dibawah lereng gunung slamet dan memiliki suasana yang sejuk dan dingin",
-                accessibility = listOf(
-                    "Jalan sempit",
-                    "Jalan naik turun",
-                    "Bisa naik motor dan mobil",
-                    "Banyak kulineran",
-                    "Rute mudah ditempuh"
-                ),
-                tips = listOf(
-                    "Pakai baju ternyaman",
-                    "Bawa Jas hujan",
-                    "Bawa Tenda",
-                    "Bawa Kamera"
-                )
-
-            ),
-            navToOrders = {},
-            navBack = {}
-        )
-    }
-}
+//
+//@Preview(showBackground = true)
+//@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+//@Composable
+//private fun PrevDetailDestination() {
+//
+//    val listFacilityDummy: List<Facility> = listOf(
+//        Facility("Waterfall"),
+//        Facility("Restaurant"),
+//        Facility("Villa"),
+//        Facility("Waterfall"),
+//        Facility("Waterfall"),
+//        Facility("Waterfall"),
+//    )
+//    BanyumasTourismAppTheme {
+//        DetailDestinationScreen(detailDestination =
+//            Destination(
+//                title = "Curug Bayan",
+//                description = "Curug Bayan merupakan salah satu objek wisata yang berada di desa Ketengger, kecamatan Baturaden, kabupaten Banyumas. Curug Bayan memiliki keunikan tersendiri karena terletak dibawah lereng gunung slamet dan memiliki suasana yang sejuk dan dingin",
+//                location = "Desa Ketengger, Baturraden, Banyumas",
+//                cost = 150000,
+//                timeOpen = "08.00 - 17.00",
+//                rating = 5.0,
+//                ig = "curug_bayan",
+//                facility = listFacilityDummy,
+//                route = "Curug Bayan merupakan salah satu objek wisata yang berada di desa Ketengger, kecamatan Baturaden, kabupaten Banyumas. Curug Bayan memiliki keunikan tersendiri karena terletak dibawah lereng gunung slamet dan memiliki suasana yang sejuk dan dingin",
+//                accessibility = listOf(
+//                    "Jalan sempit",
+//                    "Jalan naik turun",
+//                    "Bisa naik motor dan mobil",
+//                    "Banyak kulineran",
+//                    "Rute mudah ditempuh"
+//                ),
+//                tips = listOf(
+//                    "Pakai baju ternyaman",
+//                    "Bawa Jas hujan",
+//                    "Bawa Tenda",
+//                    "Bawa Kamera"
+//                )
+//
+//            ),
+//            navToOrders = {},
+//            navBack = {}
+//        )
+//    }
+//}
 
 @Preview(showBackground = true)
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)

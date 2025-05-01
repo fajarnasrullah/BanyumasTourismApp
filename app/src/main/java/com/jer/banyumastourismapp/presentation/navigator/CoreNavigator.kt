@@ -44,6 +44,8 @@ import com.jer.banyumastourismapp.presentation.payment.PaymentWebViewScreen
 import com.jer.banyumastourismapp.presentation.profile.ProfileScreen
 import com.jer.banyumastourismapp.presentation.profile.ProfileViewModel
 import com.jer.banyumastourismapp.presentation.profile.bookmark.BookmarkState
+import com.jer.banyumastourismapp.presentation.sosmed.StoryScreen
+import com.jer.banyumastourismapp.presentation.sosmed.StoryViewModel
 import com.jer.banyumastourismapp.presentation.ticket.TicketScreen
 import com.jer.banyumastourismapp.presentation.ticket.TicketViewModel
 import dev.chrisbanes.haze.HazeState
@@ -71,8 +73,8 @@ fun CoreNavigator() {
                 icon = R.drawable.mapsicon
             ),
             BottomNavigationItem(
-                label = "Ticket",
-                icon = R.drawable.ticketicon
+                label = "Story",
+                icon = R.drawable.sosmedicon
             ),
             BottomNavigationItem(
                 label = "Profile",
@@ -95,7 +97,7 @@ fun CoreNavigator() {
             Route.HomeScreen.route -> 0
             Route.DestinationListScreen.route -> 1
             Route.MapsScreen.route -> 2
-            Route.TicketScreen.route -> 3
+            Route.StoryScreen.route -> 3
             Route.ProfileScreen.route -> 4
             else -> 0
         }
@@ -106,7 +108,7 @@ fun CoreNavigator() {
         backStackState?.destination?.route == Route.HomeScreen.route ||
         backStackState?.destination?.route == Route.DestinationListScreen.route ||
         backStackState?.destination?.route == Route.MapsScreen.route ||
-        backStackState?.destination?.route == Route.TicketScreen.route ||
+        backStackState?.destination?.route == Route.StoryScreen.route ||
         backStackState?.destination?.route == Route.ProfileScreen.route
     }
 
@@ -123,7 +125,7 @@ fun CoreNavigator() {
                             0 -> navigateToTab(navController, Route.HomeScreen.route)
                             1 -> navigateToTab(navController, Route.DestinationListScreen.route)
                             2 -> navigateToTab(navController, Route.MapsScreen.route)
-                            3 -> navigateToTab(navController, Route.TicketScreen.route)
+                            3 -> navigateToTab(navController, Route.StoryScreen.route)
                             4 -> navigateToTab(navController, Route.ProfileScreen.route)
 
                         }
@@ -221,7 +223,7 @@ fun CoreNavigator() {
                     DetailDestinationScreen(
                         detailDestination = destination,
                         navToOrders = { navigateToOrders(navController, destination) },
-                        navBack = {navController.navigateUp()}
+                        navBack = {navController.navigateUp()},
                     )
                 }
 
@@ -284,6 +286,11 @@ fun CoreNavigator() {
                 ) {
                 val viewModel: PaymentViewModel = hiltViewModel()
                 PaymentLoadingScreen(viewModel = viewModel, snapToken = it.arguments?.getString("snapToken"))
+            }
+
+            composable(Route.StoryScreen.route) {
+                val viewModel: StoryViewModel = hiltViewModel()
+                StoryScreen(viewModel = viewModel)
             }
 
         }

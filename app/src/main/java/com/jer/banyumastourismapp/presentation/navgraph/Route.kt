@@ -11,7 +11,7 @@ sealed class Route(
     object DestinationListScreen: Route(route = "destinationListScreen")
     object DetailDestinationScreen: Route(route = "detailDestinationScreen")
     object MapsScreen: Route(route = "mapsScreen")
-    object SosmedListScreen: Route(route = "sosmedListScreen")
+    object StoryScreen: Route(route = "storyScreen")
     object DetailSosmedScreen: Route(route = "detailSosmedScreen")
     object ItineraryScreen: Route(route = "itineraryScreen")
     object ItineraryFormScreen: Route(route = "itineraryFormScreen")

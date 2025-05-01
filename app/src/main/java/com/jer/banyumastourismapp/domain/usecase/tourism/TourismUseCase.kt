@@ -22,6 +22,8 @@ class TourismUseCase(
     val createTransaction: CreateTransaction,
     val insertTicket: InsertTicket,
     val deleteTicket: DeleteTicket,
-    val getTicket: GetTicket
+    val getTicket: GetTicket,
+    val insertStory: InsertStory,
+    val getStory: GetStory,
 ) {
 }

@@ -26,9 +26,11 @@ import com.jer.banyumastourismapp.domain.usecase.tourism.GetDestinations
 import com.jer.banyumastourismapp.domain.usecase.tourism.GetDestinationsForMaps
 import com.jer.banyumastourismapp.domain.usecase.tourism.GetItinerary
 import com.jer.banyumastourismapp.domain.usecase.tourism.GetItineraryWithPlanCards
+import com.jer.banyumastourismapp.domain.usecase.tourism.GetStory
 import com.jer.banyumastourismapp.domain.usecase.tourism.GetTicket
 import com.jer.banyumastourismapp.domain.usecase.tourism.GetUser
 import com.jer.banyumastourismapp.domain.usecase.tourism.InsertItinerary
+import com.jer.banyumastourismapp.domain.usecase.tourism.InsertStory
 import com.jer.banyumastourismapp.domain.usecase.tourism.InsertPlan
 import com.jer.banyumastourismapp.domain.usecase.tourism.InsertPlanCard
 import com.jer.banyumastourismapp.domain.usecase.tourism.InsertTicket
@@ -127,7 +129,9 @@ object AppModule {
             createTransaction = CreateTransaction(repository),
             insertTicket = InsertTicket(repository),
             deleteTicket = DeleteTicket(repository),
-            getTicket = GetTicket(repository)
+            getTicket = GetTicket(repository),
+            insertStory = InsertStory(repository),
+            getStory = GetStory(repository),
         )
     }
 

@@ -32,6 +32,7 @@ class ItineraryViewModel @Inject constructor(private val useCase: TourismUseCase
     private val auth = FirebaseAuth.getInstance()
     private val database = FirebaseDatabase.getInstance()
 
+
     private val _userData = MutableStateFlow<User?>(null)
     val userData: StateFlow<User?> = _userData
 
