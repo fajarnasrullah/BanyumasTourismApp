@@ -218,7 +218,10 @@ fun CoreNavigator() {
                 ProfileScreen(
                     viewModel = viewModel,
                     state = BookmarkState(),
-                    navigateToDetail = { /*TODO*/ })
+                    navigateToDetail = { /*TODO*/ },
+                    navToTicket = { navController.navigate(Route.TicketScreen.route) },
+                    navigateToLogin = { navController.navigate(Route.LoginScreen.route) }
+                )
             }
 
             composable(Route.DetailDestinationScreen.route) {

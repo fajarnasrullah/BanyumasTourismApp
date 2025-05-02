@@ -167,7 +167,9 @@ fun HomeScreen(
             ) {
                 UserTopSection( user = userData, photoUrl = firebaseUser?.photoUrl.toString())
 
-                NotifTopButton(onClick = { signOut() })
+                NotifTopButton(onClick = {
+//                    signOut()
+                })
                 
             }
             ItineraryCard(
