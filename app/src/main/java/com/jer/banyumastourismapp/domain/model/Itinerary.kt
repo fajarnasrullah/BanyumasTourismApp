@@ -5,6 +5,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import androidx.room.Relation
 import com.jer.banyumastourismapp.R
@@ -18,7 +19,9 @@ import kotlinx.parcelize.Parcelize
     childColumns = arrayOf("uid"),
     onUpdate = ForeignKey.CASCADE,
     onDelete = ForeignKey.CASCADE
-)])
+)],
+    indices = [Index(value = ["uid"])]
+    )
 data class Itinerary (
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     @ColumnInfo(name = "uid") val uid: String = "",
@@ -46,7 +49,8 @@ data class City(
         childColumns = arrayOf("itineraryId"),
         onUpdate = ForeignKey.CASCADE,
         onDelete = ForeignKey.CASCADE
-    )]
+    )],
+    indices = [Index(value = ["itineraryId"])]
 )
 data class PlanCardData(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
@@ -61,7 +65,9 @@ data class PlanCardData(
     childColumns = arrayOf("planCardDataId"),
     onUpdate = ForeignKey.CASCADE,
     onDelete = ForeignKey.CASCADE
-)])
+)],
+    indices = [Index(value = ["planCardDataId"])]
+    )
 data class Plan(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     @ColumnInfo(name = "planCardDataId") val planCardDataId: Int,

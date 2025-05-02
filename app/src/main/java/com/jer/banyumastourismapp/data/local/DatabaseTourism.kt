@@ -14,7 +14,7 @@ import com.jer.banyumastourismapp.domain.model.User
 
 @Database(
     entities = [Destination::class, Itinerary::class, User::class, PlanCardData::class, Plan::class, Ticket::class],
-    version = 15,
+    version = 17,
     exportSchema = false
 )
 @TypeConverters(ItsTypeConverter::class)

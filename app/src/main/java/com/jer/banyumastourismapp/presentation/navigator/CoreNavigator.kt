@@ -74,7 +74,7 @@ fun CoreNavigator() {
             ),
             BottomNavigationItem(
                 label = "Story",
-                icon = R.drawable.sosmedicon
+                icon = R.drawable.messageicon
             ),
             BottomNavigationItem(
                 label = "Profile",
@@ -204,7 +204,11 @@ fun CoreNavigator() {
             composable(Route.TicketScreen.route) {
                 val viewModel: TicketViewModel = hiltViewModel()
                 TicketScreen(
-                    viewModel = viewModel
+                    viewModel = viewModel,
+                    navBackToHome = {navController.navigate(Route.HomeScreen.route) {
+                        popUpTo(Route.HomeScreen.route) { inclusive = false }
+                        launchSingleTop = true }
+                    }
                 )
             }
 
@@ -240,7 +244,12 @@ fun CoreNavigator() {
                 ItineraryScreen(
                     user = user,
                     onClick = {},
-                    navBack = {navController.navigateUp()},
+                    navBack =
+//                    {navController.navigateUp()},
+                    {navController.navigate(Route.HomeScreen.route) {
+                        popUpTo(Route.HomeScreen.route) { inclusive = false }
+                        launchSingleTop = true }
+                    },
                     viewModel = viewModel,
 
                 )

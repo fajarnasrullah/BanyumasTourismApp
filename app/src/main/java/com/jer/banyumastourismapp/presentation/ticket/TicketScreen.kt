@@ -22,7 +22,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -62,11 +65,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.transform.Transformation
 import com.jer.banyumastourismapp.R
 import com.jer.banyumastourismapp.domain.model.Destination
+import com.jer.banyumastourismapp.presentation.navgraph.Route
 import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
 import com.simonsickle.compose.barcodes.Barcode
 import com.simonsickle.compose.barcodes.BarcodeType
@@ -74,6 +79,7 @@ import com.simonsickle.compose.barcodes.BarcodeType
 @Composable
 fun TicketScreen(modifier: Modifier = Modifier,
                  viewModel: TicketViewModel,
+                 navBackToHome: () -> Unit,
                  ) {
 
 //    val shape = TicketShape()
@@ -89,6 +95,8 @@ fun TicketScreen(modifier: Modifier = Modifier,
     }
 
 
+    val navController = rememberNavController()
+
     LaunchedEffect(Unit) {
         viewModel.getUserData()
         viewModel.getTicket(userData?.uid ?: "")
@@ -100,297 +108,348 @@ fun TicketScreen(modifier: Modifier = Modifier,
         modifier = Modifier
             .background(MaterialTheme.colorScheme.primaryContainer)
             .fillMaxSize()
-            .padding(start = 30.dp, end = 30.dp, top = 30.dp, bottom = 130.dp)
+            .padding(start = 30.dp, end = 30.dp, top = 30.dp, bottom = 30.dp)
 
     ) {
-        Box(
-            contentAlignment = Alignment.TopCenter,
+
+        Column (
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .fillMaxWidth()
-                .clip(MaterialTheme.shapes.extraLarge)
-                .background(Color(0xFFF5FAFB))
+
         ) {
-            Column(
-                verticalArrangement = Arrangement.Top,
+
+            Text(
+                text = "Your Recent Ticket",
+                fontSize = 24.sp,
+                color = Color.Black,
+                fontWeight = FontWeight.Bold
+            )
+
+            Spacer(modifier = Modifier.height(15.dp))
+
+            Box(
+                contentAlignment = Alignment.TopCenter,
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxWidth()
+                    .clip(MaterialTheme.shapes.extraLarge)
+                    .background(Color(0xFFF5FAFB))
             ) {
-
-                if (ticket?.image != null) {
-                    AsyncImage(
-                        model = ticket?.image,
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .clip(MaterialTheme.shapes.medium)
-                            .height(200.dp)
-                            .fillMaxWidth()
-                    )
-                } else {
-                    Image(
-                        painter = painterResource(id = R.drawable.viewdefault),
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .height(200.dp)
-                            .fillMaxWidth()
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(15.dp))
                 Column(
-                    horizontalAlignment = Alignment.Start,
+                    verticalArrangement = Arrangement.Top,
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 15.dp)
+//                        .fillMaxSize()
                 ) {
-                ticket?.category?.let {
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(MaterialTheme.colorScheme.primaryContainer)
-                            .padding(horizontal = 10.dp, vertical = 5.dp)
-                    ) {
-                        Text(
-                            text = it,
-                            fontSize = 12.sp,
-                            color = Color.White
-                        )
-                    }
-                }
-                    Spacer(modifier = Modifier.height(10.dp))
 
-                ticket?.title?.let {
-                    Text(
-                        text = it ?: "-",
-                        fontSize = 20.sp,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                        color = Color(0xFF006874),
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.fillMaxWidth()
-                    )                }
-
-
-                    Spacer(modifier = Modifier.height(10.dp))
-
-                    Row() {
-
-                        //date
-                        Column(
-                            horizontalAlignment = Alignment.Start,
+                    if (ticket?.image != null) {
+                        AsyncImage(
+                            model = ticket?.image,
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
                             modifier = Modifier
-                                .weight(1f)
-                        ) {
-                            Text(
-                                text = "Date",
-                                fontSize = 12.sp,
-                                color = Color.DarkGray
-                            )
-
-                            Spacer(modifier = Modifier.height(10.dp))
-
-                            ticket?.date?.let {
-                                Text(
-                                    text = it ?: "-",
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.Medium,
-                                    color = Color.Black
-                                )
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.width(10.dp))
-
-                        //price
-                        Column(
-                            horizontalAlignment = Alignment.Start,
-                            modifier = Modifier
+                                .clip(MaterialTheme.shapes.medium)
+                                .height(100.dp)
                                 .fillMaxWidth()
-                                .weight(1f)
-                        ) {
-                            Text(
-                                text = "Total Price",
-                                fontSize = 12.sp,
-                                color = Color.DarkGray
-                            )
-
-                            Spacer(modifier = Modifier.height(10.dp))
-
-                            ticket?.price?.let {
-                                Text(
-                                    text = it.toString(),
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.Medium,
-                                    color = Color.Black
-                                )
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.width(10.dp))
-
-                        //qty
-                        Column(
-                            horizontalAlignment = Alignment.Start,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .weight(1f)
-                        ) {
-                            Text(
-                                text = "Qty",
-                                fontSize = 12.sp,
-                                color = Color.DarkGray
-                            )
-
-                            Spacer(modifier = Modifier.height(10.dp))
-
-                            ticket?.qty?.let {
-                                Text(
-                                    text = it.toString(),
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.Medium,
-                                    color = Color.Black
-                                )
-                            }
-                        }
-
-                    }
-
-                    Spacer(modifier = Modifier.height(10.dp))
-
-                    Row() {
-
-                        //name
-                        Column(
-                            horizontalAlignment = Alignment.Start,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .weight(1f)
-                        ) {
-                            Text(
-                                text = "Name",
-                                fontSize = 12.sp,
-                                color = Color.DarkGray
-
-                            )
-
-                            Spacer(modifier = Modifier.height(10.dp))
-
-                            ticket?.name?.let {
-                                Text(
-                                    text = it ?: "-",
-                                    fontSize = 12.sp,
-                                    maxLines = 2,
-                                    overflow = TextOverflow.Ellipsis,
-                                    fontWeight = FontWeight.Medium,
-                                    color = Color.Black
-                                )
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.width(10.dp))
-
-                        //id
-                        Column(
-
-                            horizontalAlignment = Alignment.Start,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .weight(1f)
-                        ) {
-                            Text(
-                                text = "ID",
-                                fontSize = 12.sp,
-                                color = Color.DarkGray
-                            )
-
-                            Spacer(modifier = Modifier.height(10.dp))
-
-                            ticket?.id?.let {
-                                Text(
-                                    text = "BMT00${it} - ${ticket?.createdAt}" ?: "-",
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.Medium,
-                                    color = Color.Black
-                                )
-                            }
-
-
-                        }
-
-                        Spacer(modifier = Modifier.width(10.dp))
-
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .weight(1f)
-                        )
-
-                    }
-
-
-                }
-
-                Spacer(modifier = Modifier.height(10.dp))
-
-                //location
-                Column(
-                    horizontalAlignment = Alignment.Start,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
-                ) {
-                    Text(
-                        text = "Location",
-                        fontSize = 12.sp,
-                        color = Color.DarkGray
-                    )
-
-                    Spacer(modifier = Modifier.height(10.dp))
-
-                    ticket?.location?.let {
-                        Text(
-                            text = it,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Medium,
-                            color = Color.Black
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-                DashLineSpacer(modifier = Modifier.fillMaxWidth())
-
-                Spacer(modifier = Modifier.height(10.dp))
-
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(start = 30.dp, end = 30.dp, bottom = 15.dp)
-                ) {
-                    if(BarcodeType.QR_CODE.isValueValid(idForBarcode) && isGenerated) {
-                        Barcode(
-                            type = BarcodeType.QR_CODE,
-                            value = idForBarcode,
-                            resolutionFactor = 10,
-                            modifier = Modifier
-                                .fillMaxSize()
                         )
                     } else {
-                        Text("QR code not available", fontSize = 16.sp, color = Color.Black)
+                        Image(
+                            painter = painterResource(id = R.drawable.viewdefault),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .height(100.dp)
+                                .fillMaxWidth()
+                        )
                     }
+
+                    Spacer(modifier = Modifier.height(15.dp))
+                    Column(
+                        horizontalAlignment = Alignment.Start,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 15.dp)
+                    ) {
+                        ticket?.category?.let {
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(10.dp))
+                                    .background(MaterialTheme.colorScheme.primaryContainer)
+                                    .padding(horizontal = 10.dp, vertical = 5.dp)
+                            ) {
+                                Text(
+                                    text = it,
+                                    fontSize = 12.sp,
+                                    color = Color.White
+                                )
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(10.dp))
+
+                        ticket?.title?.let {
+                            Text(
+                                text = it ?: "-",
+                                fontSize = 20.sp,
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis,
+                                color = Color(0xFF006874),
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
+
+
+                        Spacer(modifier = Modifier.height(10.dp))
+
+                        Row() {
+
+                            //date
+                            Column(
+                                horizontalAlignment = Alignment.Start,
+                                modifier = Modifier
+                                    .weight(1f)
+                            ) {
+                                Text(
+                                    text = "Date",
+                                    fontSize = 12.sp,
+                                    color = Color.DarkGray
+                                )
+
+                                Spacer(modifier = Modifier.height(10.dp))
+
+                                ticket?.date?.let {
+                                    Text(
+                                        text = it ?: "-",
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.Medium,
+                                        color = Color.Black
+                                    )
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.width(10.dp))
+
+                            //price
+                            Column(
+                                horizontalAlignment = Alignment.Start,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .weight(1f)
+                            ) {
+                                Text(
+                                    text = "Total Price",
+                                    fontSize = 12.sp,
+                                    color = Color.DarkGray
+                                )
+
+                                Spacer(modifier = Modifier.height(10.dp))
+
+                                ticket?.price?.let {
+                                    Text(
+                                        text = it.toString(),
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.Medium,
+                                        color = Color.Black
+                                    )
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.width(10.dp))
+
+                            //qty
+                            Column(
+                                horizontalAlignment = Alignment.Start,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .weight(1f)
+                            ) {
+                                Text(
+                                    text = "Qty",
+                                    fontSize = 12.sp,
+                                    color = Color.DarkGray
+                                )
+
+                                Spacer(modifier = Modifier.height(10.dp))
+
+                                ticket?.qty?.let {
+                                    Text(
+                                        text = it.toString(),
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.Medium,
+                                        color = Color.Black
+                                    )
+                                }
+                            }
+
+                        }
+
+                        Spacer(modifier = Modifier.height(10.dp))
+
+                        Row() {
+
+                            //name
+                            Column(
+                                horizontalAlignment = Alignment.Start,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .weight(1f)
+                            ) {
+                                Text(
+                                    text = "Name",
+                                    fontSize = 12.sp,
+                                    color = Color.DarkGray
+
+                                )
+
+                                Spacer(modifier = Modifier.height(10.dp))
+
+                                ticket?.name?.let {
+                                    Text(
+                                        text = it ?: "-",
+                                        fontSize = 12.sp,
+                                        maxLines = 2,
+                                        overflow = TextOverflow.Ellipsis,
+                                        fontWeight = FontWeight.Medium,
+                                        color = Color.Black
+                                    )
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.width(10.dp))
+
+                            //id
+                            Column(
+
+                                horizontalAlignment = Alignment.Start,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .weight(1f)
+                            ) {
+                                Text(
+                                    text = "ID",
+                                    fontSize = 12.sp,
+                                    color = Color.DarkGray
+                                )
+
+                                Spacer(modifier = Modifier.height(10.dp))
+
+                                ticket?.id?.let {
+                                    Text(
+                                        text = "BMT00${it} - ${ticket?.createdAt}" ?: "-",
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.Medium,
+                                        color = Color.Black
+                                    )
+                                }
+
+
+                            }
+
+                            Spacer(modifier = Modifier.width(10.dp))
+
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .weight(1f)
+                            )
+
+                        }
+
+
+                    }
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    //location
+                    Column(
+                        horizontalAlignment = Alignment.Start,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 15.dp)
+                    ) {
+                        Text(
+                            text = "Location",
+                            fontSize = 12.sp,
+                            color = Color.DarkGray
+                        )
+
+                        Spacer(modifier = Modifier.height(10.dp))
+
+                        ticket?.location?.let {
+                            Text(
+                                text = it,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = Color.Black
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    DashLineSpacer(modifier = Modifier.fillMaxWidth())
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    Box(
+                        modifier = Modifier
+                            .height(250.dp)
+                            .padding(start = 30.dp, end = 30.dp, bottom = 15.dp)
+                    ) {
+                        if (BarcodeType.QR_CODE.isValueValid(idForBarcode) && isGenerated) {
+                            Barcode(
+                                type = BarcodeType.QR_CODE,
+                                value = idForBarcode,
+                                resolutionFactor = 10,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                            )
+                        } else {
+                            Text("QR code not available", fontSize = 16.sp, color = Color.Black)
+                        }
 //                    if (!BarcodeType.QR_CODE.isValueValid(idForBarcode)) {
 //                        Text("this code is not compatible")
 //                    }
+                    }
+
+                }
+
+            }
+
+            Spacer(modifier = Modifier.height(15.dp))
+
+            Row ( horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
+                OutlinedButton(
+                    modifier = Modifier
+                        .weight(1f),
+                    shape = MaterialTheme.shapes.medium,
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)),
+                    border = BorderStroke(2.dp, MaterialTheme.colorScheme.outline),
+                    onClick = { navBackToHome()}
+                ) {
+
+                    Text(text = "Back To Home", color = Color.Black, fontSize = 14.sp)
+
+                }
+
+                Spacer(modifier = Modifier.width(15.dp))
+
+                Button(
+                    modifier = Modifier
+                        .weight(1f),
+                    shape = MaterialTheme.shapes.medium,
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.White),
+                    onClick = { viewModel.getTicket(userData?.uid ?: "") }
+                ) {
+
+                    Text(text = "Refresh", color = Color.Black, fontSize = 14.sp)
+
                 }
 
             }
 
 
         }
-
 
     }
 }

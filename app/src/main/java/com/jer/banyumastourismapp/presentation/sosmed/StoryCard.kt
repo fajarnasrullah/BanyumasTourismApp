@@ -23,6 +23,7 @@ import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
@@ -71,6 +72,9 @@ fun StoryCard(
     var showReadMoreButtonState by rememberSaveable { mutableStateOf(false) }
     val maxLines = if (expandedState) 50 else minimumLineLength
 
+    var isLove by rememberSaveable { mutableStateOf(false) }
+
+
 
     Box (
         modifier = modifier
@@ -109,7 +113,7 @@ fun StoryCard(
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
                                 .clip(CircleShape)
-                                .size(35.dp)
+                                .size(30.dp)
                         )
                     } else {
                         AsyncImage(
@@ -118,7 +122,7 @@ fun StoryCard(
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
                                 .clip(CircleShape)
-                                .size(35.dp)
+                                .size(30.dp)
 
                         )
                     }
@@ -204,10 +208,12 @@ fun StoryCard(
             ) {
                 Row {
                     Icon(
-                        imageVector = Icons.Default.Favorite,
+                        imageVector = if (isLove) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                         contentDescription = null,
                         tint = Color.Red,
-                        modifier = Modifier.size(20.dp)
+                        modifier = Modifier
+                            .size(15.dp)
+                            .clickable { isLove = !isLove }
                     )
 
                     Spacer(modifier = Modifier.width(15.dp))
@@ -215,8 +221,8 @@ fun StoryCard(
                     Icon(
                         imageVector = Icons.Default.Share,
                         contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onBackground,
-                        modifier = Modifier.size(20.dp)
+                        tint = MaterialTheme.colorScheme.outline,
+                        modifier = Modifier.size(15.dp)
                     )
                 }
 
@@ -225,7 +231,7 @@ fun StoryCard(
                         imageVector = Icons.Default.Star,
                         contentDescription = null,
                         tint = OrangeNice,
-                        modifier = Modifier.size(20.dp)
+                        modifier = Modifier.size(15.dp)
                     )
 
                     Spacer(modifier = Modifier.width(5.dp))
@@ -238,8 +244,8 @@ fun StoryCard(
 
 
             HorizontalDivider(
-                thickness = 1.dp,
-                color = MaterialTheme.colorScheme.outline,
+                thickness = 0.5.dp,
+                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
                 modifier = Modifier.fillMaxWidth()
             )
         }

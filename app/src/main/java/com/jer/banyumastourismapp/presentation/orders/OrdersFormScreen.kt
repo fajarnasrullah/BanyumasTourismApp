@@ -8,6 +8,7 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.net.Uri
 import android.os.Build
 import android.util.Log
+import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
@@ -222,38 +223,55 @@ fun OrdersFormScreen(
 //    }
 
     Scaffold (
-        topBar = { AppBarCustom(
-            navigateBack = { navBack() },
-            backgroundColor = MaterialTheme.colorScheme.onPrimary,
-            title = "Complete Your Order",
+        topBar = {
 
-            modifier = Modifier.fillMaxWidth()
-        )
+            if (!webViewIsActive) {
+                AppBarCustom(
+                    navigateBack = { navBack() },
+                    backgroundColor = MaterialTheme.colorScheme.onPrimary,
+                    title = "Complete Your Order",
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+            }
         },
-        bottomBar = { BottomBarDetail(
-            isActiveButton = transferDone,
-            price = "Rp. ${totalPrice.toString() }",
-            textButton = "Pay Now",
-            headline = "Total Price",
-            onClick = {
+        bottomBar = {
+
+            if (!webViewIsActive){
+                BottomBarDetail(
+                    isActiveButton = transferDone,
+                    price = "Rp. ${totalPrice.toString()}",
+                    textButton = "Pay Now",
+                    headline = "Total Price",
+                    onClick = {
 //                if (!responseThx?.token.isNullOrEmpty()) {
 //                    navController.navigate("${ Route.PaymentLoadingScreen.route }/${responseThx?.token}")
 //
 //                }
 
-                ticketNew = ticketNew.copy(uid = userData?.uid ?: "", title = destination.title, image = destination.imageUrl, category = destination.category, name = name, price = totalPrice, qty = qty, location = destination.location, date = date)
-                ticketViewModel.insertTicket(ticketNew)
+                        ticketNew = ticketNew.copy(
+                            uid = userData?.uid ?: "",
+                            title = destination.title,
+                            image = destination.imageUrl,
+                            category = destination.category,
+                            name = name,
+                            price = totalPrice,
+                            qty = qty,
+                            location = destination.location,
+                            date = date
+                        )
+                        ticketViewModel.insertTicket(ticketNew)
 //                navToTicket()
-                navController.popBackStack()
-                Toast.makeText(context, message.value, Toast.LENGTH_SHORT).show()
+//                navController.popBackStack()
+                        Toast.makeText(context, message.value, Toast.LENGTH_SHORT).show()
 
-                Log.d("OrdersFormScreen", "new ticket: $ticketNew")
-                Log.d("OrdersFormScreen", "redirect_url: ${responseThx?.redirect_url}")
-//                webViewIsActive = true
+                        Log.d("OrdersFormScreen", "new ticket: $ticketNew")
+                        Log.d("OrdersFormScreen", "redirect_url: ${responseThx?.redirect_url}")
+                        webViewIsActive = true
 //                navController.navigate("${Route.PaymentWebViewScreen.route}/{$newUrl}")
 
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(responseThx?.redirect_url))
-                context.startActivity(intent)
+//                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(responseThx?.redirect_url))
+//                context.startActivity(intent)
 
 //                activity?.let {
 //                    UiKitApi.getDefaultInstance()?.startPaymentUiFlow(
@@ -264,10 +282,10 @@ fun OrdersFormScreen(
 //                }
 
 
-
-
+                    }
+                )
             }
-        ) }
+        }
     ) { innerPadding ->
 
         ConstraintLayout (
@@ -278,37 +296,51 @@ fun OrdersFormScreen(
 
             val (content, webview) = createRefs()
 
-            if (webViewIsActive){
-                Column(
-                    modifier = Modifier
-                        .constrainAs(webview) {
-                            top.linkTo(parent.top)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
 
-                        }
-                        .fillMaxSize()
-                ) {
 
-                    AndroidView(
-                        factory = { itsContext ->
-                            WebView(itsContext).apply {
-                                settings.javaScriptEnabled = true
-                                webViewClient = WebViewClient()
-                                settings.loadWithOverviewMode = true
-                                settings.useWideViewPort = true
-                                settings.setSupportZoom(true)
-                            }
-                        },
-                        update = { webView ->
-                            responseThx?.let { webView.loadUrl(it.redirect_url) }
-
-                        }
-
-                    )
-
-                }
-            }
+//            if (webViewIsActive) {
+////                Column(
+////                    modifier = Modifier
+////                        .constrainAs(webview) {
+////                            top.linkTo(parent.top)
+////                            start.linkTo(parent.start)
+////                            end.linkTo(parent.end)
+////
+////                        }
+////                        .fillMaxSize()
+////                ) {
+//
+//                    AndroidView(
+//                        factory = { itsContext ->
+//                            WebView(itsContext).apply {
+//                                layoutParams = ViewGroup.LayoutParams(
+//                                    ViewGroup.LayoutParams.MATCH_PARENT,
+//                                    ViewGroup.LayoutParams.MATCH_PARENT
+//                                )
+//                                settings.javaScriptEnabled = true
+//                                webViewClient = WebViewClient()
+//                                settings.loadWithOverviewMode = true
+//                                settings.useWideViewPort = true
+//                                settings.setSupportZoom(true)
+//                            }
+//                        },
+//                        update = { webView ->
+//                            responseThx?.let { webView.loadUrl(it.redirect_url) }
+//
+//                        },
+//                        modifier = Modifier
+//                            .constrainAs(webview) {
+//                                top.linkTo(parent.top)
+//                                start.linkTo(parent.start)
+//                                end.linkTo(parent.end)
+//                                bottom.linkTo(parent.bottom)
+//                            }
+//                            .fillMaxSize()
+//
+//                    )
+//
+////                }
+//            }
 
             Column (
                 verticalArrangement = Arrangement.spacedBy(15.dp),
@@ -668,6 +700,52 @@ fun OrdersFormScreen(
                 Spacer(modifier = Modifier.height(15.dp))
 
 
+
+
+            }
+
+            if (webViewIsActive) {
+                Box(
+                    modifier = Modifier
+                        .constrainAs(webview) {
+                            top.linkTo(parent.top)
+                            bottom.linkTo(parent.bottom)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                        }
+                        .fillMaxSize()
+                        .background(Color.White)
+                ) {
+                    // WebView cuy
+                    AndroidView(
+                        factory = { context ->
+                            WebView(context).apply {
+                                settings.javaScriptEnabled = true
+                                webViewClient = WebViewClient()
+                            }
+                        },
+                        update = {
+                            responseThx?.redirect_url?.let { url -> it.loadUrl(url) }
+                        },
+                        modifier = Modifier.fillMaxSize()
+                    )
+
+                    IconButton(
+                        onClick = {
+                            webViewIsActive = false
+                            navToTicket()
+                                  },
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(8.dp)
+                            .background(
+                                MaterialTheme.colorScheme.background.copy(alpha = 0.7f),
+                                shape = MaterialTheme.shapes.medium
+                            )
+                    ) {
+                        Icon(Icons.Default.Clear, contentDescription = "Close WebView")
+                    }
+                }
             }
 
         }
@@ -712,7 +790,7 @@ fun TextSection(modifier: Modifier = Modifier, title: String, text: String, isFi
     }
 }
 
-private fun setLocaleNew(languageCode: String?) {
+fun setLocaleNew(languageCode: String?) {
     val locales = LocaleListCompat.forLanguageTags(languageCode)
     AppCompatDelegate.setApplicationLocales(locales)
 }

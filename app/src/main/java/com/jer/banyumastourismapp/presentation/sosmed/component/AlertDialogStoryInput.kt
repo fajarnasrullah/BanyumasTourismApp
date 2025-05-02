@@ -81,7 +81,8 @@ fun AlertDialogStoryInput(
     var expandedState by rememberSaveable { mutableStateOf(false) }
     var expandedState2 by rememberSaveable { mutableStateOf(false) }
     val rotationState by animateFloatAsState(targetValue = if (expandedState) 180f else 0f)
-    val rotationState2 by animateFloatAsState(targetValue = if (expandedState) 180f else 0f)
+    val rotationState2 by animateFloatAsState(targetValue = if (expandedState2) 180f else 0f)
+
 
     val context = LocalContext.current
 

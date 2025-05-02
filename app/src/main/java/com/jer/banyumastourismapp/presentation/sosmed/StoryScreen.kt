@@ -1,6 +1,5 @@
 package com.jer.banyumastourismapp.presentation.sosmed
 
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.HorizontalDivider
@@ -21,24 +21,22 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.jer.banyumastourismapp.domain.model.Story
 import com.jer.banyumastourismapp.presentation.component.CategoryRow
 import com.jer.banyumastourismapp.presentation.sosmed.component.AlertDialogStoryInput
-import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
 import java.util.Date
 
 @Composable
@@ -81,6 +79,7 @@ fun StoryScreen(
 
     val textAlert by viewModel.textAlert.collectAsState()
     val story by viewModel.story.collectAsState()
+    val storyByCategory = getStoryByCategory(selectedCategory.value, story)
 
 
     LaunchedEffect(Unit) {
@@ -104,7 +103,9 @@ fun StoryScreen(
             modifier = Modifier.padding(innerPadding)
         ) {
 
-            val (bg, divider, categoryRow, sosmedList, ) = createRefs()
+
+
+            val (bg, divider, categoryRow, sosmedList) = createRefs()
 
             HorizontalDivider(
                 thickness = 1.dp,
@@ -144,7 +145,9 @@ fun StoryScreen(
 
 
 
-            SosmedListColumn(
+            StoryListColumn(
+                isClassified = isClassified.value,
+                storyByCategory = storyByCategory,
                 listStory = story.reversed(),
                 modifier = Modifier
                     .constrainAs(sosmedList) {
@@ -212,8 +215,10 @@ fun AddPostButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
 }
 
 @Composable
-fun SosmedListColumn(
+fun StoryListColumn(
     modifier: Modifier = Modifier,
+    isClassified: Boolean,
+    storyByCategory: List<Story>,
     listStory: List<Story>,
 ) {
     LazyColumn(
@@ -221,10 +226,22 @@ fun SosmedListColumn(
         contentPadding = PaddingValues(top = 15.dp, bottom = 250.dp),
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
-        items(listStory.size) { index ->
-            StoryCard(story = listStory[index],)
+        if (isClassified) {
+            items(storyByCategory) { story ->
+                StoryCard(story = story)
+            }
+        } else {
+            items(listStory.size) { index ->
+                StoryCard(story = listStory[index])
+            }
         }
 
+    }
+}
+
+fun getStoryByCategory(category: String, listStory: List<Story>): List<Story> {
+    return listStory.filter {
+        it.category?.contains(category) ?: false
     }
 }
 
