@@ -24,6 +24,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -43,6 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -85,7 +87,8 @@ fun HomeScreen(
     navigateToDetail: (Destination) -> Unit,
     navigateToItinerary: () -> Unit,
     navigateToItineraryForm: () -> Unit,
-    navigateToLogin: () -> Unit
+    navigateToLogin: () -> Unit,
+    navToProfile: () -> Unit,
 ) {
 
     val scrollState = rememberScrollState()
@@ -93,6 +96,10 @@ fun HomeScreen(
     val context = LocalContext.current
     val auth = Firebase.auth
     val firebaseUser = auth.currentUser
+
+    val isLoading = rememberSaveable {
+        mutableStateOf(true)
+    }
 
     val userData by viewModel.userData.collectAsState()
 //    val itinerary by viewModel.itinerary.collectAsState()
@@ -138,7 +145,7 @@ fun HomeScreen(
 
             val (
                 bg, userAndNotif, itinerarySection, category1, category2,
-                subTitle, list, subTitle2, list2,
+                subTitle, list, subTitle2, list2,progress, progress2
             ) = createRefs()
             
             Box(
@@ -165,7 +172,7 @@ fun HomeScreen(
                     .padding(all = 30.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                UserTopSection( user = userData, photoUrl = firebaseUser?.photoUrl.toString())
+                UserTopSection( user = userData, photoUrl = firebaseUser?.photoUrl.toString(), navToProfile = { navToProfile() })
 
                 NotifTopButton(onClick = {
 //                    signOut()
@@ -225,8 +232,26 @@ fun HomeScreen(
                     .padding(start = 30.dp, top = 10.dp, bottom = 15.dp)
             )
 
+            if (isLoading.value) {
+                CircularProgressIndicator(
+                    color = MaterialTheme.colorScheme.primaryContainer,
+                    trackColor = Color.Gray,
+                    strokeCap = StrokeCap.Round,
+                    strokeWidth = 2.dp,
+                    modifier = Modifier
+                        .size(100.dp)
+                        .constrainAs(progress) {
+                            top.linkTo(subTitle.bottom)
+                            start.linkTo(parent.start)
+                        }
+                        .padding(vertical = 30.dp, horizontal = 300.dp)
+                )
+            }
+
             DestinationCardStandRow(
                 destination = destination,
+                isLoading = isLoading,
+                isRandom = false,
                 modifier = Modifier
                     .constrainAs(list) {
                         top.linkTo(subTitle.bottom)
@@ -247,8 +272,27 @@ fun HomeScreen(
                     .padding(start = 30.dp, top = 15.dp, bottom = 15.dp)
             )
 
+            if (isLoading.value) {
+                CircularProgressIndicator(
+                    color = MaterialTheme.colorScheme.primaryContainer,
+                    trackColor = Color.Gray,
+                    strokeCap = StrokeCap.Round,
+                    strokeWidth = 2.dp,
+                    modifier = Modifier
+                        .size(100.dp)
+                        .constrainAs(progress2) {
+                            top.linkTo(subTitle2.bottom)
+                            start.linkTo(parent.start)
+
+                        }
+                        .padding(vertical = 30.dp, horizontal = 300.dp)
+                )
+            }
+
             DestinationCardStandRow(
                 destination = destination,
+                isLoading = isLoading,
+                isRandom = true,
                 modifier = Modifier
                     .constrainAs(list2) {
                         top.linkTo(subTitle2.bottom)
@@ -437,12 +481,12 @@ fun IconAndText(modifier: Modifier = Modifier, painter: Painter, text: String?) 
 }
 
 @Composable
-fun UserTopSection(modifier: Modifier = Modifier, user: User?, photoUrl: String = "") {
+fun UserTopSection(modifier: Modifier = Modifier, user: User?, photoUrl: String = "", navToProfile: () -> Unit ) {
     Card (
         modifier = Modifier
             .height(50.dp)
             .clickable {
-
+                navToProfile()
             },
         shape = CircleShape,
         colors = CardDefaults.cardColors(

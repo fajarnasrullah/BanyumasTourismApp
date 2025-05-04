@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -30,6 +31,9 @@ class TicketViewModel @Inject constructor(val useCase: TourismUseCase): ViewMode
 
     private val _ticket = MutableStateFlow<Ticket?>(null)
     val ticket: StateFlow<Ticket?> = _ticket
+
+    private val _ticketHistory = MutableStateFlow<List<Ticket>?>(null)
+    val ticketHistory: StateFlow<List<Ticket>?> = _ticketHistory.asStateFlow()
 
     private val _eventFlow = MutableSharedFlow<EventForAll>()
     val eventFlow: SharedFlow<EventForAll> = _eventFlow
@@ -85,6 +89,21 @@ class TicketViewModel @Inject constructor(val useCase: TourismUseCase): ViewMode
             val firebaseUser = auth.currentUser
             firebaseUser?.let {
                 getTicket(it.uid)
+            }
+        }
+    }
+
+    fun getTicketHistory(uid: String) {
+        _isLoading.value = true
+        viewModelScope.launch {
+            try {
+                _isLoading.value = false
+                val history = useCase.getTicketHistory(uid)
+                _ticketHistory.value = history
+                Log.d("TicketViewModel", "Success to Get Ticket History")
+            } catch (e: Exception) {
+                _isLoading.value = true
+                Log.e("TicketViewModel", "Error to Get Ticket History", e)
             }
         }
     }

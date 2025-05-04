@@ -19,5 +19,7 @@ interface DaoTicket {
     @Query("SELECT * FROM Ticket WHERE uid =:uid ORDER BY createdAt DESC LIMIT 1")
     suspend fun getTicket(uid: String): Ticket
 
+    @Query("SELECT * FROM Ticket WHERE uid =:uid")
+    suspend fun getTicketHistory(uid: String): List<Ticket>
 
 }

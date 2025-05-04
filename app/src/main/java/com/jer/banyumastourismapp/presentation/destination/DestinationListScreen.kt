@@ -9,12 +9,16 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -22,6 +26,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.paging.compose.LazyPagingItems
@@ -41,7 +47,7 @@ fun DestinationListScreen(
 ) {
 
     val resultListDestination by viewModel.destination.collectAsState()
-    var isLoading by rememberSaveable {
+    var isLoading = rememberSaveable {
         mutableStateOf(true)
     }
     val query = rememberSaveable {
@@ -58,6 +64,7 @@ fun DestinationListScreen(
     var isOnClassified = rememberSaveable {
         mutableStateOf(false)
     }
+
 
 //    LaunchedEffect(Unit) {
 //        viewModel.destination.observeForever{
@@ -89,7 +96,7 @@ fun DestinationListScreen(
                 .padding(innerPadding)
 //                .verticalScroll(scrollState)
         ) {
-            val (bg, searchbar, category, destinationList) = createRefs()
+            val (bg, searchbar, category, destinationList, progress) = createRefs()
 
             Box(
                 modifier = Modifier
@@ -111,7 +118,6 @@ fun DestinationListScreen(
                 onSearchAction = {
                     isOnSearch.value = true
                     viewModel.destinationByTitle(query.value)
-                    isLoading = false
                     Log.d("DestinationListScreen", "resultListDestination: ${resultListDestination}")
                 },
                 onSortedAsc = {
@@ -147,22 +153,43 @@ fun DestinationListScreen(
 
             )
 
-            DestinationCardLandscapeColumn(
-                destination = destination,
-                destinationFromCategory = destinationByCategory,
-                destinationFromFilter = sortedList,
-                destinationFromSearch = resultListDestination,
-                onClick = { navigateToDetail(it) },
-                isOnSearch = isOnSearch.value,
-                isOnSorted = isOnSorted,
-                isOnClassified = isOnClassified.value,
-                modifier = Modifier
-                    .constrainAs(destinationList) {
-                        top.linkTo(category.bottom)
+            if (isLoading.value) {
+                CircularProgressIndicator(
+                    color = MaterialTheme.colorScheme.primaryContainer,
+                    trackColor = Color.Gray,
+                    strokeCap = StrokeCap.Round,
+                    strokeWidth = 3.dp,
+                    modifier = Modifier
+                        .size(100.dp)
+                        .constrainAs(progress) {
+                            top.linkTo(bg.bottom)
 
-                    }
-                    .fillMaxHeight()
-            )
+                            start.linkTo(parent.start)
+
+                        }
+                        .padding(top = 250.dp, start = 150.dp)
+                )
+            }
+                DestinationCardLandscapeColumn(
+                    destination = destination,
+                    destinationFromCategory = destinationByCategory,
+                    destinationFromFilter = sortedList,
+                    destinationFromSearch = resultListDestination,
+                    onClick = { navigateToDetail(it) },
+                    isOnSearch = isOnSearch.value,
+                    isOnSorted = isOnSorted,
+                    isOnClassified = isOnClassified.value,
+                    isLoading = isLoading,
+                    modifier = Modifier
+                        .constrainAs(destinationList) {
+                            top.linkTo(category.bottom)
+
+                        }
+                        .fillMaxHeight()
+                )
+
+
+
             
 
             DisposableEffect(key1 = Unit) {
@@ -189,6 +216,7 @@ fun DestinationCardLandscapeColumn(
     isOnSorted: Boolean,
     isOnClassified: Boolean,
     onClick: (Destination) -> Unit,
+    isLoading: MutableState<Boolean>,
 ) {
 
 
@@ -199,40 +227,39 @@ fun DestinationCardLandscapeColumn(
 
         modifier = modifier
     ) {
-        if (isOnSearch) {
-            items(count = destinationFromSearch.size) { index ->
-                DestinationCardLandscape(
-                    destination = destinationFromSearch[index],
-                    onClick = { onClick(it) },
-                    buttonVisibility = false
-                )
-            }
-        }
 
-        else if (isOnSorted) {
-            items(destinationFromFilter) { item ->
+
+            if (isOnSearch) {
+                isLoading.value = false
+                items(count = destinationFromSearch.size) { index ->
+                    DestinationCardLandscape(
+                        destination = destinationFromSearch[index],
+                        onClick = { onClick(it) },
+                        buttonVisibility = false
+                    )
+                }
+            } else if (isOnSorted) {
+                isLoading.value = false
+                items(destinationFromFilter) { item ->
 
                     DestinationCardLandscape(
                         destination = item,
                         onClick = { onClick(it) },
                         buttonVisibility = false
                     )
-            }
-        }
+                }
+            } else if (isOnClassified) {
+                isLoading.value = false
+                items(destinationFromCategory) { item ->
 
-        else if (isOnClassified) {
-            items(destinationFromCategory) { item ->
-
-                DestinationCardLandscape(
-                    destination = item,
-                    onClick = { onClick(it) },
-                    buttonVisibility = false
-                )
-            }
-        }
-
-
-        else {
+                    DestinationCardLandscape(
+                        destination = item,
+                        onClick = { onClick(it) },
+                        buttonVisibility = false
+                    )
+                }
+            } else {
+                isLoading.value = false
                 items(count = destination.itemCount) { index ->
 
                     destination[index]?.let {

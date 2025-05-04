@@ -29,6 +29,9 @@ class StoryViewModel @Inject constructor(private val useCase: TourismUseCase): V
     private val _userData = MutableStateFlow<User?>(null)
     val userData : StateFlow<User?> = _userData
 
+    private val _isLoading = MutableStateFlow<Boolean>(false)
+    val isLoading : StateFlow<Boolean> = _isLoading
+
     private val auth = FirebaseAuth.getInstance()
     private val database = FirebaseDatabase.getInstance()
 
@@ -50,9 +53,11 @@ class StoryViewModel @Inject constructor(private val useCase: TourismUseCase): V
 
 
     fun getStory() {
+        _isLoading.value = true
         viewModelScope.launch {
             try {
                 _story.value = useCase.getStory()
+                _isLoading.value = false
                 Log.d("StoryViewModel", "Success to GetStory: ${_story.value}")
             } catch (e: Exception) {
                 Log.e("StoryViewModel", "Failed to GetStory: ${e.message}")

@@ -46,6 +46,7 @@ import com.jer.banyumastourismapp.presentation.profile.ProfileViewModel
 import com.jer.banyumastourismapp.presentation.profile.bookmark.BookmarkState
 import com.jer.banyumastourismapp.presentation.sosmed.StoryScreen
 import com.jer.banyumastourismapp.presentation.sosmed.StoryViewModel
+import com.jer.banyumastourismapp.presentation.ticket.TicketHistoryScreen
 import com.jer.banyumastourismapp.presentation.ticket.TicketScreen
 import com.jer.banyumastourismapp.presentation.ticket.TicketViewModel
 import dev.chrisbanes.haze.HazeState
@@ -164,7 +165,8 @@ fun CoreNavigator() {
                         navController.navigate(Route.ItineraryScreen.route)
                     },
                     navigateToItineraryForm = { navController.navigate(Route.ItineraryFormScreen.route) },
-                    navigateToLogin = {navController.navigate(Route.LoginScreen.route)}
+                    navigateToLogin = {navController.navigate(Route.LoginScreen.route)},
+                    navToProfile = {navController.navigate(Route.ProfileScreen.route)}
                 )
             }
             composable(Route.LoginScreen.route) {
@@ -212,6 +214,14 @@ fun CoreNavigator() {
                 )
             }
 
+            composable(Route.TicketHistoryScreen.route) {
+                val viewModel: TicketViewModel = hiltViewModel()
+                TicketHistoryScreen(
+                    viewModel = viewModel,
+                    navBack = {navController.navigateUp()}
+                )
+            }
+
             composable (Route.ProfileScreen.route) {
                 val viewModel: ProfileViewModel = hiltViewModel()
 
@@ -220,7 +230,8 @@ fun CoreNavigator() {
                     state = BookmarkState(),
                     navigateToDetail = { /*TODO*/ },
                     navToTicket = { navController.navigate(Route.TicketScreen.route) },
-                    navigateToLogin = { navController.navigate(Route.LoginScreen.route) }
+                    navigateToLogin = { navController.navigate(Route.LoginScreen.route) },
+                    navToTicketHistory = {navController.navigate(Route.TicketHistoryScreen.route)}
                 )
             }
 

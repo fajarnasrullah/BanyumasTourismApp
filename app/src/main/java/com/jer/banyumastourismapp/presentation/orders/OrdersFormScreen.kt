@@ -578,28 +578,37 @@ fun OrdersFormScreen(
                     ) {
 
                         if (isLoading) {
-                            CircularProgressIndicator(
-                                color = MaterialTheme.colorScheme.primaryContainer,
-                                trackColor = Color.Gray,
-                                strokeCap = StrokeCap.Round,
-                                strokeWidth = 8.dp,
-                                modifier = Modifier
-                                    .size(100.dp)
-                                    .padding(15.dp)
+                            Box (
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier.fillMaxWidth()
+                            ){
+                                CircularProgressIndicator(
+                                    color = MaterialTheme.colorScheme.primaryContainer,
+                                    trackColor = Color.Gray,
+                                    strokeCap = StrokeCap.Round,
+                                    strokeWidth = 3.dp,
+                                    modifier = Modifier
+                                        .size(30.dp)
+                                )
+                            }
+                        } else {
+
+                            Text(
+                                text = "Booking Data",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onBackground
                             )
+
+                            TextSection(title = "Product:", text = destination.title, isFixed = isFixed)
+                            TextSection(title = "Qty:", text = qty.toString(), isFixed = isFixed)
+                            TextSection(title = "Price:", text = destination.cost.toString(), isFixed = isFixed)
+                            TextSection(title = "Date:", text = date, isFixed = isFixed)
+
+
                         }
 
-                        Text(
-                            text = "Booking Data",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onBackground
-                        )
 
-                        TextSection(title = "Product:", text = destination.title, isFixed = isFixed)
-                        TextSection(title = "Qty:", text = qty.toString(), isFixed = isFixed)
-                        TextSection(title = "Price:", text = destination.cost.toString(), isFixed = isFixed)
-                        TextSection(title = "Date:", text = date, isFixed = isFixed)
 
                     }
 
@@ -622,27 +631,33 @@ fun OrdersFormScreen(
                     ) {
 
                         if (isLoading) {
-                            CircularProgressIndicator(
-                                color = MaterialTheme.colorScheme.primaryContainer,
-                                trackColor = Color.Gray,
-                                strokeCap = StrokeCap.Round,
-                                strokeWidth = 8.dp,
-                                modifier = Modifier
-                                    .size(100.dp)
-                                    .padding(15.dp)
+                            Box (
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier.fillMaxWidth()
+                            ){
+                                CircularProgressIndicator(
+                                    color = MaterialTheme.colorScheme.primaryContainer,
+                                    trackColor = Color.Gray,
+                                    strokeCap = StrokeCap.Round,
+                                    strokeWidth = 3.dp,
+                                    modifier = Modifier
+                                        .size(30.dp)
+                                )
+                            }
+                        } else {
+                            Text(
+                                text = "Booker Data",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onBackground
                             )
+
+                            TextSection(title = "Name:", text = name, isFixed = isFixed)
+                            TextSection(title = "Email:", text = email, isFixed = isFixed)
+                            TextSection(title = "No Telp:", text = hp, isFixed = isFixed)
                         }
 
-                        Text(
-                            text = "Booker Data",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onBackground
-                        )
 
-                        TextSection(title = "Name:", text = name, isFixed = isFixed)
-                        TextSection(title = "Email:", text = email, isFixed = isFixed)
-                        TextSection(title = "No Telp:", text = hp, isFixed = isFixed)
 
                     }
 

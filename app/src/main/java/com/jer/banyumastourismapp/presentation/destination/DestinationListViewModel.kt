@@ -23,7 +23,6 @@ class DestinationListViewModel @Inject constructor(private val useCase: TourismU
     val destination: StateFlow<List<Destination>> = _destination.asStateFlow()
 
 
-
     fun destinationByTitle(title: String) {
         viewModelScope.launch {
             try {

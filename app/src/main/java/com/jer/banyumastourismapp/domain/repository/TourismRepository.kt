@@ -50,6 +50,7 @@ interface TourismRepository {
     suspend fun insertTicket(ticket: Ticket)
     suspend fun deleteTicket(ticket: Ticket)
     suspend fun getTicket(uid: String): Ticket
+    suspend fun getTicketHistory(uid: String): List<Ticket>
 
 
     suspend fun insertStory(story: Story)

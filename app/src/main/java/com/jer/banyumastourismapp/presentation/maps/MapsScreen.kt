@@ -27,6 +27,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -219,9 +220,10 @@ fun MapsScreen(
 
              val isSearch = selectedLocationBySearch != null
              val isCategory = isClassified.value
-             var destinationByCategory by rememberSaveable {
-                 mutableStateOf<List<Destination>>(emptyList())
-             }
+//             val destinationByCategory = remember { mutableStateListOf<Destination>() }
+             var destinationByCategory by remember { mutableStateOf<List<Destination>>(emptyList()) }
+
+
 //             val destinationByCategory = getDestinationsByCategory(selectedCategory.value, listDestination)
 
 //             val listToShow = when {
@@ -303,27 +305,27 @@ fun MapsScreen(
 
 
                              if (selectedCategory.value == "Mountain") {
-                                 R.drawable.mountainicon
+                                 R.drawable.minimountainicon
                              } else if (selectedCategory.value == "Play Ground") {
-                                 R.drawable.beachicon
+                                 R.drawable.miniplaygroundicon
                              } else if (selectedCategory.value == "Waterfall") {
-                                 R.drawable.waterfallicon
+                                 R.drawable.miniwaterfallicon
                              } else if (selectedCategory.value == "Temple") {
-                                 R.drawable.tampleicon
+                                 R.drawable.minitempleicon
                              } else if (selectedCategory.value == "Park") {
-                                 R.drawable.parkicon
+                                 R.drawable.miniparkicon
                              } else if (selectedCategory.value == "Forest") {
-                                 R.drawable.foresticon
+                                 R.drawable.miniforesticon
                              } else if (selectedCategory.value == "Museum") {
-                                 R.drawable.museumicon
+                                 R.drawable.minimuseumicon
                              } else if (selectedCategory.value == "Lake") {
-                                 R.drawable.lakeicon
+                                 R.drawable.minilakeicon
                              } else {
                                  R.drawable.mountain_icon_vector
                              },
                              iconColor = if (isClassified.value) {
-                                 MaterialTheme.colorScheme.primaryContainer.toArgb()
-                             } else Color.White.toArgb(),
+                                 MaterialTheme.colorScheme.background.toArgb()
+                             } else MaterialTheme.colorScheme.background.toArgb(),
                              backgroundColor = MaterialTheme.colorScheme.primaryContainer.toArgb(),
                          )
                      )
@@ -530,8 +532,11 @@ fun getDestinationsByCategory(category: String, destinations: List<Destination>)
     return if (category.isEmpty()) {
         destinations
     } else {
+        Log.d("MapsScreen", "Filtering with category: '$category'")
+
         destinations.filter {
             it.category.trim().equals(category.trim(), ignoreCase = true)
+
         }
     }
 }

@@ -69,6 +69,7 @@ fun ProfileScreen(
     navigateToDetail: (Destination) -> Unit,
     navToTicket: () -> Unit,
     navigateToLogin: () -> Unit,
+    navToTicketHistory: () -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -271,7 +272,7 @@ fun ProfileScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable {
-
+                            navToTicketHistory()
                         }
                 ){
                     Row (verticalAlignment = Alignment.CenterVertically,){
@@ -383,19 +384,19 @@ fun ProfileScreen(
 
         Spacer(modifier = Modifier.height(30.dp))
 
-        Text(
-            text = "My Bookmark",
-            fontSize = 16.sp,
-            textAlign = TextAlign.Start,
-            color = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(15.dp))
-
-        BookmarkList(state = state, onClick = navigateToDetail)
-
-        Spacer(modifier = Modifier.height(30.dp))
+//        Text(
+//            text = "My Bookmark",
+//            fontSize = 16.sp,
+//            textAlign = TextAlign.Start,
+//            color = MaterialTheme.colorScheme.onBackground,
+//            modifier = Modifier.fillMaxWidth()
+//        )
+//
+//        Spacer(modifier = Modifier.height(15.dp))
+//
+//        BookmarkList(state = state, onClick = navigateToDetail)
+//
+//        Spacer(modifier = Modifier.height(30.dp))
 
     }
 }

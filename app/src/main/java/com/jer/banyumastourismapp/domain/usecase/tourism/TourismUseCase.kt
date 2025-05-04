@@ -23,6 +23,7 @@ class TourismUseCase(
     val insertTicket: InsertTicket,
     val deleteTicket: DeleteTicket,
     val getTicket: GetTicket,
+    val getTicketHistory: GetTicketHistory,
     val insertStory: InsertStory,
     val getStory: GetStory,
 ) {

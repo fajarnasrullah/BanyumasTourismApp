@@ -100,8 +100,6 @@ fun TicketScreen(modifier: Modifier = Modifier,
     LaunchedEffect(Unit) {
         viewModel.getUserData()
         viewModel.getTicket(userData?.uid ?: "")
-        idForBarcode = "BMT00${ticket?.id} - ${ticket?.createdAt}"
-        isGenerated = true
     }
 
     Box(
@@ -396,7 +394,7 @@ fun TicketScreen(modifier: Modifier = Modifier,
                             .height(250.dp)
                             .padding(start = 30.dp, end = 30.dp, bottom = 15.dp)
                     ) {
-                        if (BarcodeType.QR_CODE.isValueValid(idForBarcode) && isGenerated) {
+                        if ( isGenerated) {
                             Barcode(
                                 type = BarcodeType.QR_CODE,
                                 value = idForBarcode,
@@ -418,6 +416,13 @@ fun TicketScreen(modifier: Modifier = Modifier,
 
             Spacer(modifier = Modifier.height(15.dp))
 
+
+            var refreshText by rememberSaveable {
+                mutableStateOf("Refresh Ticket")
+            }
+            var refreshClick by rememberSaveable {
+                mutableStateOf(false)
+            }
             Row ( horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
                 OutlinedButton(
                     modifier = Modifier
@@ -428,7 +433,7 @@ fun TicketScreen(modifier: Modifier = Modifier,
                     onClick = { navBackToHome()}
                 ) {
 
-                    Text(text = "Back To Home", color = Color.Black, fontSize = 14.sp)
+                    Text(text = "Back To Home", color = Color.White, fontSize = 14.sp)
 
                 }
 
@@ -439,12 +444,22 @@ fun TicketScreen(modifier: Modifier = Modifier,
                         .weight(1f),
                     shape = MaterialTheme.shapes.medium,
                     colors = ButtonDefaults.buttonColors(containerColor = Color.White),
-                    onClick = { viewModel.getTicket(userData?.uid ?: "") }
+                    onClick = {
+                        viewModel.getTicket(userData?.uid ?: "")
+                        refreshClick = true
+                        if (ticket != null) {
+                            isGenerated = true
+                            idForBarcode = "BMT00${ticket?.id} - ${ticket?.createdAt}"
+                        }
+                    }
                 ) {
 
-                    Text(text = "Refresh", color = Color.Black, fontSize = 14.sp)
+                    Text(text = refreshText, color = Color.Black, fontSize = 14.sp)
 
                 }
+
+
+                if (refreshClick) refreshText = "Generate QR"
 
             }
 
@@ -487,71 +502,6 @@ fun DashLineSpacer(modifier: Modifier = Modifier) {
 
 
 
-    class TicketShape(
-        private val cornerRadius: Dp = 16.dp,
-        private val cutoutRadius: Dp = 16.dp,
-        private val cutoutHeight: Float = 1.0f
-    ) : Shape {
-        override fun createOutline(
-            size: Size,
-            layoutDirection: LayoutDirection,
-            density: Density
-        ): Outline {
-            val (width, height) = size
-            val cornerRadius = this.cornerRadius.value
-            val cornerRadiusSize = cornerRadius * 2
-            val cutoutRadius = this.cutoutRadius.value
-            val cutoutRadiusSize = cutoutRadius * 2
-
-            val cutoutHeight = height * this.cutoutHeight
-
-            val shape = Path()
-            shape.moveTo(0f, cornerRadius)
-            shape.arcTo(Rect(0f, 0f, cornerRadiusSize, cornerRadiusSize), 180f, 90f, false)
-            shape.arcTo(
-                Rect(width - cornerRadiusSize, 0f, width, cornerRadiusSize),
-                270f,
-                90f,
-                false
-            )
-            shape.arcTo(
-                Rect(
-                    width - cutoutRadius,
-                    cutoutHeight,
-                    width + cutoutRadius,
-                    cutoutHeight + cutoutRadiusSize
-                ),
-                270f,
-                -180f,
-                false
-            )
-            shape.arcTo(
-                Rect(width - cornerRadiusSize, height - cornerRadiusSize, width, height),
-                0f,
-                90f,
-                false
-            )
-            shape.arcTo(
-                Rect(0f, height - cornerRadiusSize, cornerRadiusSize, height),
-                90f,
-                90f,
-                false
-            )
-            shape.arcTo(
-                Rect(
-                    -cutoutRadius,
-                    cutoutHeight,
-                    cutoutRadius,
-                    cutoutHeight + cutoutRadiusSize
-                ), 90f, -180f, false
-            )
-            shape.lineTo(0f, cornerRadius)
-            shape.close()
-            return Outline.Generic(shape)
-        }
-
-
-    }
 
 //    @Preview(showBackground = true)
 //    @Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)

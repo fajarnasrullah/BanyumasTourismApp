@@ -28,6 +28,7 @@ import com.jer.banyumastourismapp.domain.usecase.tourism.GetItinerary
 import com.jer.banyumastourismapp.domain.usecase.tourism.GetItineraryWithPlanCards
 import com.jer.banyumastourismapp.domain.usecase.tourism.GetStory
 import com.jer.banyumastourismapp.domain.usecase.tourism.GetTicket
+import com.jer.banyumastourismapp.domain.usecase.tourism.GetTicketHistory
 import com.jer.banyumastourismapp.domain.usecase.tourism.GetUser
 import com.jer.banyumastourismapp.domain.usecase.tourism.InsertItinerary
 import com.jer.banyumastourismapp.domain.usecase.tourism.InsertStory
@@ -130,6 +131,7 @@ object AppModule {
             insertTicket = InsertTicket(repository),
             deleteTicket = DeleteTicket(repository),
             getTicket = GetTicket(repository),
+            getTicketHistory = GetTicketHistory(repository),
             insertStory = InsertStory(repository),
             getStory = GetStory(repository),
         )

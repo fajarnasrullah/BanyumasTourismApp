@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -23,6 +24,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,6 +32,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -72,6 +76,8 @@ fun StoryScreen(
         mutableStateOf(0)
     }
 
+    val isLoading by viewModel.isLoading.collectAsState()
+
 
     val context = LocalContext.current
     val auth = FirebaseAuth.getInstance()
@@ -105,7 +111,7 @@ fun StoryScreen(
 
 
 
-            val (bg, divider, categoryRow, sosmedList) = createRefs()
+            val (bg, divider, categoryRow, sosmedList, progress) = createRefs()
 
             HorizontalDivider(
                 thickness = 1.dp,
@@ -144,18 +150,44 @@ fun StoryScreen(
             )
 
 
+            if (isLoading) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier =  Modifier
+                        .fillMaxWidth()
+                        .constrainAs(progress) {
+                            top.linkTo(categoryRow.bottom)
+                            start.linkTo(parent.start)
 
-            StoryListColumn(
-                isClassified = isClassified.value,
-                storyByCategory = storyByCategory,
-                listStory = story.reversed(),
-                modifier = Modifier
-                    .constrainAs(sosmedList) {
-                        top.linkTo(divider.bottom)
-                    }
-                    .fillMaxHeight()
+                        }
+                        .padding(top = 250.dp,)
+                ){
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colorScheme.primaryContainer,
+                        trackColor = Color.Gray,
+                        strokeCap = StrokeCap.Round,
+                        strokeWidth = 3.dp,
+                        modifier = Modifier
+                            .size(50.dp)
 
-            )
+                    )
+                }
+            } else {
+
+
+                StoryListColumn(
+                    isClassified = isClassified.value,
+                    storyByCategory = storyByCategory,
+                    listStory = story.reversed(),
+                    modifier = Modifier
+                        .constrainAs(sosmedList) {
+                            top.linkTo(divider.bottom)
+                        }
+                        .fillMaxHeight()
+
+                )
+            }
+
 
             if (isShowDialog) {
                 AlertDialogStoryInput(
@@ -227,7 +259,7 @@ fun StoryListColumn(
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
         if (isClassified) {
-            items(storyByCategory) { story ->
+            items(storyByCategory.reversed()) { story ->
                 StoryCard(story = story)
             }
         } else {

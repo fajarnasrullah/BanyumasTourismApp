@@ -114,6 +114,7 @@ class TourismRepositoryImpl(
                     title = it.title,
                     imageUrl = it.imageUrl,
                     imageList = it.imageList,
+                    category = it.category,
                     description = it.description,
                     location = it.location,
                     latitude = it.latitude,
@@ -246,6 +247,10 @@ class TourismRepositoryImpl(
 
     override suspend fun getTicket(uid: String): Ticket {
         return daoTicket.getTicket(uid)
+    }
+
+    override suspend fun getTicketHistory(uid: String): List<Ticket> {
+        return daoTicket.getTicketHistory(uid)
     }
 
     override suspend fun insertStory(story: Story) {
