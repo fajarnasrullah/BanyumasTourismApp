@@ -449,10 +449,14 @@ fun ItineraryCard(
                     .fillMaxWidth()
                     .padding(start = 15.dp, end = 15.dp, bottom = 15.dp)
             ) {
-                IconAndText(painter = painterResource(id = R.drawable.moneyicon), text = "Rp. ${itinerary?.totalMoneySpend}" ?: "Rp. -")
-                IconAndText(painter = painterResource(id = R.drawable.destinationicon), text = itinerary?.totalDestinations.toString() ?: "-")
-                IconAndText(painter = painterResource(id = R.drawable.peopleicon), text = itinerary?.totalMembers.toString() ?: "-")
-                IconAndText(painter = painterResource(id = R.drawable.calendaricon), text = itinerary?.date ?: "-")
+                IconAndText(modifier= Modifier.weight(1f), painter = painterResource(id = R.drawable.moneyicon), text = "Rp. ${itinerary?.totalMoneySpend ?: "-"}" ?: "Rp. -")
+                IconAndText( painter = painterResource(id = R.drawable.destinationicon), text = itinerary?.totalDestinations ?: "-")
+                Spacer(modifier = Modifier.width(5.dp))
+
+                IconAndText( painter = painterResource(id = R.drawable.peopleicon), text = itinerary?.totalMembers ?: "-")
+                Spacer(modifier = Modifier.width(5.dp))
+
+                IconAndText(modifier= Modifier.weight(1f), painter = painterResource(id = R.drawable.calendaricon), text = itinerary?.date ?: "-")
             }
         }
 
@@ -462,7 +466,7 @@ fun ItineraryCard(
 
 @Composable
 fun IconAndText(modifier: Modifier = Modifier, painter: Painter, text: String?) {
-    Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+    Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically, modifier = modifier) {
         Icon(
             painter = painter,
             contentDescription = null,
@@ -484,10 +488,10 @@ fun IconAndText(modifier: Modifier = Modifier, painter: Painter, text: String?) 
 fun UserTopSection(modifier: Modifier = Modifier, user: User?, photoUrl: String = "", navToProfile: () -> Unit ) {
     Card (
         modifier = Modifier
-            .height(50.dp)
-            .clickable {
-                navToProfile()
-            },
+            .height(50.dp),
+//            .clickable {
+//                navToProfile()
+//            },
         shape = CircleShape,
         colors = CardDefaults.cardColors(
             containerColor = Color.White,

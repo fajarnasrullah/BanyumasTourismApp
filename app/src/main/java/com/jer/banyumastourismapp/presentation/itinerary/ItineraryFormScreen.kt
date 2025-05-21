@@ -90,9 +90,9 @@ fun ItineraryFormScreen(
     var title by rememberSaveable { mutableStateOf("") }
     var description by rememberSaveable { mutableStateOf("") }
     var notes by rememberSaveable { mutableStateOf("") }
-    var totalMoneySpend by rememberSaveable { mutableIntStateOf(0) }
-    var totalDestinations by rememberSaveable { mutableIntStateOf(0) }
-    var totalMembers by rememberSaveable { mutableIntStateOf(0) }
+    var totalMoneySpend by rememberSaveable { mutableStateOf("0") }
+    var totalDestinations by rememberSaveable { mutableStateOf("0") }
+    var totalMembers by rememberSaveable { mutableStateOf("0") }
 
 
     val calendarState = rememberUseCaseState()
@@ -312,9 +312,9 @@ fun ItineraryFormScreen(
 
                 // total money spend
                 OutlinedTextField (
-                    value = if (totalMoneySpend == 0) "" else totalMoneySpend.toString(),
+                    value = if (totalMoneySpend == "0") "" else totalMoneySpend.toString(),
                     onValueChange = {
-                       if (it.isNotEmpty()) totalMoneySpend = it.toInt() else totalMoneySpend = 0
+                       if (it.isNotEmpty()) totalMoneySpend = it else totalMoneySpend = "0"
                     },
                     label = { Text(text = "Money Spend Amount") },
                     modifier = Modifier.fillMaxWidth(),
@@ -325,9 +325,9 @@ fun ItineraryFormScreen(
 
                 // total destinations
                 OutlinedTextField (
-                    value = if (totalDestinations == 0) "" else totalDestinations.toString(),
+                    value = if (totalDestinations == "0") "" else totalDestinations.toString(),
                     onValueChange = {
-                        if (it.isNotEmpty()) totalDestinations = it.toInt() else totalDestinations = 0
+                        if (it.isNotEmpty()) totalDestinations = it else totalDestinations = "0"
                     },
                     label = { Text(text = "Destination Amount") },
                     modifier = Modifier.fillMaxWidth(),
@@ -337,9 +337,9 @@ fun ItineraryFormScreen(
 
                 // total members
                 OutlinedTextField (
-                    value = if (totalMembers == 0) "" else totalMembers.toString(),
+                    value = if (totalMembers == "0") "" else totalMembers.toString(),
                     onValueChange = {
-                        if (it.isNotEmpty()) totalMembers = it.toInt() else totalMembers = 0
+                        if (it.isNotEmpty()) totalMembers = it else totalMembers = "0"
                     },
                     label = { Text(text = "Members Amount") },
                     modifier = Modifier.fillMaxWidth(),
@@ -353,7 +353,7 @@ fun ItineraryFormScreen(
                         newItinerary = newItinerary.copy(uid = userData?.uid ?: "", daysCount = totalDaysRange, title = title, date = date, description = description, notes = notes, totalMoneySpend = totalMoneySpend, totalDestinations = totalDestinations, totalMembers = totalMembers)
                         newItinerary.apply {
                             when {
-                                title == "" || daysCount == 0 || date == "" || description == "" || notes == "" || totalDestinations == 0 || totalMembers == 0
+                                title == "" || daysCount == 0 || date == "" || description == "" || notes == "" || totalDestinations == "0" || totalMembers == "0"
                                 -> Toast.makeText(context, "Please fill all the fields", Toast.LENGTH_SHORT).show()
                                 else -> {
                                     Toast.makeText(context, "Success to Create Itinerary", Toast.LENGTH_SHORT).show()

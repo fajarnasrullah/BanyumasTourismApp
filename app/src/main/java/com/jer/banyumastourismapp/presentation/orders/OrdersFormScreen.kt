@@ -716,7 +716,7 @@ fun OrdersFormScreen(
 
                             .fillMaxHeight()
                     ) {
-                        Text("Apply", color = MaterialTheme.colorScheme.background, fontWeight = FontWeight.SemiBold)
+                        Text("Apply", color = Color.White, fontWeight = FontWeight.SemiBold)
                     }
                 }
 

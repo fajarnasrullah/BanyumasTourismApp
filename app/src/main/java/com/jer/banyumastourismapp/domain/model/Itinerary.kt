@@ -30,9 +30,9 @@ data class Itinerary (
     val date: String? = null,
     val description: String? = null,
     val notes: String? = null,
-    val totalMoneySpend: Int = 0,
-    val totalDestinations: Int = 0,
-    val totalMembers: Int = 0,
+    val totalMoneySpend: String? = null,
+    val totalDestinations: String? = null,
+    val totalMembers: String? = null,
 ): Parcelable
 
 @Parcelize

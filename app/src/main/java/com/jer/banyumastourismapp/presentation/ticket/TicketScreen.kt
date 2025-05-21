@@ -9,6 +9,8 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.MarqueeDefaults.Spacing
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,7 +23,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -94,6 +98,7 @@ fun TicketScreen(modifier: Modifier = Modifier,
         mutableStateOf(false)
     }
 
+    val scrollState = rememberScrollState()
 
     val navController = rememberNavController()
 
@@ -106,6 +111,7 @@ fun TicketScreen(modifier: Modifier = Modifier,
         modifier = Modifier
             .background(MaterialTheme.colorScheme.primaryContainer)
             .fillMaxSize()
+            .verticalScroll(scrollState)
             .padding(start = 30.dp, end = 30.dp, top = 30.dp, bottom = 30.dp)
 
     ) {
@@ -114,7 +120,6 @@ fun TicketScreen(modifier: Modifier = Modifier,
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-
         ) {
 
             Text(

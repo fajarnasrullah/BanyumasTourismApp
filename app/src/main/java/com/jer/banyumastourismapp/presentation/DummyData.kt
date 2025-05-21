@@ -58,7 +58,7 @@ val itinerary = Itinerary (
     daysCount = 5,
     title = "Seru-seruan di Jawa Tengah",
     description = "Libur semesteran 7 hari full di jawa tengah bareng sobat jawir sekontrakan. Bakal berkunjung ke 4 kota dengan 10 destinasi.",
-    totalMembers = 5,
+    totalMembers = "5",
     notes = "Libur semesteran 7 hari full di jawa tengah bareng sobat jawir sekontrakan. Bakal berkunjung ke 4 kota dengan 10 destinasi.",
 
 )
