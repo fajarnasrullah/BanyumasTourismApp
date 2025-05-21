@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">BanyumasTourismApp</string>
+    <string name="app_name">Banyumas Tour App</string>
     <string name="web_client_id">611960164692-tkh8f8clni3aufu3pjjc1af46n5v859u.apps.googleusercontent.com</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>

@@ -72,7 +72,7 @@ fun AlertDialogPlanInput(
     category: MutableState<Int> = mutableStateOf(0),
     title: MutableState<String> = mutableStateOf(""),
     time: MutableState<String> = mutableStateOf(""),
-    cost: MutableState<Int> = mutableStateOf(0),
+    cost: MutableState<String> = mutableStateOf("0"),
     onDismiss: () -> Unit,
     onSubmit: () -> Unit
 ) {
@@ -227,6 +227,7 @@ fun AlertDialogPlanInput(
                         value = time.value,
                         onValueChange = { time.value = it },
                         label = { Text("Time") },
+                        readOnly = true,
                         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
                         trailingIcon = {
                             IconButton(
@@ -268,8 +269,8 @@ fun AlertDialogPlanInput(
 
                     //cost
                     OutlinedTextField(
-                        value = if (cost.value == 0) "" else cost.value.toString(),
-                        onValueChange = { if (it.isNotEmpty()) cost.value = it.toInt() else cost.value = 0 },
+                        value = if (cost.value == "0") "" else cost.value.toString(),
+                        onValueChange = { if (it.isNotEmpty()) cost.value = it else cost.value = "0" },
                         label = { Text(text = "Cost") },
                         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next, keyboardType = KeyboardType.Number),
                         modifier = Modifier.width(300.dp)

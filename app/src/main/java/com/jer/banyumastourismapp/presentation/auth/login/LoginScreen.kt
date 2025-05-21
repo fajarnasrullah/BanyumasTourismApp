@@ -8,14 +8,17 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -25,6 +28,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -34,10 +38,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -56,15 +62,19 @@ import androidx.credentials.GetCredentialRequest
 import androidx.credentials.GetCredentialResponse
 import androidx.credentials.exceptions.GetCredentialException
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import com.jer.banyumastourismapp.R
 import com.jer.banyumastourismapp.core.verySmallIcon
+import com.jer.banyumastourismapp.domain.model.urlPictures
 import com.jer.banyumastourismapp.presentation.auth.AuthViewModel
 import com.jer.banyumastourismapp.ui.theme.BanyumasTourismAppTheme
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlin.random.Random
 
 @Composable
 fun LoginScreen(
@@ -80,6 +90,9 @@ fun LoginScreen(
     val coroutineScope = rememberCoroutineScope()
     val signinResult by viewModel.signInResult.collectAsState()
     val context = LocalContext.current
+
+    val randomUrlPicture = rememberSaveable { mutableStateOf(urlPictures.random()) }
+
 
      fun signIn() {
         val credentialManager = CredentialManager.create(context)
@@ -149,173 +162,218 @@ fun LoginScreen(
         if (currentUser != null) {
             navigateToHome()
         }
+
+        while (true) {
+            delay(5000)
+            randomUrlPicture.value = urlPictures.random()
+        }
     }
 
 
 
-    Column (
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxHeight()
-            .background(MaterialTheme.colorScheme.background)
-            .padding(30.dp)
-    ) {
+    Box (
+        contentAlignment = Alignment.Center,
+       modifier = Modifier.fillMaxSize()
+    ){
 
-        Column (
+
+        AsyncImage(
+            model = randomUrlPicture.value,
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
+        )
+        Surface (
+            color = Color.Black.copy(alpha = 0.6f),
+            modifier = Modifier.fillMaxSize()
+        ) {}
+
+        Column(
+            verticalArrangement = Arrangement.Bottom,
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxHeight()
+                .padding(30.dp)
         ) {
 
-            Text(
-                text = "Welcome Back",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.ExtraBold,
-                color = MaterialTheme.colorScheme.onBackground
-            )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxWidth()
+            ) {
 
-        }
+                Text(
+                    text = "Welcome Back",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = Color.White
+                )
 
-        Spacer(modifier = Modifier.height(30.dp))
+            }
 
-        OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text(text = "Email address", fontSize = 14.sp,) },
-            colors = TextFieldDefaults.colors(
-                unfocusedLabelColor = MaterialTheme.colorScheme.outline,
-                focusedLabelColor = MaterialTheme.colorScheme.primaryContainer,
-                unfocusedContainerColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f),
-                focusedContainerColor = MaterialTheme.colorScheme.background,
-                focusedIndicatorColor = MaterialTheme.colorScheme.primaryContainer,
-                unfocusedIndicatorColor = Color.Transparent,
-            ),
-            shape = MaterialTheme.shapes.medium,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
-            modifier = Modifier.fillMaxWidth()
-        )
+            Spacer(modifier = Modifier.height(15.dp))
 
-        Spacer(modifier = Modifier.height(15.dp))
+//            OutlinedTextField(
+//                value = email,
+//                onValueChange = { email = it },
+//                label = { Text(text = "Email address", fontSize = 14.sp) },
+//                colors = TextFieldDefaults.colors(
+//                    unfocusedLabelColor = MaterialTheme.colorScheme.outline,
+//                    focusedLabelColor = MaterialTheme.colorScheme.primaryContainer,
+//                    unfocusedContainerColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f),
+//                    focusedContainerColor = MaterialTheme.colorScheme.background,
+//                    focusedIndicatorColor = MaterialTheme.colorScheme.primaryContainer,
+//                    unfocusedIndicatorColor = Color.Transparent,
+//                ),
+//                shape = MaterialTheme.shapes.medium,
+//                keyboardOptions = KeyboardOptions(
+//                    keyboardType = KeyboardType.Email,
+//                    imeAction = ImeAction.Next
+//                ),
+//                modifier = Modifier.fillMaxWidth()
+//            )
+//
+//            Spacer(modifier = Modifier.height(15.dp))
+//
+//            OutlinedTextField(
+//                value = password,
+//                onValueChange = { password = it },
+//                label = { Text(text = "Password", fontSize = 14.sp) },
+//                colors = TextFieldDefaults.colors(
+//                    unfocusedLabelColor = MaterialTheme.colorScheme.outline,
+//                    focusedLabelColor = MaterialTheme.colorScheme.primaryContainer,
+//                    unfocusedContainerColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f),
+//                    focusedContainerColor = MaterialTheme.colorScheme.background,
+//                    focusedIndicatorColor = MaterialTheme.colorScheme.primaryContainer,
+//                    unfocusedIndicatorColor = Color.Transparent,
+//                ),
+//                visualTransformation = if (pwVisible) VisualTransformation.None else PasswordVisualTransformation(),
+//                shape = MaterialTheme.shapes.medium,
+//                trailingIcon = {
+//                    val icon =
+//                        if (pwVisible) painterResource(id = R.drawable.visible_icon) else painterResource(
+//                            id = R.drawable.invisible_icon
+//                        )
+//                    IconButton(onClick = { pwVisible = !pwVisible }) {
+//                        Icon(
+//                            painter = icon,
+//                            contentDescription = null,
+//                            tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
+//                            modifier = Modifier.size(verySmallIcon)
+//                        )
+//                    }
+//                },
+//                modifier = Modifier.fillMaxWidth()
+//            )
+//
+//            Spacer(modifier = Modifier.height(15.dp))
+//
+//
+//            Button(
+//                onClick = {
+//
+//                },
+//                shape = MaterialTheme.shapes.medium,
+//                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .height(56.dp)
+//            ) {
+//                Text(
+//                    text = "Login",
+//                    fontSize = 14.sp,
+//                    fontWeight = FontWeight.Bold,
+//                    color = MaterialTheme.colorScheme.background
+//                )
+//            }
 
-        OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text(text = "Password", fontSize = 14.sp) },
-            colors = TextFieldDefaults.colors(
-                unfocusedLabelColor = MaterialTheme.colorScheme.outline,
-                focusedLabelColor = MaterialTheme.colorScheme.primaryContainer,
-                unfocusedContainerColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f),
-                focusedContainerColor = MaterialTheme.colorScheme.background,
-                focusedIndicatorColor = MaterialTheme.colorScheme.primaryContainer,
-                unfocusedIndicatorColor = Color.Transparent,
-            ),
-            visualTransformation = if (pwVisible) VisualTransformation.None else PasswordVisualTransformation(),
-            shape = MaterialTheme.shapes.medium,
-            trailingIcon = {
-                val icon = if (pwVisible) painterResource(id = R.drawable.visible_icon) else painterResource(id = R.drawable.invisible_icon)
-                IconButton(onClick = { pwVisible = !pwVisible }) {
-                    Icon(
-                        painter = icon,
+//            Spacer(modifier = Modifier.height(30.dp))
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                HorizontalDivider(
+                    thickness = 1.dp,
+                    color =  Color.White,
+                    modifier = Modifier.weight(1f)
+                )
+
+                Text(
+                    text = "Let's start your journey now!",
+                    fontSize = 14.sp,
+                    textAlign = TextAlign.Center,
+                    color =Color.White,
+                    modifier = Modifier
+//                        .weight(1f)
+                        .padding(5.dp)
+
+                )
+
+                HorizontalDivider(
+                    thickness = 1.dp,
+                    color =  Color.White,
+                    modifier = Modifier.weight(1f)
+
+                )
+            }
+
+            Spacer(modifier = Modifier.height(30.dp))
+
+            OutlinedButton(
+                border = BorderStroke(1.dp, color = Color.LightGray),
+                shape = MaterialTheme.shapes.medium,
+                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.background),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
+                onClick = {
+                    signIn()
+                }
+            ) {
+
+                Row {
+
+                    Text(
+                        text = "Sign In with Google",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onBackground,
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+
+                    Image(
+                        painter = painterResource(id = R.drawable.google_logo),
                         contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
-                        modifier = Modifier.size(verySmallIcon)
+                        modifier = Modifier.size(20.dp)
                     )
                 }
-            },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(15.dp))
-
-
-        Button(
-            onClick = {
-
-            },
-            shape = MaterialTheme.shapes.medium,
-            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp)
-        ) {
-            Text(
-                text = "Login",
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.background
-            )
-        }
-
-        Spacer(modifier = Modifier.height(30.dp))
-
-        Row (
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxWidth()
-        ){
-            HorizontalDivider(
-                thickness = 1.dp,
-                color = Color.LightGray,
-                modifier = Modifier.weight(1f)
-            )
-
-            Text(
-                text = "or login with",
-                fontSize = 14.sp,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.weight(1f)
-
-            )
-
-            HorizontalDivider(
-                thickness = 1.dp,
-                color = Color.LightGray,
-                modifier = Modifier.weight(1f)
-
-            )
-        }
-
-        Spacer(modifier = Modifier.height(30.dp))
-
-        OutlinedButton(
-            border = BorderStroke(1.dp, color = Color.LightGray,),
-            shape = MaterialTheme.shapes.medium,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp),
-            onClick = {
-                signIn()
             }
-        ) {
 
-            Image(
-                painter = painterResource(id = R.drawable.google_logo),
-                contentDescription = null,
-                modifier = Modifier.size(20.dp)
-            )
+//            Spacer(modifier = Modifier.height(60.dp))
+//
+//            Row {
+//                Text(
+//                    text = "Don't have an account? ",
+//                    fontSize = 14.sp,
+//                    color = MaterialTheme.colorScheme.onBackground
+//                )
+//
+//                Text(
+//                    text = "Register",
+//                    fontSize = 14.sp,
+//                    fontWeight = FontWeight.Bold,
+//                    color = MaterialTheme.colorScheme.primaryContainer,
+//                    modifier = Modifier.clickable {
+//
+//                    }
+//                )
+//            }
+
         }
 
-        Spacer(modifier = Modifier.height(60.dp))
 
-        Row {
-            Text(
-                text = "Don't have an account? ",
-                fontSize = 14.sp,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-
-            Text(
-                text = "Register",
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primaryContainer,
-                modifier = Modifier.clickable {
-
-                }
-            )
-        }
 
     }
 

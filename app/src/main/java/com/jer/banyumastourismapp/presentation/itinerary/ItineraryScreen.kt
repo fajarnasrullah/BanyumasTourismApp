@@ -470,14 +470,14 @@ fun CardExpand(
 
     var title = rememberSaveable { mutableStateOf("") }
     var time = rememberSaveable { mutableStateOf("") }
-    var cost = rememberSaveable { mutableStateOf(0) }
+    var cost = rememberSaveable { mutableStateOf("0") }
     var category = rememberSaveable { mutableStateOf(0) }
 
     var newPlan by rememberSaveable { mutableStateOf(Plan(
         planCardDataId =  0,
         title = "",
         time = "",
-        cost = 0,
+        cost = "",
         category = 0
     )) }
 
@@ -624,6 +624,7 @@ fun CardExpand(
 
                     if (showAlert) {
                         when (selectedMenu) {
+
                             "Add" -> {
                                 AlertDialogPlanInput(
                                     alertTitle = "Add Your New Plan Now!",

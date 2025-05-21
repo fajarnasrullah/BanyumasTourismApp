@@ -120,7 +120,7 @@ fun TicketScreen(modifier: Modifier = Modifier,
             Text(
                 text = "Your Recent Ticket",
                 fontSize = 24.sp,
-                color = Color.Black,
+                color = Color.White,
                 fontWeight = FontWeight.Bold
             )
 

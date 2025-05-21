@@ -423,6 +423,7 @@ fun OrdersFormScreen(
                     label = { Text(text = "Date") },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
+                    readOnly = true,
                     shape = MaterialTheme.shapes.medium,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
                     trailingIcon = {
@@ -474,7 +475,9 @@ fun OrdersFormScreen(
                 // email
                 OutlinedTextField (
                     value = email,
-                    onValueChange = { email = it },
+                    onValueChange = {
+                        email = it
+                    },
                     label = { Text(text = "Email") },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
@@ -533,15 +536,20 @@ fun OrdersFormScreen(
                     Button(
                         enabled = isActiveCheckButton,
                         onClick = {
-                            isFixed = true
-                            viewModel.createTransaction(
-                                TransactionRequest(
-                                    orderId = "order-${System.currentTimeMillis()}",
-                                    grossAmount = if(totalPrice == 0) 1 else totalPrice,
-                                    customerName = name,
-                                    customerEmail = email
+                            if(email.endsWith("@gmail.com")){
+                                viewModel.createTransaction(
+                                    TransactionRequest(
+                                        orderId = "order-${System.currentTimeMillis()}",
+                                        grossAmount = if (totalPrice == 0) 1 else totalPrice,
+                                        customerName = name,
+                                        customerEmail = email
+                                    )
                                 )
-                            )
+
+                                isFixed = true
+                            } else {
+                                Toast.makeText(context, "Filled your email with @gmail.com", Toast.LENGTH_SHORT).show()
+                            }
 
                         },
                         shape = MaterialTheme.shapes.medium,
@@ -668,7 +676,7 @@ fun OrdersFormScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(56.dp)
-                        .border(2.dp, Color.Green, RoundedCornerShape(15.dp))
+                        .border(2.dp, Color.Black, RoundedCornerShape(15.dp))
                         .clip(RoundedCornerShape(15.dp))
                         .background(MaterialTheme.colorScheme.onPrimary),
                     verticalAlignment = Alignment.CenterVertically
@@ -702,7 +710,7 @@ fun OrdersFormScreen(
 
 
                         },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color.Green),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.Black),
                         shape = RoundedCornerShape(topStart = 0.dp, bottomStart = 0.dp, topEnd = 15.dp, bottomEnd = 15.dp),
                         modifier = Modifier
 

@@ -161,8 +161,12 @@ fun DetailDestinationScreen(
             PlaceCard(
                 detailDestination = detailDestination,
                 onClickLocation = {
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(detailDestination.location))
-                    context.startActivity(intent)
+//                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(detailDestination.location))
+//                    context.startActivity(intent)
+                    if (detailDestination.igUrl != ""){
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(detailDestination.igUrl))
+                        context.startActivity(intent)
+                    }
 
                 },
                 modifier = Modifier
@@ -599,7 +603,7 @@ fun PlaceCard(
                     horizontalArrangement = Arrangement.End,
                     modifier = Modifier
                         .width(100.dp)
-                        .clickable { onClickLocation() }
+//                        .clickable { onClickLocation() }
                 ){
                    Icon(
                        imageVector = Icons.Default.LocationOn,
@@ -666,6 +670,9 @@ fun PlaceCard(
                         title = "Instagram",
                         icon = painterResource(id = R.drawable.instagramicon),
                         content = detailDestination.ig,
+                        modifier = Modifier.clickable {
+                            onClickLocation()
+                        }
                     )
 
                 }
@@ -684,7 +691,8 @@ fun ContentPlaceCard(
 ) {
     Column (
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
     ) {
         Row {
 

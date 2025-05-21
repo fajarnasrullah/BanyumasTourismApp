@@ -78,7 +78,7 @@ data class Plan(
     val title: String? = null,
 //    val city: List<City>? = null,
     val time: String? = null,
-    val cost: Int? = null,
+    val cost: String? = null,
 ): Parcelable
 
 @Parcelize

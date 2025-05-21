@@ -62,17 +62,17 @@ val itinerary = Itinerary (
     notes = "Libur semesteran 7 hari full di jawa tengah bareng sobat jawir sekontrakan. Bakal berkunjung ke 4 kota dengan 10 destinasi.",
 
 )
-
-val plan = Plan(
-    id = 0,
-    planCardDataId = 0,
-    category = 0,
-    title = "Kumpul Sejenak",
-//    city = listCity,
-    time = "12.00",
-    cost = 0,
-
-)
+//
+//val plan = Plan(
+//    id = 0,
+//    planCardDataId = 0,
+//    category = 0,
+//    title = "Kumpul Sejenak",
+////    city = listCity,
+//    time = "12.00",
+//    cost = 0,
+//
+//)
 
 
 

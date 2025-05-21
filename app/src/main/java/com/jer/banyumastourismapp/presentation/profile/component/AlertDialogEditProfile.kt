@@ -88,7 +88,7 @@ fun AlertDialogEditProfile(
                     modifier = Modifier.padding(30.dp)
                 ) {
                     Text(
-                        text = "Add Your New Plan Now!",
+                        text = "Change Your Username",
                         fontSize = 14.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onBackground,

@@ -272,7 +272,7 @@ fun DestinationCardPotrait(
                         text = destination.location,
                         fontSize = 10.sp,
                         color = MaterialTheme.colorScheme.outline,
-                        maxLines = 2,
+                        maxLines = 1,
                         overflow = TextOverflow.Ellipsis
 
                     )
