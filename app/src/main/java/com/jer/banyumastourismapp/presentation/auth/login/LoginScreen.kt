@@ -104,36 +104,81 @@ fun LoginScreen(
 
         val request = GetCredentialRequest.Builder()
             .addCredentialOption(googleIdOption)
+//            .setCredentialOptions(listOf(googleIdOption))
             .build()
 
         coroutineScope.launch {
             fun onSignInFailure(message: String) {
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                Log.e("LoginScreen", "Sign in failed: $message")
             }
             try {
                 val result: GetCredentialResponse = credentialManager.getCredential(
                     request = request,
                     context = context,
                 )
+
                 when (val credential = result.credential) {
                     is GoogleIdTokenCredential -> {
                         try {
                             val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
-                            viewModel.signInWithGoogle(googleIdTokenCredential.idToken)
-                            Log.d("LoginScreen", "User Success to Sign In ")
+                            val idToken = googleIdTokenCredential.idToken
+                            if (idToken != null) {
+                                viewModel.signInWithGoogle(idToken)
+                                Log.d("LoginScreen", "User successfully signed in.")
+                            } else {
+                                onSignInFailure("ID Token is null")
+                            }
                         } catch (e: GoogleIdTokenParsingException) {
-                            Log.e("LoginScreen", "Failed, Google ID token parsing is invalid.", e)
-                            onSignInFailure("Failed, Google ID token parsing is invalid.")
+                            onSignInFailure("Failed to parse Google ID token.")
                         }
                     }
+                    is CustomCredential -> {
+                        if (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
+                            try {
+                                val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
+                                val idToken = googleIdTokenCredential.idToken
+                                if (idToken != null) {
+                                    viewModel.signInWithGoogle(idToken)
+                                    Log.d("LoginScreen", "User successfully signed in.")
+                                } else {
+                                    onSignInFailure("ID Token is null")
+                                }
+                            } catch (e: GoogleIdTokenParsingException) {
+                                onSignInFailure("Failed to parse Google ID token.")
+                            }
+                        }else {
+                            onSignInFailure("Received unsupported credential type: CustomCredential")
+                        }
+
+                    }
                     else -> {
-                        Log.e("LoginScreen", "Unknown credential type.")
-                        onSignInFailure("Unknown credential type.")
+                        onSignInFailure("Unknown credential type: ${credential?.javaClass?.simpleName}")
                     }
                 }
+
+//
+//                when (val credential = result.credential) {
+//                    is GoogleIdTokenCredential -> {
+//                        try {
+//                            val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
+//                            viewModel.signInWithGoogle(googleIdTokenCredential.idToken)
+//                            Log.d("LoginScreen", "User Success to Sign In ")
+//                        } catch (e: GoogleIdTokenParsingException) {
+//                            Log.e("LoginScreen", "Failed, Google ID token parsing is invalid.", e)
+//                            onSignInFailure("Failed, Google ID token parsing is invalid.")
+//                        }
+//                    }
+//                    else -> {
+//                        Log.e("LoginScreen", "Unknown credential type.")
+//                        onSignInFailure("Unknown credential type.")
+//                    }
+//                }
             } catch (e: GetCredentialException) {
                 Log.e("Error Credential", e.message.toString())
                 onSignInFailure(e.message.toString())
+            } catch (e: Exception) {
+                onSignInFailure("Unexpected error: ${e.message}")
             }
 
         }
