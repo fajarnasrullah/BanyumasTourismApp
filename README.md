@@ -1,1 +1,3 @@
-![BanyumasTourismApp-Thumbnail](https://github.com/user-attachments/assets/25da5b1c-6915-4a50-a221-66070f9dcb9e)
+
+
+<img width="1400" height="1000" alt="Banyumas Tour App Thumbnail" src="https://github.com/user-attachments/assets/eb83ea3d-7e29-47a7-bd53-fddf2764b01a" />
